@@ -87,7 +87,7 @@ disp(['Std of the estimated depth: ', num2str(std(depth_est))])
 disp(['Std of the width estimate: ', num2str(std(width_est))]) 
 disp(['Mean absolute error of estimated depth: ', num2str(mean(abs(depth_est - depth_act)))]) 
 
-%
+%%
 stop([colorVid depthVid]);
 
 flushdata([colorVid depthVid]); 
