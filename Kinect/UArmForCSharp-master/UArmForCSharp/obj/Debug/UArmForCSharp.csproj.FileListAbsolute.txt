@@ -1,0 +1,14 @@
+c:\users\alex\documents\visual studio 2015\Projects\UArmForCSharp\UArmForCSharp\bin\Debug\UArmForCSharp.dll
+c:\users\alex\documents\visual studio 2015\Projects\UArmForCSharp\UArmForCSharp\bin\Debug\UArmForCSharp.pdb
+c:\users\alex\documents\visual studio 2015\Projects\UArmForCSharp\UArmForCSharp\obj\Debug\UArmForCSharp.dll
+c:\users\alex\documents\visual studio 2015\Projects\UArmForCSharp\UArmForCSharp\obj\Debug\UArmForCSharp.pdb
+C:\Users\jerry\Documents\GitHub\UArmForCSharp\UArmForCSharp\bin\Debug\UArmForCSharp.dll
+C:\Users\jerry\Documents\GitHub\UArmForCSharp\UArmForCSharp\bin\Debug\UArmForCSharp.pdb
+C:\Users\jerry\Documents\GitHub\UArmForCSharp\UArmForCSharp\obj\Debug\UArmForCSharp.csprojResolveAssemblyReference.cache
+C:\Users\jerry\Documents\GitHub\UArmForCSharp\UArmForCSharp\obj\Debug\UArmForCSharp.dll
+C:\Users\jerry\Documents\GitHub\UArmForCSharp\UArmForCSharp\obj\Debug\UArmForCSharp.pdb
+C:\Users\Alex\Documents\GitHub\UArmForCSharp\UArmForCSharp\bin\Debug\UArmForCSharp.dll
+C:\Users\Alex\Documents\GitHub\UArmForCSharp\UArmForCSharp\bin\Debug\UArmForCSharp.pdb
+C:\Users\Alex\Documents\GitHub\UArmForCSharp\UArmForCSharp\obj\Debug\UArmForCSharp.csprojResolveAssemblyReference.cache
+C:\Users\Alex\Documents\GitHub\UArmForCSharp\UArmForCSharp\obj\Debug\UArmForCSharp.dll
+C:\Users\Alex\Documents\GitHub\UArmForCSharp\UArmForCSharp\obj\Debug\UArmForCSharp.pdb

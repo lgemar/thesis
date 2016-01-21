@@ -1,0 +1,284 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+Accelerometer	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	Component_t Accelerometer;$/;"	m	struct:FrameData_s
+Accelerometer	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	Component_t Accelerometer;$/;"	m	struct:FrameData_s
+Component_s	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^typedef struct Component_s$/;"	s
+Component_s	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^typedef struct Component_s$/;"	s
+Component_t	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^} Component_t;$/;"	t	typeref:struct:Component_s
+Component_t	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^} Component_t;$/;"	t	typeref:struct:Component_s
+ComputeJacobian	.\Orientation\KalmanFilter_V11\ComputeJacobian.m	/^function [J] = ComputeJacobian(a,b,c,d,Ax,Ay,Az,Mx,My,Mz)$/;"	f
+ComputeJacobian	.\Orientation\QuaternionComplementaryFilter_V10\ComputeJacobian.m	/^function [J] = ComputeJacobian(a,b,c,d,Ax,Ay,Az,Mx,My,Mz)$/;"	f
+ComputeM_Matrix	.\Orientation\KalmanFilter_V11\ComputeM_Matrix.m	/^function [M] = ComputeM_Matrix(a,b,c,d)$/;"	f
+ComputeM_Matrix	.\Orientation\QuaternionComplementaryFilter_V10\ComputeM_Matrix.m	/^function [M] = ComputeM_Matrix(a,b,c,d)$/;"	f
+Data	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	unsigned int Data;$/;"	m	struct:INEMO2_OUTPUT_s
+Data	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	unsigned int Data;$/;"	m	struct:INEMO2_OUTPUT_s
+FRAME_DATA_VALID_FIELD_ACC	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	174;"	d
+FRAME_DATA_VALID_FIELD_ACC	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	174;"	d
+FRAME_DATA_VALID_FIELD_ALL	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	182;"	d
+FRAME_DATA_VALID_FIELD_ALL	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	182;"	d
+FRAME_DATA_VALID_FIELD_GYRO	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	175;"	d
+FRAME_DATA_VALID_FIELD_GYRO	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	175;"	d
+FRAME_DATA_VALID_FIELD_MAG	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	176;"	d
+FRAME_DATA_VALID_FIELD_MAG	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	176;"	d
+FRAME_DATA_VALID_FIELD_NONE	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	172;"	d
+FRAME_DATA_VALID_FIELD_NONE	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	172;"	d
+FRAME_DATA_VALID_FIELD_PRES	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	177;"	d
+FRAME_DATA_VALID_FIELD_PRES	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	177;"	d
+FRAME_DATA_VALID_FIELD_QUAT	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	180;"	d
+FRAME_DATA_VALID_FIELD_QUAT	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	180;"	d
+FRAME_DATA_VALID_FIELD_ROTAT	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	179;"	d
+FRAME_DATA_VALID_FIELD_ROTAT	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	179;"	d
+FRAME_DATA_VALID_FIELD_TEMP	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	178;"	d
+FRAME_DATA_VALID_FIELD_TEMP	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	178;"	d
+FrameData_s	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^typedef struct FrameData_s$/;"	s
+FrameData_s	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^typedef struct FrameData_s$/;"	s
+FrameData_t	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^}FrameData_t, *PFrameData_t;$/;"	t	typeref:struct:FrameData_s
+FrameData_t	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^}FrameData_t, *PFrameData_t;$/;"	t	typeref:struct:FrameData_s
+Frequency	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	unsigned int Frequency;$/;"	m	struct:INEMO2_OUTPUT_s
+Frequency	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	unsigned int Frequency;$/;"	m	struct:INEMO2_OUTPUT_s
+GaussNewtonMethod	.\Orientation\KalmanFilter_V11\GaussNewtonMethod.m	/^function [n] = GaussNewtonMethod(q,Acc,Magn)$/;"	f
+GaussNewtonMethod	.\Orientation\QuaternionComplementaryFilter_V10\GaussNewtonMethod.m	/^function [n] = GaussNewtonMethod(q,Acc,Magn)$/;"	f
+GetAnglesFromQuaternion	.\Orientation\KalmanFilter_V11\GetAnglesFromQuaternion.m	/^function [Angles] = GetAnglesFromQuaternion(q)$/;"	f
+GetAnglesFromQuaternion	.\Orientation\QuaternionComplementaryFilter_V10\GetAnglesFromQuaternion.m	/^function [Angles] = GetAnglesFromQuaternion(q)$/;"	f
+GetAnglesFromQuaternion2	.\Orientation\QuaternionComplementaryFilter_V10\GetAnglesFromQuaternion2.m	/^function [Angles] = GetAnglesFromQuaternion2(q)$/;"	f
+GetQuaternionFromAngle	.\Orientation\QuaternionComplementaryFilter_V10\GetQuaternionFromAngle.m	/^function [ q ] = GetQuaternionFromAngle(Angles)$/;"	f
+GradientDescent	.\Orientation\KalmanFilter_V11\GradientDescent.m	/^function [q_result] = GradientDescent(Acc,Magn,q,mu)$/;"	f
+GradientDescent	.\Orientation\QuaternionComplementaryFilter_V10\GradientDescent.m	/^function [q_result] = GradientDescent(Acc,Magn,q,mu)$/;"	f
+Gyroscope	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	Component_t Gyroscope;$/;"	m	struct:FrameData_s
+Gyroscope	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	Component_t Gyroscope;$/;"	m	struct:FrameData_s
+INEMO2_BUFFERS_e	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^typedef enum INEMO2_BUFFERS_e$/;"	g
+INEMO2_BUFFERS_e	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^typedef enum INEMO2_BUFFERS_e$/;"	g
+INEMO2_BUFFERS_t	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^}INEMO2_BUFFERS_t;$/;"	t	typeref:enum:INEMO2_BUFFERS_e
+INEMO2_BUFFERS_t	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^}INEMO2_BUFFERS_t;$/;"	t	typeref:enum:INEMO2_BUFFERS_e
+INEMO2_BUFFER_DATA_SAMPLE	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	INEMO2_BUFFER_DATA_SAMPLE = 0x00,$/;"	e	enum:INEMO2_BUFFERS_e
+INEMO2_BUFFER_DATA_SAMPLE	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	INEMO2_BUFFER_DATA_SAMPLE = 0x00,$/;"	e	enum:INEMO2_BUFFERS_e
+INEMO2_BUFFER_TRACE	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	INEMO2_BUFFER_TRACE = 0x01$/;"	e	enum:INEMO2_BUFFERS_e
+INEMO2_BUFFER_TRACE	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	INEMO2_BUFFER_TRACE = 0x01$/;"	e	enum:INEMO2_BUFFERS_e
+INEMO2_CMD_ENTER_DFU_MODE	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	INEMO2_CMD_ENTER_DFU_MODE,$/;"	e	enum:INEMO2_CMD_e
+INEMO2_CMD_ENTER_DFU_MODE	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	INEMO2_CMD_ENTER_DFU_MODE,$/;"	e	enum:INEMO2_CMD_e
+INEMO2_CMD_LED_OFF	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	INEMO2_CMD_LED_OFF$/;"	e	enum:INEMO2_CMD_e
+INEMO2_CMD_LED_OFF	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	INEMO2_CMD_LED_OFF$/;"	e	enum:INEMO2_CMD_e
+INEMO2_CMD_LED_ON	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	INEMO2_CMD_LED_ON,$/;"	e	enum:INEMO2_CMD_e
+INEMO2_CMD_LED_ON	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	INEMO2_CMD_LED_ON,$/;"	e	enum:INEMO2_CMD_e
+INEMO2_CMD_RESET_BOARD	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	INEMO2_CMD_RESET_BOARD,$/;"	e	enum:INEMO2_CMD_e
+INEMO2_CMD_RESET_BOARD	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	INEMO2_CMD_RESET_BOARD,$/;"	e	enum:INEMO2_CMD_e
+INEMO2_CMD_START_ACQUISTION	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	INEMO2_CMD_START_ACQUISTION = 0x01,  $/;"	e	enum:INEMO2_CMD_e
+INEMO2_CMD_START_ACQUISTION	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	INEMO2_CMD_START_ACQUISTION = 0x01,  $/;"	e	enum:INEMO2_CMD_e
+INEMO2_CMD_STOP_ACQUISTION	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	INEMO2_CMD_STOP_ACQUISTION,$/;"	e	enum:INEMO2_CMD_e
+INEMO2_CMD_STOP_ACQUISTION	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	INEMO2_CMD_STOP_ACQUISTION,$/;"	e	enum:INEMO2_CMD_e
+INEMO2_CMD_TRACE_OFF	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	INEMO2_CMD_TRACE_OFF,$/;"	e	enum:INEMO2_CMD_e
+INEMO2_CMD_TRACE_OFF	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	INEMO2_CMD_TRACE_OFF,$/;"	e	enum:INEMO2_CMD_e
+INEMO2_CMD_TRACE_ON	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	INEMO2_CMD_TRACE_ON,$/;"	e	enum:INEMO2_CMD_e
+INEMO2_CMD_TRACE_ON	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	INEMO2_CMD_TRACE_ON,$/;"	e	enum:INEMO2_CMD_e
+INEMO2_CMD_e	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^typedef enum INEMO2_CMD_e$/;"	g
+INEMO2_CMD_e	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^typedef enum INEMO2_CMD_e$/;"	g
+INEMO2_CMD_t	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^}INEMO2_CMD_t;$/;"	t	typeref:enum:INEMO2_CMD_e
+INEMO2_CMD_t	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^}INEMO2_CMD_t;$/;"	t	typeref:enum:INEMO2_CMD_e
+INEMO2_DEVICE_HANDLE	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^typedef unsigned int INEMO2_DEVICE_HANDLE;$/;"	t
+INEMO2_DEVICE_HANDLE	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^typedef unsigned int INEMO2_DEVICE_HANDLE;$/;"	t
+INEMO2_DEVICE_HANDLE_INVALID	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	44;"	d
+INEMO2_DEVICE_HANDLE_INVALID	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	44;"	d
+INEMO2_ERROR	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^typedef unsigned int INEMO2_ERROR;$/;"	t
+INEMO2_ERROR	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^typedef unsigned int INEMO2_ERROR;$/;"	t
+INEMO2_ERROR_CMD_UNKWOUN	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	61;"	d
+INEMO2_ERROR_CMD_UNKWOUN	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	61;"	d
+INEMO2_ERROR_DEVICE_ALREADY_CONNECT	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	54;"	d
+INEMO2_ERROR_DEVICE_ALREADY_CONNECT	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	54;"	d
+INEMO2_ERROR_DEVICE_FAIL_TO_OPEN	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	55;"	d
+INEMO2_ERROR_DEVICE_FAIL_TO_OPEN	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	55;"	d
+INEMO2_ERROR_GET_INFO_UNKWOUN	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	62;"	d
+INEMO2_ERROR_GET_INFO_UNKWOUN	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	62;"	d
+INEMO2_ERROR_HANDLE_NOT_OPENED	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	52;"	d
+INEMO2_ERROR_HANDLE_NOT_OPENED	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	52;"	d
+INEMO2_ERROR_INVALID_FRAME_RECEIVED	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	65;"	d
+INEMO2_ERROR_INVALID_FRAME_RECEIVED	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	65;"	d
+INEMO2_ERROR_INVALID_HANDLE	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	51;"	d
+INEMO2_ERROR_INVALID_HANDLE	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	51;"	d
+INEMO2_ERROR_INVALID_PARAMETER	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	53;"	d
+INEMO2_ERROR_INVALID_PARAMETER	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	53;"	d
+INEMO2_ERROR_NACK_DEVICE_CMD_NOT_EXEC	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	71;"	d
+INEMO2_ERROR_NACK_DEVICE_CMD_NOT_EXEC	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	71;"	d
+INEMO2_ERROR_NACK_DEVICE_CMD_UNSUP	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	69;"	d
+INEMO2_ERROR_NACK_DEVICE_CMD_UNSUP	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	69;"	d
+INEMO2_ERROR_NACK_DEVICE_FORBIDDEN	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	68;"	d
+INEMO2_ERROR_NACK_DEVICE_FORBIDDEN	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	68;"	d
+INEMO2_ERROR_NACK_DEVICE_NOT_CONNECT	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	73;"	d
+INEMO2_ERROR_NACK_DEVICE_NOT_CONNECT	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	73;"	d
+INEMO2_ERROR_NACK_DEVICE_OUT_OF_RANGE	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	70;"	d
+INEMO2_ERROR_NACK_DEVICE_OUT_OF_RANGE	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	70;"	d
+INEMO2_ERROR_NACK_DEVICE_WRONG_SYNTAX	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	72;"	d
+INEMO2_ERROR_NACK_DEVICE_WRONG_SYNTAX	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	72;"	d
+INEMO2_ERROR_NONE	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	50;"	d
+INEMO2_ERROR_NONE	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	50;"	d
+INEMO2_ERROR_NO_FRAME_DATA_RECEIVED	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	64;"	d
+INEMO2_ERROR_NO_FRAME_DATA_RECEIVED	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	64;"	d
+INEMO2_ERROR_NO_PROCESS_ADDRESS	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	67;"	d
+INEMO2_ERROR_NO_PROCESS_ADDRESS	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	67;"	d
+INEMO2_ERROR_NO_TRACE_DATA_RECEIVED	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	63;"	d
+INEMO2_ERROR_NO_TRACE_DATA_RECEIVED	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	63;"	d
+INEMO2_ERROR_ON_DATA_RECEIVED	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	66;"	d
+INEMO2_ERROR_ON_DATA_RECEIVED	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	66;"	d
+INEMO2_ERROR_ON_READ_DATA_FRAME	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	58;"	d
+INEMO2_ERROR_ON_READ_DATA_FRAME	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	58;"	d
+INEMO2_ERROR_ON_READ_DATA_MORE_BUFFER	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	60;"	d
+INEMO2_ERROR_ON_READ_DATA_MORE_BUFFER	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	60;"	d
+INEMO2_ERROR_ON_READ_INVALID_MEX_ID	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	59;"	d
+INEMO2_ERROR_ON_READ_INVALID_MEX_ID	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	59;"	d
+INEMO2_ERROR_ON_SEND_DATA_FRAME	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	57;"	d
+INEMO2_ERROR_ON_SEND_DATA_FRAME	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	57;"	d
+INEMO2_ERROR_ON_SET_DEVICE_FUNCTION	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	56;"	d
+INEMO2_ERROR_ON_SET_DEVICE_FUNCTION	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	56;"	d
+INEMO2_INFOTEXT_AHRS_LIBRARY	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	INEMO2_INFOTEXT_AHRS_LIBRARY,$/;"	e	enum:INEMO2_INFOTEXT_e
+INEMO2_INFOTEXT_AHRS_LIBRARY	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	INEMO2_INFOTEXT_AHRS_LIBRARY,$/;"	e	enum:INEMO2_INFOTEXT_e
+INEMO2_INFOTEXT_FW_VERSION	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	INEMO2_INFOTEXT_FW_VERSION,$/;"	e	enum:INEMO2_INFOTEXT_e
+INEMO2_INFOTEXT_FW_VERSION	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	INEMO2_INFOTEXT_FW_VERSION,$/;"	e	enum:INEMO2_INFOTEXT_e
+INEMO2_INFOTEXT_HW_VERSION	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	INEMO2_INFOTEXT_HW_VERSION,$/;"	e	enum:INEMO2_INFOTEXT_e
+INEMO2_INFOTEXT_HW_VERSION	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	INEMO2_INFOTEXT_HW_VERSION,$/;"	e	enum:INEMO2_INFOTEXT_e
+INEMO2_INFOTEXT_MCUID	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	INEMO2_INFOTEXT_MCUID = 0x01,  $/;"	e	enum:INEMO2_INFOTEXT_e
+INEMO2_INFOTEXT_MCUID	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	INEMO2_INFOTEXT_MCUID = 0x01,  $/;"	e	enum:INEMO2_INFOTEXT_e
+INEMO2_INFOTEXT_e	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^typedef enum INEMO2_INFOTEXT_e$/;"	g
+INEMO2_INFOTEXT_e	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^typedef enum INEMO2_INFOTEXT_e$/;"	g
+INEMO2_INFOTEXT_t	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^}INEMO2_INFOTEXT_t;$/;"	t	typeref:enum:INEMO2_INFOTEXT_e
+INEMO2_INFOTEXT_t	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^}INEMO2_INFOTEXT_t;$/;"	t	typeref:enum:INEMO2_INFOTEXT_e
+INEMO2_MODULES_AHRS	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	INEMO2_MODULES_AHRS      = 0x00000001,$/;"	e	enum:INEMO2_MODULES_e
+INEMO2_MODULES_AHRS	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	INEMO2_MODULES_AHRS      = 0x00000001,$/;"	e	enum:INEMO2_MODULES_e
+INEMO2_MODULES_ALTIMETER	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	INEMO2_MODULES_ALTIMETER = 0x00000004,$/;"	e	enum:INEMO2_MODULES_e
+INEMO2_MODULES_ALTIMETER	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	INEMO2_MODULES_ALTIMETER = 0x00000004,$/;"	e	enum:INEMO2_MODULES_e
+INEMO2_MODULES_COMPASS	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	INEMO2_MODULES_COMPASS   = 0x00000002,$/;"	e	enum:INEMO2_MODULES_e
+INEMO2_MODULES_COMPASS	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	INEMO2_MODULES_COMPASS   = 0x00000002,$/;"	e	enum:INEMO2_MODULES_e
+INEMO2_MODULES_FAT	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	INEMO2_MODULES_FAT       = 0x00000010,$/;"	e	enum:INEMO2_MODULES_e
+INEMO2_MODULES_FAT	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	INEMO2_MODULES_FAT       = 0x00000010,$/;"	e	enum:INEMO2_MODULES_e
+INEMO2_MODULES_NONE	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	INEMO2_MODULES_NONE      = 0x00000000,$/;"	e	enum:INEMO2_MODULES_e
+INEMO2_MODULES_NONE	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	INEMO2_MODULES_NONE      = 0x00000000,$/;"	e	enum:INEMO2_MODULES_e
+INEMO2_MODULES_TRACE	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	INEMO2_MODULES_TRACE     = 0x00000008,$/;"	e	enum:INEMO2_MODULES_e
+INEMO2_MODULES_TRACE	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	INEMO2_MODULES_TRACE     = 0x00000008,$/;"	e	enum:INEMO2_MODULES_e
+INEMO2_MODULES_e	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^typedef enum INEMO2_MODULES_e$/;"	g
+INEMO2_MODULES_e	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^typedef enum INEMO2_MODULES_e$/;"	g
+INEMO2_MODULES_t	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^}INEMO2_MODULES_t;$/;"	t	typeref:enum:INEMO2_MODULES_e
+INEMO2_MODULES_t	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^}INEMO2_MODULES_t;$/;"	t	typeref:enum:INEMO2_MODULES_e
+INEMO2_OUTPUT_DATA_ACC	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	83;"	d
+INEMO2_OUTPUT_DATA_ACC	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	83;"	d
+INEMO2_OUTPUT_DATA_ALL	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	89;"	d
+INEMO2_OUTPUT_DATA_ALL	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	89;"	d
+INEMO2_OUTPUT_DATA_GYRO	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	84;"	d
+INEMO2_OUTPUT_DATA_GYRO	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	84;"	d
+INEMO2_OUTPUT_DATA_MAG	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	85;"	d
+INEMO2_OUTPUT_DATA_MAG	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	85;"	d
+INEMO2_OUTPUT_DATA_PRESS	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	86;"	d
+INEMO2_OUTPUT_DATA_PRESS	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	86;"	d
+INEMO2_OUTPUT_DATA_TEMP	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	87;"	d
+INEMO2_OUTPUT_DATA_TEMP	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	87;"	d
+INEMO2_OUTPUT_FREQ_1	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	93;"	d
+INEMO2_OUTPUT_FREQ_1	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	93;"	d
+INEMO2_OUTPUT_FREQ_10	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	94;"	d
+INEMO2_OUTPUT_FREQ_10	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	94;"	d
+INEMO2_OUTPUT_FREQ_25	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	95;"	d
+INEMO2_OUTPUT_FREQ_25	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	95;"	d
+INEMO2_OUTPUT_FREQ_50	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	96;"	d
+INEMO2_OUTPUT_FREQ_50	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	96;"	d
+INEMO2_OUTPUT_MODE_AHRS	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	81;"	d
+INEMO2_OUTPUT_MODE_AHRS	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	81;"	d
+INEMO2_OUTPUT_MODE_DEFAULT	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	79;"	d
+INEMO2_OUTPUT_MODE_DEFAULT	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	79;"	d
+INEMO2_OUTPUT_MODE_RAW	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	80;"	d
+INEMO2_OUTPUT_MODE_RAW	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	80;"	d
+INEMO2_OUTPUT_SAMPLES_CONTINOUS	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	98;"	d
+INEMO2_OUTPUT_SAMPLES_CONTINOUS	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	98;"	d
+INEMO2_OUTPUT_TYPE_USB	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	91;"	d
+INEMO2_OUTPUT_TYPE_USB	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	91;"	d
+INEMO2_OUTPUT_s	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^typedef struct INEMO2_OUTPUT_s$/;"	s
+INEMO2_OUTPUT_s	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^typedef struct INEMO2_OUTPUT_s$/;"	s
+INEMO2_OUTPUT_t	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^}INEMO2_OUTPUT_t, *PINEMO2_OUTPUT_t;$/;"	t	typeref:struct:INEMO2_OUTPUT_s
+INEMO2_OUTPUT_t	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^}INEMO2_OUTPUT_t, *PINEMO2_OUTPUT_t;$/;"	t	typeref:struct:INEMO2_OUTPUT_s
+INEMO2_SDK_API	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	35;"	d
+INEMO2_SDK_API	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	37;"	d
+INEMO2_SDK_API	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	35;"	d
+INEMO2_SDK_API	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	37;"	d
+INEMO2_SENSORS_ACC	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	INEMO2_SENSORS_ACC      = 0x00,$/;"	e	enum:INEMO2_SENSORS_e
+INEMO2_SENSORS_ACC	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	INEMO2_SENSORS_ACC      = 0x00,$/;"	e	enum:INEMO2_SENSORS_e
+INEMO2_SENSORS_GYRO_RP	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	INEMO2_SENSORS_GYRO_RP  = 0x02,$/;"	e	enum:INEMO2_SENSORS_e
+INEMO2_SENSORS_GYRO_RP	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	INEMO2_SENSORS_GYRO_RP  = 0x02,$/;"	e	enum:INEMO2_SENSORS_e
+INEMO2_SENSORS_GYRO_Y	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	INEMO2_SENSORS_GYRO_Y   = 0x03,$/;"	e	enum:INEMO2_SENSORS_e
+INEMO2_SENSORS_GYRO_Y	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	INEMO2_SENSORS_GYRO_Y   = 0x03,$/;"	e	enum:INEMO2_SENSORS_e
+INEMO2_SENSORS_MAG	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	INEMO2_SENSORS_MAG      = 0x01,$/;"	e	enum:INEMO2_SENSORS_e
+INEMO2_SENSORS_MAG	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	INEMO2_SENSORS_MAG      = 0x01,$/;"	e	enum:INEMO2_SENSORS_e
+INEMO2_SENSORS_PRESS	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	INEMO2_SENSORS_PRESS    = 0x04,$/;"	e	enum:INEMO2_SENSORS_e
+INEMO2_SENSORS_PRESS	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	INEMO2_SENSORS_PRESS    = 0x04,$/;"	e	enum:INEMO2_SENSORS_e
+INEMO2_SENSORS_TEMP	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	INEMO2_SENSORS_TEMP     = 0x05,$/;"	e	enum:INEMO2_SENSORS_e
+INEMO2_SENSORS_TEMP	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	INEMO2_SENSORS_TEMP     = 0x05,$/;"	e	enum:INEMO2_SENSORS_e
+INEMO2_SENSORS_e	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^typedef enum INEMO2_SENSORS_e$/;"	g
+INEMO2_SENSORS_e	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^typedef enum INEMO2_SENSORS_e$/;"	g
+INEMO2_SENSORS_t	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^}INEMO2_SENSORS_t;$/;"	t	typeref:enum:INEMO2_SENSORS_e
+INEMO2_SENSORS_t	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^}INEMO2_SENSORS_t;$/;"	t	typeref:enum:INEMO2_SENSORS_e
+INEMO_Connection	.\Orientation\KalmanFilter_V11\INEMO_Connection.m	/^function [handle_dev pFD] = INEMO_Connection()$/;"	f
+INEMO_Connection	.\Orientation\QuaternionComplementaryFilter_V10\INEMO_Connection.m	/^function [handle_dev pFD] = INEMO_Connection()$/;"	f
+INEMO_Disconnection	.\Orientation\KalmanFilter_V11\INEMO_Disconnection.m	/^function [] = INEMO_Disconnection(handle_dev)$/;"	f
+INEMO_Disconnection	.\Orientation\QuaternionComplementaryFilter_V10\INEMO_Disconnection.m	/^function [] = INEMO_Disconnection(handle_dev)$/;"	f
+Magnetometer	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	Component_t Magnetometer;$/;"	m	struct:FrameData_s
+Magnetometer	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	Component_t Magnetometer;$/;"	m	struct:FrameData_s
+Mode	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	unsigned int Mode;$/;"	m	struct:INEMO2_OUTPUT_s
+Mode	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	unsigned int Mode;$/;"	m	struct:INEMO2_OUTPUT_s
+MyFilter	.\Orientation\KalmanFilter_V11\MyFilter.m	/^function [StateF] = MyFilter(b, a, State)$/;"	f
+MyFilter	.\Orientation\QuaternionComplementaryFilter_V10\MyFilter.m	/^function [StateF] = MyFilter(b, a, State)$/;"	f
+PFrameData_t	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^}FrameData_t, *PFrameData_t;$/;"	t	typeref:struct:FrameData_s
+PFrameData_t	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^}FrameData_t, *PFrameData_t;$/;"	t	typeref:struct:FrameData_s
+PINEMO2_OUTPUT_t	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^}INEMO2_OUTPUT_t, *PINEMO2_OUTPUT_t;$/;"	t	typeref:struct:INEMO2_OUTPUT_s
+PINEMO2_OUTPUT_t	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^}INEMO2_OUTPUT_t, *PINEMO2_OUTPUT_t;$/;"	t	typeref:struct:INEMO2_OUTPUT_s
+Pitch	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	float Pitch;$/;"	m	struct:Rotation_s
+Pitch	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	float Pitch;$/;"	m	struct:Rotation_s
+Pressure	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	unsigned short Pressure;$/;"	m	struct:FrameData_s
+Pressure	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	unsigned short Pressure;$/;"	m	struct:FrameData_s
+Q1	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	float Q1;$/;"	m	struct:Quaternion_s
+Q1	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	float Q1;$/;"	m	struct:Quaternion_s
+Q2	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	float Q2;$/;"	m	struct:Quaternion_s
+Q2	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	float Q2;$/;"	m	struct:Quaternion_s
+Q3	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	float Q3;$/;"	m	struct:Quaternion_s
+Q3	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	float Q3;$/;"	m	struct:Quaternion_s
+Q4	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	float Q4;$/;"	m	struct:Quaternion_s
+Q4	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	float Q4;$/;"	m	struct:Quaternion_s
+Quaternion	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	Quaternion_t Quaternion;$/;"	m	struct:FrameData_s
+Quaternion	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	Quaternion_t Quaternion;$/;"	m	struct:FrameData_s
+QuaternionProduct	.\Orientation\KalmanFilter_V11\QuaternionProduct.m	/^function [P] = QuaternionProduct(a,b)$/;"	f
+QuaternionProduct	.\Orientation\QuaternionComplementaryFilter_V10\QuaternionProduct.m	/^function [P] = QuaternionProduct(a,b)$/;"	f
+Quaternion_s	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^typedef struct Quaternion_s$/;"	s
+Quaternion_s	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^typedef struct Quaternion_s$/;"	s
+Quaternion_t	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^}Quaternion_t;$/;"	t	typeref:struct:Quaternion_s
+Quaternion_t	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^}Quaternion_t;$/;"	t	typeref:struct:Quaternion_s
+Roll	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	float Roll;$/;"	m	struct:Rotation_s
+Roll	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	float Roll;$/;"	m	struct:Rotation_s
+Rotation	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	Rotation_t Rotation;$/;"	m	struct:FrameData_s
+Rotation	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	Rotation_t Rotation;$/;"	m	struct:FrameData_s
+Rotation_s	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^typedef struct Rotation_s$/;"	s
+Rotation_s	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^typedef struct Rotation_s$/;"	s
+Rotation_t	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^}Rotation_t;$/;"	t	typeref:struct:Rotation_s
+Rotation_t	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^}Rotation_t;$/;"	t	typeref:struct:Rotation_s
+SampleTimeStamp	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	unsigned int SampleTimeStamp;$/;"	m	struct:FrameData_s
+SampleTimeStamp	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	unsigned int SampleTimeStamp;$/;"	m	struct:FrameData_s
+Samples	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	unsigned int Samples;$/;"	m	struct:INEMO2_OUTPUT_s
+Samples	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	unsigned int Samples;$/;"	m	struct:INEMO2_OUTPUT_s
+Size	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	size_t Size;$/;"	m	struct:FrameData_s
+Size	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	size_t Size;$/;"	m	struct:FrameData_s
+Temperature	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	short Temperature;$/;"	m	struct:FrameData_s
+Temperature	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	short Temperature;$/;"	m	struct:FrameData_s
+Type	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	unsigned int Type;$/;"	m	struct:INEMO2_OUTPUT_s
+Type	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	unsigned int Type;$/;"	m	struct:INEMO2_OUTPUT_s
+ValidFields	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	unsigned int ValidFields;$/;"	m	struct:FrameData_s
+ValidFields	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	unsigned int ValidFields;$/;"	m	struct:FrameData_s
+X	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	short X;$/;"	m	struct:Component_s
+X	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	short X;$/;"	m	struct:Component_s
+Y	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	short Y;$/;"	m	struct:Component_s
+Y	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	short Y;$/;"	m	struct:Component_s
+Yaw	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	float Yaw;$/;"	m	struct:Rotation_s
+Yaw	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	float Yaw;$/;"	m	struct:Rotation_s
+Z	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	/^	short Z;$/;"	m	struct:Component_s
+Z	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	/^	short Z;$/;"	m	struct:Component_s
+__INEMO2_SDK_H_	.\Orientation\KalmanFilter_V11\iNEMO2_SDK.h	26;"	d
+__INEMO2_SDK_H_	.\Orientation\QuaternionComplementaryFilter_V10\iNEMO2_SDK.h	26;"	d
+playVideo	.\Kinect\playVideo.m	/^function [ ] = playVideo( video )$/;"	f
+readKinectVideo	.\Kinect\readKinectVideo.m	/^function [ RGB, RGBts, DEPTH, DEPTHts ] = readKinectVideo( filedir )$/;"	f
+recordKinectVideo	.\Kinect\recordKinectVideo.m	/^function [ ] = recordKinectVideo( num_frames, acq_name )$/;"	f
+setupSerial	.\Accelerometer\Archive\setupSerial.m	/^function [accelerometer, flag] = setupSerial(ComPort)$/;"	f
