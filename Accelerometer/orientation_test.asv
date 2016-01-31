@@ -20,7 +20,7 @@ legend('XZ-axis', 'YZ-axis')
 title('Gyroscope output'); xlabel('s'); ylabel('degress/s');
 
 % Orientation Data
-subplot(3, 1, 3); yaw = line(nan, nan, 'Color', 'r'); pitch = line(nan, nan, 'Color', 'g');
+subplot(3, 1, 2); yaw = line(nan, nan, 'Color', 'r'); pitch = line(nan, nan, 'Color', 'g');
 legend('Yaw', 'Pitch')
 title('Orientation output'); xlabel('s'); ylabel('degrees');
 
@@ -55,9 +55,9 @@ while( ishandle(h1) )
     
     % UPDATE VARIBLES
     
-    AccRx = [AccRx Axr]; 
-    AccRy = [AccRy Ayr]; 
-    AccRz = [AccRz Azr]; 
+    AccRx = [AccRx Rx]; 
+    AccRy = [AccRy Ry]; 
+    AccRz = [AccRz Rz]; 
     GyroRateAxz = [GyroRateAxz RateAxz]; 
     GyroRateAyz = [GyroRateAyz RateAyz]; 
 
