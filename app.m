@@ -4,57 +4,60 @@
 % INITIALIZE AND CALIBRATE CAMERA
 % =========================================================================
 
-% Define images to process
-imageFileNames = {'C:\Users\Lukas Gemar\thesis\Image1.png',...
-    'C:\Users\Lukas Gemar\thesis\Image2.png',...
-    'C:\Users\Lukas Gemar\thesis\Image3.png',...
-    'C:\Users\Lukas Gemar\thesis\Image4.png',...
-    'C:\Users\Lukas Gemar\thesis\Image5.png',...
-    'C:\Users\Lukas Gemar\thesis\Image6.png',...
-    'C:\Users\Lukas Gemar\thesis\Image7.png',...
-    'C:\Users\Lukas Gemar\thesis\Image8.png',...
-    'C:\Users\Lukas Gemar\thesis\Image9.png',...
-    'C:\Users\Lukas Gemar\thesis\Image10.png',...
-    'C:\Users\Lukas Gemar\thesis\Image11.png',...
-    'C:\Users\Lukas Gemar\thesis\Image12.png',...
-    'C:\Users\Lukas Gemar\thesis\Image13.png',...
-    'C:\Users\Lukas Gemar\thesis\Image14.png',...
-    'C:\Users\Lukas Gemar\thesis\Image15.png',...
-    'C:\Users\Lukas Gemar\thesis\Image16.png',...
-    'C:\Users\Lukas Gemar\thesis\Image17.png',...
-    'C:\Users\Lukas Gemar\thesis\Image18.png',...
-    'C:\Users\Lukas Gemar\thesis\Image19.png',...
-    'C:\Users\Lukas Gemar\thesis\Image20.png',...
-    };
-
-% Detect checkerboards in images
-[imagePoints, boardSize, imagesUsed] = detectCheckerboardPoints(imageFileNames);
-imageFileNames = imageFileNames(imagesUsed);
-
-% Generate world coordinates of the corners of the squares
-squareSize = 22;  % in units of 'mm'
-worldPoints = generateCheckerboardPoints(boardSize, squareSize);
-
-% Calibrate the camera
-[cameraParams, imagesUsed, estimationErrors] = estimateCameraParameters(imagePoints, worldPoints, ...
-    'EstimateSkew', false, 'EstimateTangentialDistortion', false, ...
-    'NumRadialDistortionCoefficients', 2, 'WorldUnits', 'mm', ...
-    'InitialIntrinsicMatrix', [], 'InitialRadialDistortion', []);
+% % Define images to process
+% imageFileNames = {'C:\Users\Lukas Gemar\thesis\Image1.png',...
+%     'Image2.png',...
+%     'Image3.png',...
+%     'Image4.png',...
+%     'Image5.png',...
+%     'Image6.png',...
+%     'C:\Users\Lukas Gemar\thesis\Image7.png',...
+%     'C:\Users\Lukas Gemar\thesis\Image8.png',...
+%     'C:\Users\Lukas Gemar\thesis\Image9.png',...
+%     'C:\Users\Lukas Gemar\thesis\Image10.png',...
+%     'C:\Users\Lukas Gemar\thesis\Image11.png',...
+%     'C:\Users\Lukas Gemar\thesis\Image12.png',...
+%     'C:\Users\Lukas Gemar\thesis\Image13.png',...
+%     'C:\Users\Lukas Gemar\thesis\Image14.png',...
+%     'C:\Users\Lukas Gemar\thesis\Image15.png',...
+%     'C:\Users\Lukas Gemar\thesis\Image16.png',...
+%     'C:\Users\Lukas Gemar\thesis\Image17.png',...
+%     'C:\Users\Lukas Gemar\thesis\Image18.png',...
+%     'C:\Users\Lukas Gemar\thesis\Image19.png',...
+%     'C:\Users\Lukas Gemar\thesis\Image20.png',...
+%     };
+% 
+% % Detect checkerboards in images
+% [imagePoints, boardSize, imagesUsed] = detectCheckerboardPoints(imageFileNames);
+% imageFileNames = imageFileNames(imagesUsed);
+% 
+% % Generate world coordinates of the corners of the squares
+% squareSize = 22;  % in units of 'mm'
+% worldPoints = generateCheckerboardPoints(boardSize, squareSize);
+% 
+% % Calibrate the camera
+% [cameraParams, imagesUsed, estimationErrors] = estimateCameraParameters(imagePoints, worldPoints, ...
+%     'EstimateSkew', false, 'EstimateTangentialDistortion', false, ...
+%     'NumRadialDistortionCoefficients', 2, 'WorldUnits', 'mm', ...
+%     'InitialIntrinsicMatrix', [], 'InitialRadialDistortion', []);
 
 cam = webcam(1); % Connect to the webcam.
 
 % =========================================================================
 % INITIALIZE INERTIAL MEASUREMENT UNIT (IMU)
 % =========================================================================
-baudRate = 250000;
-comPort = 'COM5'; 
+baudRate = 115200;
+comPort = '/dev/cu.usbmodem1451'; 
 IMU = serial(comPort, 'BaudRate', baudRate);
 fopen(IMU); 
 
-[atoolprev, gtoolprev] = getIMUData(IMU);
-qtoolprev = eul2quat(flip(atoolprev));
-[atool, gtool] = getIMUData(IMU);
-qtoolprev = orientationModel(atool,gtool,qtoolprev,0); 
+% [atoolprev, gtoolprev] = getIMUData(IMU);
+% qtoolprev = eul2quat(flip(atoolprev));
+% [atool, gtool] = getIMUData(IMU);
+% qtoolprev = orientationModel(atool,gtool,qtoolprev,0); 
+
+vFrame = LCMCoordinateFrame('vicon',JLCMCoder(vicon.ViconLCMCoder()),'v');
+vFrame.subscribe('VICON_wand');
 
 % =========================================================================
 % INITIALIZE CLOCKS
@@ -96,12 +99,14 @@ ptool = [0 0 0];
 % INITIALIZE THE DATA LOGS
 % =========================================================================
 
-rawData = zeros(1,10);  
-videoData = zeros(480,640,3);  
+rawData = zeros(1,17);  
+videoData = zeros(720,1280,3);  
 
 %% DATA ACQUISITION LOOP
 
-while( tGlobal < 5 )
+disp('Acq starting...');
+
+while( tGlobal < 60 )
     
     % =====================================================================
     % FIND TARGET POSITION
@@ -141,9 +146,12 @@ while( tGlobal < 5 )
     
     % Get IMU Data
     % [atool, gtool] = getIMUData(IMU);
-    data = getRawData(IMU); 
-    rawData = cat(1, rawData, cat(2,tGlobal,data')); 
-    
+    data = getRawData(IMU);
+    y = vFrame.getNextMessage(1000);
+    if isempty(y)
+        y = zeros(7,1);
+    end
+    rawData = cat(1, rawData, cat(2,tGlobal,data',y'));    
     
     % Update orientation model
     % qtool = orientationModel(atool,gtool,qtoolprev,0); 
@@ -186,10 +194,12 @@ while( tGlobal < 5 )
 
 end
 
+disp('Acq ending...')
+
 %% DATA LOGGING
 
 % Write video
-v = VideoWriter('videodata.avi');
+v = VideoWriter('videodata2.avi');
 open(v)
 for i = 1:size(videoData,4)
     writeVideo(v,videoData(:,:,:,i))
@@ -197,7 +207,7 @@ end
 close(v); 
 
 % Write accelerometer data
-csvwrite('acceldata.csv', rawData); 
+csvwrite('acceldata2.csv', rawData); 
 
 
 %% APPLICATION DEINITIALIZATION

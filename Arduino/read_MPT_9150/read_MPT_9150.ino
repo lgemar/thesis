@@ -36,13 +36,13 @@ THE SOFTWARE.
 // I2Cdev and MPU6050 must be installed as libraries, or else the .cpp/.h files
 // for both classes must be in the include path of your project
 #include "I2Cdev.h"
-#include "MPU6050.h"
+#include "MPU9150.h"
 
 // class default I2C address is 0x68
 // specific I2C addresses may be passed as a parameter here
 // AD0 low = 0x68 (default for InvenSense evaluation board)
 // AD0 high = 0x69
-MPU6050 accelgyro;
+MPU9150 accelgyro;
 
 int16_t ax, ay, az;
 int16_t gx, gy, gz;
@@ -59,7 +59,7 @@ void setup() {
     // initialize serial communication
     // (38400 chosen because it works as well at 8MHz as it does at 16MHz, but
     // it's really up to you depending on your project)
-    Serial.begin(250000);
+    Serial.begin(115200);
 
     // initialize device
     Serial.println("Initializing I2C devices...");
