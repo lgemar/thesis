@@ -1,32 +1,86 @@
+%% VARIABLE AND OBJECT INITIALIZATION
 
+% =========================================================================
+% INITIALIZE CAMERA
+% =========================================================================
+cam = webcam(1); % Connect to the webcam.
+I = snapshot(cam); % Acquire a Frame
+image(I); % Display the frame in a figure window.
 
-% INITIALIZATION OF CLOCK MODELS
+% =========================================================================
+% INITIALIZE INERTIAL MEASUREMENT UNIT (IMU)
+% =========================================================================
+baudRate = 250000;
+comPort = 'COM5'; 
+IMU = serial(comPort, 'BaudRate', baudRate);
+fopen(IMU); 
+
+[atoolprev, gtoolprev] = getIMUData(IMU);
+atoolprev = atoolprev / norm(atoolprev); 
+qtoolprev = eul2quat(flip(atoolprev)); % Convert to quaternion from 'ZYX'
+atoolprev = flip(quat2eul(qtoolprev)); % Covert back to euler 
+
+% [atool, gtool] = getIMUData(IMU);
+% qtool = orientationModel(qtoolprev,atool,gtool); 
+
+% =========================================================================
+% INITIALIZE CLOCKS
+% =========================================================================
 t0 = tic; tGlobal = toc(t0); 
 tOrientation = tGlobal; tTarget = tGlobal; tTool = tGlobal; 
 dtOrientation = 0; dtTarget = 0; dtTool = 0; 
 
-while (true) 
+%% DATA ACQUISITION LOOP
+
+while true
     
+    % =====================================================================
     % FIND TOOL ORIENTATION
+    % =====================================================================
     
-    % Orientation clock model
+    % Update orientation clock
     tGlobal = toc(t0); 
     dtOrientation = tGlobal - tOrientation; 
     tOrientation = tOrientation + dtOrientation; 
     
     % Get IMU Data
+    [atool, gtool] = getIMUData(IMU);
     
     % Update orientation model
     
+    % =====================================================================
     % FIND TARGET POSITION
+    % =====================================================================
     
-    % Target clock model
+    % Update target clock
     tGlobal = toc(t0); 
     dtTarget = tGlobal - tTarget; 
-    tTarget = tTar
-    if( 
     
+    if( dtTarget > 0.01 )
+        
+        tTarget = tTarget + dtTarget; 
+        I = snapshot(cam);
+        image(I);
+        
+    end
     
+    % =====================================================================
+    % FIND TOOL POSITION 
+    % =====================================================================  
     
+    % Update tool clock
+    tGlobal = toc(t0); 
+    dtTool = tGlobal - tTool; 
+    tTool = tTool + dtTool; 
     
 end
+
+%% APPLICATION DEINITIALIZATION
+
+% DEINITIALIZE CAMERA
+clear cam;
+
+% DEINITIALIZE IMU
+fclose(IMU); 
+delete(IMU);
+clear serialPort;

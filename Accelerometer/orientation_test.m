@@ -39,7 +39,7 @@ while( ishandle(h1) )
         data = fscanf(serialPort, formatString);
     end
 
-    AccSensitivity = (2^16) / (4 * 9.81); % bits / g 
+
     Rx = data(1) / AccSensitivity; % bits / (bits / g)
     Ry = data(2) / AccSensitivity; 
     Rz = data(3) / AccSensitivity; 
@@ -49,7 +49,7 @@ while( ishandle(h1) )
     Ayr = acosd(Ry/R); 
     Azr = acosd(Rz/R); 
 
-    GyroSensitivity = 2^16 / (2 * 250); %bits / (deg / s)
+
     RateAxz = data(4) / GyroSensitivity; 
     RateAyz = data(5) / GyroSensitivity; 
     
