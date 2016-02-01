@@ -3,8 +3,6 @@
 % =========================================================================
 % INITIALIZE AND CALIBRATE CAMERA
 % =========================================================================
-cam = webcam(1); % Connect to the webcam.
-I = snapshot(cam); % Acquire a Frame
 
 % Define images to process
 imageFileNames = {'C:\Users\Lukas Gemar\thesis\Image1.png',...
@@ -43,6 +41,8 @@ worldPoints = generateCheckerboardPoints(boardSize, squareSize);
     'NumRadialDistortionCoefficients', 2, 'WorldUnits', 'mm', ...
     'InitialIntrinsicMatrix', [], 'InitialRadialDistortion', []);
 
+cam = webcam(1); % Connect to the webcam.
+
 % =========================================================================
 % INITIALIZE INERTIAL MEASUREMENT UNIT (IMU)
 % =========================================================================
@@ -69,9 +69,54 @@ dtOrientation = 0; dtTarget = 0; dtTool = 0;
 ptarget = [0 0 0]; 
 ptool = [0 0 0]; 
 
+% =========================================================================
+% INITIALIZE THE TOOL DISPLAY
+% =========================================================================
+
+% Plot a camera pointing along the y -axis.
+R = [1 0 0; 0 1 0; 0 0 1];
+camPlot = plotCamera('Location',[0 0 0],'Orientation',R,'Opacity',0);
+
+% Make the space large enough for the animation.
+xlim([-15,20]);
+ylim([-15,20]);
+zlim([15,25]);
+
+% Set the view properties.
+grid on
+axis equal
+axis manual
+
+% Plot initial point
+plothandle = plot3(0, 0, 0, '*');
+
 %% DATA ACQUISITION LOOP
 
-while (tGlobal < 5)
+while( tGlobal < 20 )
+    
+    % =====================================================================
+    % FIND TARGET POSITION
+    % =====================================================================
+    
+    % Update target clock
+    tGlobal = toc(t0); 
+    dtTarget = tGlobal - tTarget; 
+    
+    if( dtTarget > 0.05 )
+        
+        % Update target clock
+        tTarget = tTarget + dtTarget; 
+        
+        % Get camera image
+        I = snapshot(cam);
+        
+        % Update target model
+        ptarget = targetModel(I,cameraParams); 
+        
+        % Optional: Display image
+        % image(I); 
+    
+    end
     
     % =====================================================================
     % FIND TOOL ORIENTATION
@@ -89,30 +134,7 @@ while (tGlobal < 5)
     qtool = orientationModel(atool,gtool,qtoolprev,0); 
     qtoolprev = qtool; 
     
-    % =====================================================================
-    % FIND TARGET POSITION
-    % =====================================================================
-    
-    % Update target clock
-    tGlobal = toc(t0); 
-    dtTarget = tGlobal - tTarget; 
-    
-    if( dtTarget > 0.01 )
-        
-        % Update target clock
-        tTarget = tTarget + dtTarget; 
-        
-        % Get camera image
-        I = snapshot(cam);
-        
-        % Update target model
-        ptarget = targetModel(I,cameraParams); 
-        
-        % Optional: Display image
-        image(I); 
-        
-    end
-    
+
     % =====================================================================
     % FIND TOOL POSITION 
     % =====================================================================  
@@ -126,21 +148,12 @@ while (tGlobal < 5)
     ptool = ptarget; 
     
     % =====================================================================
-    % DISPLAY TOOL POSITION
+    % PLOT TOOL POSITION
     % =====================================================================
-    R = [1 0 0; 0 1 0; 0 0 1]; % Plot a camera pointing along the y -axis.
-    cam = plotCamera('Location',[0 0 0],'Orientation',R,'Opacity',0);
-    % Make the space large enough for the animation.
-    xlim([-15,20]);
-    ylim([-15,20]);
-    zlim([15,25]);
-    
-    % Set the view properties.
-    grid on
-    axis equal
-    axis manual
-    
-    plot3(ptool(1),ptool(2),ptool(3),'*')
+        
+    hold on; 
+    plot3(ptool(1), ptool(2), ptool(3), '*')  
+    drawnow limitrate;
     
 end
 
