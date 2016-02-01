@@ -5,7 +5,6 @@
 % =========================================================================
 cam = webcam(1); % Connect to the webcam.
 I = snapshot(cam); % Acquire a Frame
-image(I); % Display the frame in a figure window.
 
 % Define images to process
 imageFileNames = {'C:\Users\Lukas Gemar\thesis\Image1.png',...
@@ -53,6 +52,7 @@ IMU = serial(comPort, 'BaudRate', baudRate);
 fopen(IMU); 
 
 [atoolprev, gtoolprev] = getIMUData(IMU);
+qtoolprev = eul2quat(flip(atoolprev));
 [atool, gtool] = getIMUData(IMU);
 qtoolprev = orientationModel(atool,gtool,qtoolprev,0); 
 
@@ -147,7 +147,7 @@ end
 %% APPLICATION DEINITIALIZATION
 
 % DEINITIALIZE CAMERA
-clear cam;
+clear('cam');
 
 % DEINITIALIZE IMU
 fclose(IMU); 
