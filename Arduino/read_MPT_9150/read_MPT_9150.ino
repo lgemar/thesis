@@ -75,11 +75,11 @@ void setup() {
 
 void loop() {
     // read raw accel/gyro measurements from device
-    //accelgyro.getMotion9(&ax, &ay, &az, &gx, &gy, &gz, &mx, &my, &mz);
+    accelgyro.getMotion9(&ax, &ay, &az, &gx, &gy, &gz, &mx, &my, &mz);
 
     // these methods (and a few others) are also available
-    accelgyro.getAcceleration(&ax, &ay, &az);
-    accelgyro.getRotation(&gx, &gy, &gz);
+    //accelgyro.getAcceleration(&ax, &ay, &az);
+    //accelgyro.getRotation(&gx, &gy, &gz);
 
     // display tab-separated accel/gyro x/y/z values
     Serial.print("a/g/m:\t");
@@ -88,10 +88,10 @@ void loop() {
     Serial.print(az); Serial.print("\t");
     Serial.print(gx); Serial.print("\t");
     Serial.print(gy); Serial.print("\t");
-    Serial.println(gz);
-    //Serial.print(mx); Serial.print("\t");
-    //Serial.print(my); Serial.print("\t");
-    //Serial.println(mz);
+    Serial.print(gz); Serial.print("\t");
+    Serial.print(mx); Serial.print("\t");
+    Serial.print(my); Serial.print("\t");
+    Serial.println(mz);
 
     // blink LED to indicate activity
     blinkState = !blinkState;

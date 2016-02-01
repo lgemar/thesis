@@ -32,7 +32,7 @@ RzGyro = sign * sqrt(1 - RxGyro^2 - RyGyro^2);
 Rgyro = [RxGyro RyGyro RzGyro]; 
 
 % Combine estimates from the gyroscope and the accelerometer
-wGyro = 5; % How we trust the gyro compared to accelerometer (Range: ~5-20) 
+wGyro = 1; % How we trust the gyro compared to accelerometer (Range: ~5-20) 
 Rest = (Racc + Rgyro * wGyro) / (1 + wGyro); 
 Rest = Rest / norm(Rest); 
 

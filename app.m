@@ -73,26 +73,35 @@ ptool = [0 0 0];
 % INITIALIZE THE TOOL DISPLAY
 % =========================================================================
 
-% Plot a camera pointing along the y -axis.
-R = [1 0 0; 0 1 0; 0 0 1];
-camPlot = plotCamera('Location',[0 0 0],'Orientation',R,'Opacity',0);
+% fig = figure; 
+% 
+% % Plot a camera pointing along the y -axis.
+% R = [1 0 0; 0 1 0; 0 0 1];
+% camPlot = plotCamera('Location',[0 0 0],'Orientation',R,'Opacity',0);
+% 
+% % Make the space large enough for the animation.
+% xlim([-15,1000]);
+% ylim([-15,1000]);
+% zlim([15,1000]);
+% 
+% % Set the view properties.
+% grid on
+% axis equal
+% axis manual
+% 
+% % Plot initial point
+% plothandle = plot3(0, 0, 0, '*');
 
-% Make the space large enough for the animation.
-xlim([-15,20]);
-ylim([-15,20]);
-zlim([15,25]);
+% =========================================================================
+% INITIALIZE THE DATA LOGS
+% =========================================================================
 
-% Set the view properties.
-grid on
-axis equal
-axis manual
-
-% Plot initial point
-plothandle = plot3(0, 0, 0, '*');
+rawData = zeros(1,10);  
+videoData = zeros(480,640,3);  
 
 %% DATA ACQUISITION LOOP
 
-while( tGlobal < 20 )
+while( tGlobal < 5 )
     
     % =====================================================================
     % FIND TARGET POSITION
@@ -102,7 +111,7 @@ while( tGlobal < 20 )
     tGlobal = toc(t0); 
     dtTarget = tGlobal - tTarget; 
     
-    if( dtTarget > 0.05 )
+    if( dtTarget > 0.0 )
         
         % Update target clock
         tTarget = tTarget + dtTarget; 
@@ -110,8 +119,11 @@ while( tGlobal < 20 )
         % Get camera image
         I = snapshot(cam);
         
+        % Acquire data
+        videoData = cat(4,videoData,I); 
+        
         % Update target model
-        ptarget = targetModel(I,cameraParams); 
+        % ptarget = targetModel(I,cameraParams); 
         
         % Optional: Display image
         % image(I); 
@@ -128,11 +140,14 @@ while( tGlobal < 20 )
     tOrientation = tOrientation + dtOrientation; 
     
     % Get IMU Data
-    [atool, gtool] = getIMUData(IMU);
+    % [atool, gtool] = getIMUData(IMU);
+    data = getRawData(IMU); 
+    rawData = cat(1, rawData, cat(2,tGlobal,data')); 
+    
     
     % Update orientation model
-    qtool = orientationModel(atool,gtool,qtoolprev,0); 
-    qtoolprev = qtool; 
+    % qtool = orientationModel(atool,gtool,qtoolprev,0); 
+    % qtoolprev = qtool; 
     
 
     % =====================================================================
@@ -145,17 +160,45 @@ while( tGlobal < 20 )
     tTool = tTool + dtTool;
     
     % Update tool model
-    ptool = ptarget; 
+    % thetatool = flip(quat2eul(qtool)); 
+    % ptool = ptarget + 36 * thetatool; 
     
     % =====================================================================
     % PLOT TOOL POSITION
     % =====================================================================
-        
-    hold on; 
-    plot3(ptool(1), ptool(2), ptool(3), '*')  
-    drawnow limitrate;
-    
+           
+% %     hold on; 
+% %     
+% %     Make the space large enough for the animation.
+% %     xlim([-15,500]);
+% %     ylim([-15,500]);
+% %     zlim([15,500]);
+% %     
+% %     Set the view properties.
+% %     grid on
+% %     axis equal
+% %     axis manual  
+% %     
+% %     plot3([ptarget(1) ptool(1)], [ptarget(2) ptool(2)], [ptarget(3) ptool(3)])  
+% %     drawnow limitrate;
+% %     
+% %     hold off;  
+
 end
+
+%% DATA LOGGING
+
+% Write video
+v = VideoWriter('videodata.avi');
+open(v)
+for i = 1:size(videoData,4)
+    writeVideo(v,videoData(:,:,:,i))
+end
+close(v); 
+
+% Write accelerometer data
+csvwrite('acceldata.csv', rawData); 
+
 
 %% APPLICATION DEINITIALIZATION
 

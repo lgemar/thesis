@@ -3,7 +3,7 @@ function ptarget = targetModel(I,cameraParams)
 % Taken from https://www.youtube.com/watch?v=Z2-kDVF37FQ, with
 % modifications
 
-dI = imsubtract(I(:,:,1),rgb2gray(I)); 
+dI = imsubtract(I(:,:,3),rgb2gray(I)); 
 dI = medfilt2(dI,[5,5]); 
 dI = im2bw(dI,0.18); 
 dI = bwareaopen(dI,200); 
