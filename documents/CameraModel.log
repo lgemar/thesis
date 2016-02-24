@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9) (preloaded format=pdflatex 2016.2.23)  23 FEB 2016 17:29
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9) (preloaded format=pdflatex 2016.2.23)  24 FEB 2016 01:14
 entering extended mode
 **./CameraModel.tex
 (CameraModel.tex
@@ -56,42 +56,42 @@ Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
 (CameraModel.aux)
 \openout1 = `CameraModel.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 28.
+LaTeX Font Info:    ... okay on input line 28.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 28.
+LaTeX Font Info:    ... okay on input line 28.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 28.
+LaTeX Font Info:    ... okay on input line 28.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 28.
+LaTeX Font Info:    ... okay on input line 28.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 28.
+LaTeX Font Info:    ... okay on input line 28.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 28.
+LaTeX Font Info:    ... okay on input line 28.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <7> on input line 23.
+(Font)              <7> on input line 38.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 23.
+(Font)              <5> on input line 38.
 
 <images/cameraMeasurement.png, id=1, 365.6862pt x 365.6862pt>
 File: images/cameraMeasurement.png Graphic file (type png)
 
 <use images/cameraMeasurement.png>
-Package pdftex.def Info: images/cameraMeasurement.png used on input line 30.
+Package pdftex.def Info: images/cameraMeasurement.png used on input line 76.
 (pdftex.def)             Requested size: 146.27188pt x 146.27188pt.
  [1
 
 {C:/Users/Lukas Gemar/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map} <./ima
-ges/cameraMeasurement.png>]
+ges/cameraMeasurement.png>] [2]
 (CameraModel.aux) ) 
 Here is how much of TeX's memory you used:
- 821 strings out of 493634
- 10833 string characters out of 3132789
- 67789 words of memory out of 3000000
- 4255 multiletter control sequences out of 15000+200000
+ 826 strings out of 493634
+ 10848 string characters out of 3132789
+ 69789 words of memory out of 3000000
+ 4260 multiletter control sequences out of 15000+200000
  4567 words of font info for 17 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
- 27i,10n,20p,251b,215s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 27i,10n,20p,721b,215s stack positions out of 5000i,500n,10000p,200000b,50000s
 <C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfon
 ts/cm/cmbx10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts
 /cm/cmbx7.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm
@@ -100,10 +100,11 @@ mmi10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmm
 i5.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi7.
 pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb
 ><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr5.pfb><C:
-/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr7.pfb>
-Output written on CameraModel.pdf (1 page, 95085 bytes).
+/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Pro
+gram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy7.pfb>
+Output written on CameraModel.pdf (2 pages, 112150 bytes).
 PDF statistics:
- 45 PDF objects out of 1000 (max. 8388607)
+ 52 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  6 words of extra memory for PDF output out of 10000 (max. 10000000)
 
