@@ -1,0 +1,2 @@
+cd java
+javac -classpath ".:/home/zacman/Documents/MATLAB/drake-distro/build/share/java/drake.jar:/home/zacman/Documents/MATLAB/drake-distro/build/share/java/lcm.jar" vicon/ViconLCMCoder.java

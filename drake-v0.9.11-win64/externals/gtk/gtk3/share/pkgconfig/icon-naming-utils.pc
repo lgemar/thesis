@@ -1,0 +1,10 @@
+prefix=/srv/win32builder/fixed_364/build/win64
+exec_prefix=${prefix}
+program_path=${exec_prefix}/libexec
+
+Name: icon-naming-utils
+Description: Utilities for mapping legacy GNOME and KDE icon names to the new Icon Naming Specification
+Version: 0.8.90
+Requires: 
+Libs: 
+Cflags: 

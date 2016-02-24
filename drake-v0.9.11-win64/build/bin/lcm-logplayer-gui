@@ -1,0 +1,2 @@
+#!/bin/sh
+exec java -server  -Xincgc -Xmx64m -Xms32m -ea -cp "C:/cygwin64/tmp/drake-19684/build/share/java/*" lcm.logging.LogPlayer $*

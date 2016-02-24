@@ -1,0 +1,6 @@
+Name: glib-2.0
+Description: GLIB as packaged by the GTK+ bundle
+Requires:
+Version: 2.34.3
+Libs: -LC:/cygwin64/tmp/drake-19684/externals/gtk/gtk3/lib -lglib-2.0 -lws2_32 -lwinmm
+Cflags: -IC:/cygwin64/tmp/drake-19684/externals/gtk/gtk3/include/glib-2.0 -IC:/cygwin64/tmp/drake-19684/externals/gtk/gtk3/lib/glib-2.0/include

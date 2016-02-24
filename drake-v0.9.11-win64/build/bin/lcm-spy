@@ -1,0 +1,2 @@
+#!/bin/sh
+exec java -server  -Xincgc -Xmx128m -Xms64m -ea -cp "C:/cygwin64/tmp/drake-19684/build/share/java/*" lcm.spy.Spy $*

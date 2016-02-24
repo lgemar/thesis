@@ -1,0 +1,6 @@
+Name: gthread-2.0
+Description: GThread as packaged by the GTK+ bundle
+Requires: glib-2.0
+Version: 2.34.3
+Libs: -LC:/cygwin64/tmp/drake-19684/externals/gtk/gtk3/lib -lgthread-2.0
+Cflags:
