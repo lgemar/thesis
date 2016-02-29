@@ -1,5 +1,4 @@
-% \documentclass{article}
-\documentclass[11pt,a4paper]{report}
+\documentclass{article}
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
 
@@ -115,21 +114,36 @@ with $\vec{q} = \hat{n} \sin{\frac{\theta}{2}}$ and $q_4 = \cos{\frac{\theta}{2}
 
 The attitude matrix and the quaternion representing attitude are related by the following equation, where $A$ is a function of $\overline{q}$ \cite{Shuster1982}: 
 
-\[ A(\overline{q}) = (q_4^2 - {\| \vec{q} \|}^2) I_{3x3} + 2 \vec{q}\vec{q}^2 - 2 q_4 \vec{q}{^X} \]
+\[ A(\overline{q}) = (q_4^2 - {\| \vec{q} \|}^2) I_{3x3} + 2 \vec{q}\vec{q}^T - 2 q_4 [\vec{q}\times] \]
 
-where $\vec{q}{^X}$ is the skew-symmetric cross product matrix, 
+where ${[\vec{q}\times}]$ is the skew-symmetric cross product matrix, 
 
-\[ \vec{q}{^X} = \mat{ 0 & -q_3 & q_2 \\ q_3 & 0 & -q_1 \\ -q_2 q_1 0} \]
+\[ [\vec{q}\times] = \mat{ 0 & -q_3 & q_2 \\ q_3 & 0 & -q_1 \\ -q_2 & q_1 & 0} \]
 
 The relationship between $A$ and $\overline{q}$ can also be expressed as the product of two matrices \cite{Markley2007}: 
 
-\[ A(\overline{q}) = \Omega(\overline{q})^{T} \Phi(\overline{q}) \]
+\[ A(\overline{q}) = \Xi(\overline{q})^{T} \Psi(\overline{q}) \]
 
 with 
 
-\[ \Omega(\overline{q}) = \mat{q_4 \bf{I}_{3x3} + \overline{q}{^X} \\ -\overline{q}^T } \]
+\[ \Xi(\overline{q}) = \mat{q_4 \bf{I}_{3x3} + [\vec{q}\times] \\ -\vec{q}^T } \]
 
-\[ \Phi(\overline{q}) = \mat{q_4 \bf{I}_{3x3} - \overline{q}{^X} \\ -\overline{q}^T } \]
+\[ \Psi(\overline{q}) = \mat{q_4 \bf{I}_{3x3} - [\vec{q}\times] \\ -\vec{q}^T } \]
+
+The rate of change of the attitude can be written in the form of a general state space model: 
+
+\[ \dot{\vec{x}} = A(\vec{x}, t) \vec{x} + B(\vec{x}, t) \vec{u} \]
+
+The kinematic equation for the change in attitude as a function of the angular rate can be written as a rate of change of the quaternion matrix or a rate of change in the quaternion \cite{Shuster1982}. The angular velocity vector is given by $\vec{\omega}$. The rate of change of the attitude matrix is, 
+
+\[ \dot{A}(t) = \vec{[\omega}\times] A(t) \]
+
+and the rate of change of the quaternion is given by the following kinematic equation: 
+
+\[ \dot{\overline{q}} = \frac{1}{2} \Xi( \overline{q} )\vec{\omega} \]
+
+In both of these equations the angular rate $\vec{\omega}$ is treated as the input, $\vec{u}$, to the state space model, and the state transition matrix, $A(\vec{x},t) = 0$. 
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%% Bibliography
