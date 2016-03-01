@@ -1,6 +1,6 @@
 \begin{thebibliography}{1}
 
-\bibitem{tsai_calibration}
+\bibitem{Tsai1987}
 Roger~Y Tsai.
 \newblock A versatile camera calibration technique for high-accuracy 3d machine
   vision metrology using off-the-shelf tv cameras and lenses.
@@ -16,5 +16,16 @@ Ern~J Lefferts, F~Landis Markley, and Malcolm~D Shuster.
 \newblock Kalman filtering for spacecraft attitude estimation.
 \newblock {\em Journal of Guidance, Control, and Dynamics}, 5(5):417--429,
   1982.
+
+\bibitem{Shuster2004}
+Malcolm~D Shuster.
+\newblock Deterministic three-axis attitude determination.
+\newblock {\em Journal of Astronautical Sciences}, 52(3):405--419, 2004.
+
+\bibitem{Lewis2007}
+Frank~L Lewis, Lihua Xie, and Dan Popa.
+\newblock {\em Optimal and robust estimation: with an introduction to
+  stochastic control theory}, volume~29.
+\newblock CRC press, 2007.
 
 \end{thebibliography}

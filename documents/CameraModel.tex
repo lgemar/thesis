@@ -35,6 +35,8 @@
         \newcommand{\R}[2]{{^#1}{\bf{R}}{^#2}}
         \newcommand{\T}[2]{{^#1}{\bf{t}}{^#2}}
 
+        \newcommand{\tab}{\text{ \ \ \ \ }}
+
 
 \begin{document}
 
@@ -95,7 +97,7 @@ The midpoint of the eraser in the ideal undistorted image is $\bf{x^u_E} = \mat{
            }
 \]
 
-These relationships are found through using a simple pin-hole camera model \cite{tsai_calibration}.
+These relationships are found through using a simple pin-hole camera model \cite{Tsai1987}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%% Attitude Estimation
@@ -130,19 +132,143 @@ with
 
 \[ \Psi(\overline{q}) = \mat{q_4 \bf{I}_{3x3} - [\vec{q}\times] \\ -\vec{q}^T } \]
 
+\subsection{Deterministic Attitude Determination}
+
+The TRIAD algorithm finds the attitude matrix $A$ that maps three reference frame vectors $\vec{r}_k$ to their corresponding body frame vectors $\vec{b}_k$ for $k = 1, 2, 3$ \cite{Shuster2004}. Two observations of reference frame vectors provide sufficient information to compute a right-handed orthonormal triad of vectors in the reference frame. If $\vec{v}_1$ and $\vec{v}_2$ are reference frame vectors for the accelerometer and the magnetometer, respecitively, then 
+
+$$ \vec{v}_1 = \mat{ 0 & 0 & 1 }^{T} \tab \text{and} \tab \vec{v}_2 = \mat{ 18006 & -1566 & 53490 }^{T} $$ 
+
+so that the gravity vector points down and the magnetometer vector points in the direction of North in Boston. The orthonormal vector triad representing the reference frame is given by, 
+
+$$ \vec{r}_1 = \frac{\vec{v}_1}{\| \vec{v}_1 \|}, \tab \vec{r}_2 = \frac{\vec{v}_1 \times \vec{v}_2}{\| \vec{v}_1 \times \vec{v}_2 \|}, \tab \vec{r}_3 = \vec{r}_1 \times \vec{r}_2 $$
+
+Let $\vec{w}_1$ be the measurement of the normalized unit vector from the accelerometer and $\vec{w}_2$ be the measurement of the normalized unit vector from the magnetometer, then the orthonormal vector triads for the reference vectors are given by, 
+
+$$ \vec{b}_1 = \frac{\vec{w}_1}{\| \vec{w}_1 \|}, \tab \vec{b}_2 = \frac{\vec{w}_1 \times \vec{w}_2}{\| \vec{w}_1 \times \vec{w}_2 \|}, \tab \vec{b}_3 = \vec{w}_1 \times \vec{w}_2 $$
+
+If there was no noise in the system, then it would be the case that $\vec{b}_k = A \vec{r}_k$ for $k=1,2,3$. An equivalent way of writing this in matrix form is the following: 
+
+$$ M_b = A M_r $$ 
+
+where 
+
+$$ M_b = \mat{ \vec{b}_1 & \vec{b}_2 & \vec{b}_3 } $$
+$$ M_r = \mat{ \vec{r}_1 & \vec{r}_2 & \vec{r}_3 } $$
+
+Since $M_r$ is an orthogonal matrix, its inverse is equal to its transpose: $M_r^{-1} = M_r^{T}$. Thus, the solution for the attitude matrix is, 
+
+$$ A = M_b M_r^{T} $$
+
+\subsection{Dynamic Model for Rotations}
+
 The rate of change of the attitude can be written in the form of a general state space model: 
 
 \[ \dot{\vec{x}} = A(\vec{x}, t) \vec{x} + B(\vec{x}, t) \vec{u} \]
 
-The kinematic equation for the change in attitude as a function of the angular rate can be written as a rate of change of the quaternion matrix or a rate of change in the quaternion \cite{Shuster1982}. The angular velocity vector is given by $\vec{\omega}$. The rate of change of the attitude matrix is, 
+The kinematic equation for the change in attitude as a function of the angular rate can be written as a rate of change of the attitude matrix or a rate of change in the quaternion \cite{Shuster1982}. The angular velocity vector is given by $\vec{\omega}$. The rate of change of the attitude matrix is, 
 
-\[ \dot{A}(t) = \vec{[\omega}\times] A(t) \]
+\[ \dot{A}(t) = [\vec{\omega}\times] A(t) \]
 
-and the rate of change of the quaternion is given by the following kinematic equation: 
+In this equation, $[\vec{\omega}\times]$ is an instance of the state transition matrix $A(\vec{x}, t)$ from the general schema for a state space model. The kinematic relation for the rate of change of the quaternion can be written in the following two ways: 
+
+\[ \dot{\overline{q}} = \frac{1}{2} \Omega( \vec{\omega} ) \overline{q} \]
 
 \[ \dot{\overline{q}} = \frac{1}{2} \Xi( \overline{q} )\vec{\omega} \]
 
-In both of these equations the angular rate $\vec{\omega}$ is treated as the input, $\vec{u}$, to the state space model, and the state transition matrix, $A(\vec{x},t) = 0$. 
+where the first relation is a state space model with state transition matrix $A(\vec{\omega}) = \Omega(\omega)$, where the state transition matrix is a function of the angular rate vector $\vec{\omega}$:
+
+\[ \Omega(\vec{\omega}) = \mat{ -[\vec{\omega}\times] & \vec{w} \\ -\vec{\omega}^T & 0 } \] 
+
+The second kinematic equation for the rate of change of the quaternion is an instance of the schema for the state space model where the angular rate $\vec{\omega}$ is treated as the input $\vec{u}$ to the system and the input matrix $B(\overline{q}) = \Xi(\overline{q})$ is a function of the current attitude $\overline{q}$. 
+
+\medskip
+
+There are two good reasons to use the quaternion representation of attitude: first, the rate of change of the quaternion is linearly related to the state of the quaternion; and second, successive rotations are computed by taking the product of quaternions \cite{Markley2007}. The following identity holds of the composition of quaternions \cite{Shuster1982}: 
+
+\[ A(\overline{q}_1) A(\overline{q}_2) = A(\overline{q}_1 \otimes \overline{q}_2) \]
+
+with the operation $A(\overline{q})$ finding the attitude matrix $A$ that corresponds with the quaternion $\overline{q}$. Following the notation in \cite{Markley2007}, the product of the quaternion is linear in each of the quaternions $\overline{q}_1$ and $\overline{q}_2$: 
+
+\[ \overline{q}_1 \otimes \overline{q}_2 = \mat{ \Psi({\overline{q}_1}) & \overline{q}_1} \overline{q}_2 = \mat{ \Xi({\overline{q}_1}) & \overline{q}_1 } \overline{q}_2 \]
+
+The inverse of the quaternion is found by negating the imaginary component of the quaternion: 
+
+\[ \overline{q}^{-1} = \mat{ -\vec{q} \\ q_4 } \]
+
+\subsection{Kalman Filter Design} 
+
+A discrete dynamical system is described by a process model and measurement model. The estimation problem arises in trying to find the hidden state $x_k$ by observing the measurements $z_k$. In their most general form, the system model and the measurement model are given by the equations, 
+
+\[ x_{k+1} = A x_k + B u_k \]
+\[ z_k = H x_k \]
+
+A general estimator or observer is given by the equation \cite{Lewis2007}: 
+
+\[ \hat{x}_{k+1} = A \hat{x}_k + L (z_k - H \hat{x}_k) + B u_k \]
+
+From the dynamic model and the measurement equation, $A$, $B$, and $H$ are known. Therefore, it is only necessary to find the observer gain matrix, $L$. 
+
+\medskip
+
+For the Kalman filter, assume that the the process model and the measurement model are both subject to white noise with zero mean and some covariance. Then the process model and measurement equation become 
+
+\[ x_{k+1} = A x_k + B u_k + G_k w_k \]
+\[ z_k = H x_k + v_k \]
+\[ x_0 \sim (\overline{x}_0, P_{x0}) \]
+
+where the assumptions are that {$w_k$} and {$v_k$} are uncorrelated white noise processes such that $w_k \sim (0, Q_k)$ and $v_k \sim (0,R_k)$. 
+
+\medskip
+
+The Kalman filter has three steps: (1) initialization, (2) time update, and (3) measurement update. During the intialization phase, the state of the model and the covariance are assigned initial values: 
+
+\[ P_0 = P_{x0}  \ \ \ \  \hat{x}_0 = \overline{x}_0 \]
+
+During the time update, also known as the prediction step, the \textit{a priori} estimates for the state and the covariance matrix are given by the following equations: 
+
+$$ P{^{-}_{k+1}} = A_k P_k A_k^{T} + G_k Q_k G_k^{T} $$
+$$ \hat{x}{^{-}_{k+1}} = A_k \hat{k} + B_k u_k $$
+
+The measurement update converts the \textit{a priori} predictions for the state and covariance into their \textit{a posteriori} filtered estimates based on the observation of $z_k$: 
+
+$$ P_{k+1} = [ (P{^{-}_{k+1}})^{-1} + H_{k+1}^{T} R_{k+1}^{-1} H_{k+1} ]^{-1} $$
+$$ \hat{x}_{k+1} = \hat{x}{^{-}_{k+1}} + P_{k+1} H_{k+1}^{T} R_{k+1}^{-1} (z_{k+1} - H_{k+1} \hat{x}{^{-}_{k+1}}) $$
+
+Note that during the measurement update, the \textit{a posteriori} estimate is simply the \textit{a priori} estimate plus a correction term. The correction term is simply a gain matrix times the the difference between the actual observation and the predicted observation. The gain matrix is known as the Kalman gain: 
+
+$$ K_k = P_k H_k^{T} R_k^{-1} $$
+
+The difference between the actual observation, $z_{k+1}$ and the predicted observation $H_k \hat{x}{^-_{k+1}}$ is known as the residual, $\nu$:
+
+$$ \nu = z_{k+1} - H_k \hat{x}{^-_{k+1}} $$
+
+Thus, the measurement update can be written in terms of the \textit{a priori} estimate, the residual, and the Kalman gain:
+
+$$ \hat{x}_{k+1} = \hat{x}{^-_{k+1}} + K_k \nu $$
+
+\subsubsection{Process Model}
+
+Treat the angular rate, $\vec{\omega}$, as the input to the process model. The rate of change of the quaternion is given by the dynamic model, 
+
+\[ \dot{\overline{q}} = B(\overline{q}) \vec{\omega} \]
+
+with the input matrix $B(\overline{q})$: 
+
+\[ B(\overline{q}) = \frac{1}{2} \Xi(\overline{q}) = \mat{q_4 \bf{I}_{3x3} + [\vec{q}\times] \\ -\vec{q}^T } \]
+
+Treating the attitude quaternion $\overline{q}$ as roughly constant over a small time interval, the process model can be discretized: 
+
+\[ \overline{q}_{k+1} = B_k(\overline{q}_k) \vec{\omega_k} \]
+
+\subsubsection{Measurement Model}
+
+\subsubsection{Prediction Equations}
+
+The prediction variables are the state of the quaternion at the next time step, $\overline{q}_{k+1}$, and the covariance matrix, $\overline{P}_{k+1}$. The state prediction is computed using the process model: 
+
+\[ \dot{\overline{q}} = B(\overline{q}) \vec{\omega} \]
+
+The covariance prediction is computed 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
