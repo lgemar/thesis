@@ -29,7 +29,7 @@
 
 // #include <I2C.h>
 #include <Wire.h>
-#define Serial SerialUSB
+#define Serial
 
 byte val = 0;
  

@@ -35,7 +35,7 @@
         \newcommand{\R}[2]{{^#1}{\bf{R}}{^#2}}
         \newcommand{\T}[2]{{^#1}{\bf{t}}{^#2}}
 
-        \newcommand{\tab}{\text{ \ \ \ \ }}
+        \newcommand{\tab}{ \textrm{ \ \ \ \ } }
 
 
 \begin{document}
@@ -136,7 +136,7 @@ with
 
 The TRIAD algorithm finds the attitude matrix $A$ that maps three reference frame vectors $\vec{r}_k$ to their corresponding body frame vectors $\vec{b}_k$ for $k = 1, 2, 3$ \cite{Shuster2004}. Two observations of reference frame vectors provide sufficient information to compute a right-handed orthonormal triad of vectors in the reference frame. If $\vec{v}_1$ and $\vec{v}_2$ are reference frame vectors for the accelerometer and the magnetometer, respecitively, then 
 
-$$ \vec{v}_1 = \mat{ 0 & 0 & 1 }^{T} \tab \text{and} \tab \vec{v}_2 = \mat{ 18006 & -1566 & 53490 }^{T} $$ 
+$$ \vec{v}_1 = \mat{ 0 & 0 & 1 }^{T} \tab \textrm{and} \tab \vec{v}_2 = \mat{ 18006 & -1566 & 53490 }^{T} $$ 
 
 so that the gravity vector points down and the magnetometer vector points in the direction of North in Boston. The orthonormal vector triad representing the reference frame is given by, 
 

@@ -89,6 +89,7 @@ void loop() {
     Serial.print(gx); Serial.print(",");
     Serial.print(gy); Serial.print(",");
     Serial.print(gz); Serial.print(",");
+
     Serial.print(mx); Serial.print(",");
     Serial.print(my); Serial.print(",");
     Serial.print(mz); Serial.print("\n");

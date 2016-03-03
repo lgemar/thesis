@@ -10,7 +10,7 @@ extern "C" {
 #include "utility/twi.h"  // from Wire library, so we can do bus scanning
 }
 
-#define Serial SerialUSB
+// #define Serial SerialUSB
 
 // Scan the I2C bus between addresses from_addr and to_addr.
 // On each address, call the callback function with the address and result.
