@@ -30,13 +30,14 @@ Adafruit_BNO055 bno = Adafruit_BNO055();
 void setup(void)
 {
   Serial.begin(9600);
-  Serial.println("Orientation Sensor Raw Data Test"); Serial.println("");
+  while(!Serial); 
+  // Serial.println("Orientation Sensor Raw Data Test"); Serial.println("");
 
   /* Initialise the sensor */
   if(!bno.begin())
   {
     /* There was a problem detecting the BNO055 ... check your connections */
-    Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
+    //Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
     while(1);
   }
 
@@ -44,14 +45,14 @@ void setup(void)
 
   /* Display the current temperature */
   int8_t temp = bno.getTemp();
-  Serial.print("Current Temperature: ");
-  Serial.print(temp);
-  Serial.println(" C");
-  Serial.println("");
+  //Serial.print("Current Temperature: ");
+  //Serial.print(temp);
+  //Serial.println(" C");
+  //Serial.println("");
 
   bno.setExtCrystalUse(true);
 
-  Serial.println("Calibration status values: 0=uncalibrated, 3=fully calibrated");
+  //Serial.println("Calibration status values: 0=uncalibrated, 3=fully calibrated");
 }
 
 /**************************************************************************/
@@ -69,19 +70,10 @@ void loop(void)
   // - VECTOR_EULER         - degrees
   // - VECTOR_LINEARACCEL   - m/s^2
   // - VECTOR_GRAVITY       - m/s^2
-  imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER);
-  imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-  imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-  imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-
-  /* Display the floating point data */
-  Serial.print("X: ");
-  Serial.print(euler.x());
-  Serial.print(" Y: ");
-  Serial.print(euler.y());
-  Serial.print(" Z: ");
-  Serial.print(euler.z());
-  Serial.print("\t\t");
+  imu::Quaternion quat = bno.getQuat();
+  imu::Vector<3> accel = bno.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER);
+  imu::Vector<3> gyro = bno.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
+  imu::Vector<3> magn = bno.getVector(Adafruit_BNO055::VECTOR_MAGNETOMETER);
 
   /*
   // Quaternion data
@@ -96,18 +88,23 @@ void loop(void)
   Serial.print(quat.z(), 4);
   Serial.print("\t\t");
   */
+  Serial.print(quat.w()); Serial.print(","); 
+  Serial.print(quat.x()); Serial.print(","); 
+  Serial.print(quat.y()); Serial.print(","); 
+  Serial.print(quat.z()); Serial.print(","); 
+  
+  Serial.print(accel.x()); Serial.print(","); 
+  Serial.print(accel.y()); Serial.print(",");
+  Serial.print(accel.z()); Serial.print(",");
+  Serial.print(gyro.x()); Serial.print(",");
+  Serial.print(gyro.y()); Serial.print(",");
+  Serial.print(gyro.z()); Serial.print(",");
+  Serial.print(magn.x()); Serial.print(",");
+  Serial.print(magn.y()); Serial.print(",");
+  Serial.print(magn.z()); Serial.print("\n");
 
   /* Display calibration status for each sensor. */
-  uint8_t system, gyro, accel, mag = 0;
-  bno.getCalibration(&system, &gyro, &accel, &mag);
-  Serial.print("CALIBRATION: Sys=");
-  Serial.print(system, DEC);
-  Serial.print(" Gyro=");
-  Serial.print(gyro, DEC);
-  Serial.print(" Accel=");
-  Serial.print(accel, DEC);
-  Serial.print(" Mag=");
-  Serial.println(mag, DEC);
+  // Serial.print("CALIBRATION: Sys=");
 
   delay(BNO055_SAMPLERATE_DELAY_MS);
 }

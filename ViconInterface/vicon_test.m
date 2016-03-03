@@ -1,4 +1,4 @@
-javaaddpath java %Add LCM stuff to Java classpath
+% javaaddpath java %Add LCM stuff to Java classpath
 %system('gnome-terminal -e bin/vicon-client'); %start the vicon-lcm bridge
 
 % --- Use MATLAB LCM Coder --- %
@@ -6,7 +6,6 @@ javaaddpath java %Add LCM stuff to Java classpath
 
 % --- Use Java LCM Coder --- %
 vFrame = LCMCoordinateFrame('vicon',JLCMCoder(vicon.ViconLCMCoder()),'v');
-
 vFrame.subscribe('VICON_wand');
 
 while true
