@@ -1,6 +1,6 @@
 current_folder = pwd; 
 data_folder = ([pwd, '\Data']); 
-file_name = 'test8test8.csv'; 
+file_name = 'test2test2.csv'; 
 M = csvread([data_folder, '\', file_name]); 
 M = M(2:end, :); 
 N = size(M, 1); 
@@ -13,10 +13,8 @@ QuatEst = zeros(size(QuatRef));
 
 for i = 1:N
   
-    % v1 = [0; 0; -9.81]; 
-    % v2 = [18006; -1566; 53490]; 
-    v1 = [0; 0; -9.81]; 
-    v2 = [1; 1.4; 0]; 
+    v1 = [0; 0; 9.81]; 
+    v2 = [18006; -1566; 53490]; 
     v1 = v1 / norm(v1); 
     v2 = v2 / norm(v2); 
     
@@ -24,9 +22,9 @@ for i = 1:N
     r2 = cross(v1, v2) / norm(cross(v1, v2)); 
     r3 = cross(r1, r2); 
     
-    T = [0 1 0; -1 0 0; 0 0 -1]; % sensor alignment matrix
-    w1 = AccelData(i, :)'; w1 = T * w1; 
-    w2 = MagnData(i, :)'; w2 = T * w2; 
+    T = [0 -1 0; 1 0 0; 0 0 1]; % sensor alignment matrix
+    w1 = AccelData(i, :)'; % w1 = T * w1; 
+    w2 = MagnData(i, :)'; % w2 = T * w2; 
     w1 = w1 / norm(w1);
     w2 = w2 / norm(w2);
     
@@ -39,7 +37,7 @@ for i = 1:N
    
     R = M_b * M_r'; 
     
-    A = R;  
+    A = T * R;  
     
     q = rotm2quat(A'); 
     QuatEst(i, :) = q; 
