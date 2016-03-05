@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9) (preloaded format=pdflatex 2016.2.23)  1 MAR 2016 21:17
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9) (preloaded format=pdflatex 2016.2.23)  4 MAR 2016 23:54
 entering extended mode
 **./CameraModel.tex
 (CameraModel.tex
@@ -279,6 +279,10 @@ Now handling font encoding U ...
    defining Unicode char U+2122 (decimal 8482)
    defining Unicode char U+2423 (decimal 9251)
 ))
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\url\url.sty"
+\Urlmuskip=\muskip10
+Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
+)
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\graphics\graphicx.sty"
 Package: graphicx 2014/10/28 v1.0g Enhanced LaTeX Graphics (DPC,SPQR)
 
@@ -318,23 +322,29 @@ Package tocbibind Info: The document has section divisions on input line 50.
 
 Package tocbibind Note: Using section or other style headings.
 
-) (CameraModel.aux)
+) (CameraModel.aux
+
+LaTeX Warning: Label `fig:side-to-side-raw' multiply defined.
+
+
+LaTeX Warning: Label `fig:up-and-down-raw' multiply defined.
+
+)
 \openout1 = `CameraModel.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 41.
-LaTeX Font Info:    ... okay on input line 41.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 41.
-LaTeX Font Info:    ... okay on input line 41.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 41.
-LaTeX Font Info:    ... okay on input line 41.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 41.
-LaTeX Font Info:    ... okay on input line 41.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 41.
-LaTeX Font Info:    ... okay on input line 41.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 41.
-LaTeX Font Info:    ... okay on input line 41.
-
-("C:\Program Files (x86)\MiKTeX 2.9\tex\context\base\supp-pdf.mkii"
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 42.
+LaTeX Font Info:    ... okay on input line 42.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 42.
+LaTeX Font Info:    ... okay on input line 42.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 42.
+LaTeX Font Info:    ... okay on input line 42.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 42.
+LaTeX Font Info:    ... okay on input line 42.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 42.
+LaTeX Font Info:    ... okay on input line 42.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 42.
+LaTeX Font Info:    ... okay on input line 42.
+ ("C:\Program Files (x86)\MiKTeX 2.9\tex\context\base\supp-pdf.mkii"
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count89
 \scratchdimen=\dimen106
@@ -349,15 +359,15 @@ LaTeX Font Info:    ... okay on input line 41.
 \everyMPtoPDFconversion=\toks18
 )
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <12> on input line 46.
+(Font)              <12> on input line 47.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 46.
+(Font)              <8> on input line 47.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 46.
+(Font)              <6> on input line 47.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <7> on input line 57.
+(Font)              <7> on input line 58.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 57.
+(Font)              <5> on input line 58.
  [1
 
 {C:/Users/Lukas Gemar/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}]
@@ -365,37 +375,118 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 File: images/computerVision.png Graphic file (type png)
 
 <use images/computerVision.png>
-Package pdftex.def Info: images/computerVision.png used on input line 84.
+Package pdftex.def Info: images/computerVision.png used on input line 87.
 (pdftex.def)             Requested size: 203.50871pt x 134.32346pt.
- [2 <./images/computerVision.png>] [3] [4]
-[5] [6] (CameraModel.bbl [7]) [8] (CameraModel.aux) ) 
+ [2 <./images/computerVision.png>]
+<images/image1.png, id=23, 642.4pt x 481.8pt>
+File: images/image1.png Graphic file (type png)
+ <use images/image1.png>
+Package pdftex.def Info: images/image1.png used on input line 131.
+(pdftex.def)             Requested size: 137.9979pt x 103.49675pt.
+
+<images/image2.png, id=24, 642.4pt x 481.8pt>
+File: images/image2.png Graphic file (type png)
+ <use images/image2.png>
+Package pdftex.def Info: images/image2.png used on input line 132.
+(pdftex.def)             Requested size: 137.9979pt x 103.49675pt.
+
+<images/image3.png, id=25, 642.4pt x 481.8pt>
+File: images/image3.png Graphic file (type png)
+ <use images/image3.png>
+Package pdftex.def Info: images/image3.png used on input line 133.
+(pdftex.def)             Requested size: 137.9979pt x 103.49675pt.
+
+<images/image4.png, id=26, 642.4pt x 481.8pt>
+File: images/image4.png Graphic file (type png)
+ <use images/image4.png>
+Package pdftex.def Info: images/image4.png used on input line 134.
+(pdftex.def)             Requested size: 137.9979pt x 103.49675pt.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+<images/frontview.png, id=27, 312.6882pt x 319.9152pt>
+File: images/frontview.png Graphic file (type png)
+
+<use images/frontview.png>
+Package pdftex.def Info: images/frontview.png used on input line 152.
+(pdftex.def)             Requested size: 137.9979pt x 141.19269pt.
+
+<images/sideview.png, id=28, 314.1336pt x 318.4698pt>
+File: images/sideview.png Graphic file (type png)
+
+<use images/sideview.png>
+Package pdftex.def Info: images/sideview.png used on input line 153.
+(pdftex.def)             Requested size: 137.9979pt x 139.9036pt.
+ [3]
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+<images/side-to-side-raw.jpg, id=32, 1927.2pt x 914.41624pt>
+File: images/side-to-side-raw.jpg Graphic file (type jpg)
+
+<use images/side-to-side-raw.jpg>
+Package pdftex.def Info: images/side-to-side-raw.jpg used on input line 165.
+(pdftex.def)             Requested size: 276.00105pt x 130.9475pt.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+<images/up-and-down-raw.jpg, id=33, 1927.2pt x 914.41624pt>
+File: images/up-and-down-raw.jpg Graphic file (type jpg)
+
+<use images/up-and-down-raw.jpg>
+Package pdftex.def Info: images/up-and-down-raw.jpg used on input line 175.
+(pdftex.def)             Requested size: 276.00105pt x 130.9475pt.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+<images/back-to-front-raw.jpg, id=34, 1927.2pt x 914.41624pt>
+File: images/back-to-front-raw.jpg Graphic file (type jpg)
+
+<use images/back-to-front-raw.jpg>
+Package pdftex.def Info: images/back-to-front-raw.jpg used on input line 185.
+(pdftex.def)             Requested size: 276.00105pt x 130.9475pt.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[4 <./images/image1.png (PNG copy)> <./images/image2.png (PNG copy)> <./images/
+image3.png (PNG copy)> <./images/image4.png (PNG copy)>] [5 <./images/frontview
+.png> <./images/sideview.png> <./images/side-to-side-raw.jpg>] [6 <./images/up-
+and-down-raw.jpg> <./images/back-to-front-raw.jpg>] [7] [8] [9] [10]
+(CameraModel.bbl) [11] (CameraModel.aux)
+
+LaTeX Warning: There were multiply-defined labels.
+
+ ) 
 Here is how much of TeX's memory you used:
- 1888 strings out of 493634
- 23949 string characters out of 3132789
- 89322 words of memory out of 3000000
- 5272 multiletter control sequences out of 15000+200000
+ 2013 strings out of 493634
+ 26029 string characters out of 3132789
+ 90506 words of memory out of 3000000
+ 5383 multiletter control sequences out of 15000+200000
  8860 words of font info for 31 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
- 27i,10n,23p,948b,307s stack positions out of 5000i,500n,10000p,200000b,50000s
-<C:/Program Files (x86)/Mi
-KTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Program Files (x86)/MiKT
-eX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Program Files (x86)/MiKTeX
- 2.9/fonts/type1/public/amsfonts/cm/cmbx7.pfb><C:/Program Files (x86)/MiKTeX 2.
-9/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Program Files (x86)/MiKTeX 2.9/
-fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fo
-nts/type1/public/amsfonts/cm/cmmi5.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts
-/type1/public/amsfonts/cm/cmmi7.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/ty
-pe1/public/amsfonts/cm/cmr10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1
-/public/amsfonts/cm/cmr12.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/pu
-blic/amsfonts/cm/cmr17.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/publi
-c/amsfonts/cm/cmr5.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/am
-sfonts/cm/cmr7.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfon
-ts/cm/cmsy10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts
-/cm/cmsy7.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm
-/cmti10.pfb>
-Output written on CameraModel.pdf (8 pages, 210111 bytes).
+ 27i,11n,23p,948b,419s stack positions out of 5000i,500n,10000p,200000b,50000s
+<C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb>
+<C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C
+:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx7.pfb><C:/P
+rogram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Pro
+gram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Progr
+am Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi5.pfb><C:/Program 
+Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Program Fil
+es (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files 
+(x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files (x8
+6)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Program Files (x86)/
+MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr5.pfb><C:/Program Files (x86)/MiKT
+eX 2.9/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Program Files (x86)/MiKTeX 2
+.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files (x86)/MiKTeX 2.9
+/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Program Files (x86)/MiKTeX 2.9/fo
+nts/type1/public/amsfonts/cm/cmti10.pfb>
+Output written on CameraModel.pdf (11 pages, 3387661 bytes).
 PDF statistics:
- 92 PDF objects out of 1000 (max. 8388607)
+ 112 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 6 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 51 words of extra memory for PDF output out of 10000 (max. 10000000)
 

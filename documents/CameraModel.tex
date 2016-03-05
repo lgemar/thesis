@@ -1,6 +1,7 @@
 \documentclass{article}
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
+\usepackage{url}
 
 % Graphics package
 \usepackage{graphicx}
@@ -74,7 +75,9 @@ The position of the tool relative to the camera, $ \xcT $, is not observed direc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%% Camera Model
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Camera Model}
+\section{Position Estimation}
+
+\subsection{Measurement Model}
 
 The following is a model of a single frame from the camera. In this frame, the red circular object represents the back of the interaction tool. The back of the interaction tool is called the eraser. The width of the target along the $x$ dimension of the image is $d_{u}$. 
 
@@ -98,6 +101,98 @@ The midpoint of the eraser in the ideal undistorted image is $\bf{x^u_E} = \mat{
 \]
 
 These relationships are found through using a simple pin-hole camera model \cite{Tsai1987}.
+
+\subsection{Camera Calibration}
+
+The measurement model requires knowledge of the intrinsic camera parameters, $f_x, f_y, c_x, c_y$, and the radial and tangential distortion factors. There are two steps to translating a point from camera coordinates to image coordinates \cite{Tsai1987}. First, the pin-hole camera model shows how to find the ideal image coordinates of an object, $(\bf{x_u}, \bf{y_u})$ based on the position of the object in camera coordinates, $(x, y, z)$: 
+
+$$ \bf{x_u} = f_x \frac{x}{z} $$
+$$ \bf{y_u} = f_y \frac{y}{z} $$
+
+Second, the radial and tangential distortion relations show how the actual image coordinates, $(\bf{x_u}, \bf{y_u})$, relate to the image coordinates on the actual or distorted image plane, $(\bf{x_d}, \bf{y_d})$. The radial distortion correction equation is as follows: \\
+
+$$ \bf{x_u} = x_d (1 + k_1 r^2 + k_2 r^4 + k_3 r^6) $$
+$$ \bf{y_u} = y_d (1 + k_1 r^2 + k_2 r^4 + k_3 r^6) $$
+
+and the tangential distortion equation is given by, 
+
+$$ \bf{x_u} = x_d + (2 p_1 x y + p_2 (r^2 + 2x^2))$$
+$$ \bf{y_u} = y_d + (p_1 (r^2 + 2y^2) + 2p_2 x y)$$
+
+Thus, the five distortion parameters are summarized in a vector $D$: 
+
+$$D = \mat{ k_1 & k_2 & p_1 p_2 & k_3 }$$
+
+The calibration parameters are discovered by using an open source implementation provided by OpenCV. The camera collects a series of images that contain a checkerboard pattern. The calibration computes the transformation from the image coordinates of the checkerboard to its real world coordinates. The calibration images look like the ones in figure 1 below. 
+
+\begin{figure}[h]
+    \begin{center}$
+        \begin{array}{cc}
+            \includegraphics[width=0.4\textwidth]{image1} &
+            \includegraphics[width=0.4\textwidth]{image2} \\
+            \includegraphics[width=0.4\textwidth]{image3} &
+            \includegraphics[width=0.4\textwidth]{image4} \\
+        \end{array}$
+    \end{center}
+    \caption{Camera calibration images}
+    \label{fig:camera_calibration}
+\end{figure}
+
+\subsection{State Measurements}
+
+The observed state consists of the image coordinates of the object and its width in pixels. From the notation derived above, the observed state is represented by the vector $\bf{y} = \mat{ x_u & y_u & d_u }$, where $(x_u, y_u)$ is the location of the center of the object in the undistorted camera image and $d_u$ is its width in pixels. 
+
+\medskip
+
+In order to test the measurement model along each of these degrees of freedom, three manuevers are required: side-to-side tool motion along the x-dimension of the camera coordinate system, up-and-down tool motion along the y-axis, and back-and-forth motion towards and away from the camera along the z-dimension. The measurement setup with the camera coordinate system is shown in Figure \ref{fig:measurement_setup}. 
+
+\begin{figure}[h]
+    \begin{center}$
+        \begin{array}{cc}
+            \includegraphics[width=0.4\textwidth]{frontview} &
+            \includegraphics[width=0.4\textwidth]{sideview}
+        \end{array}$
+    \end{center}
+    \caption{Camera coordinate system for measurements}
+    \label{fig:measurement_setup}
+\end{figure}
+
+The position of the tool eraser in camera coordinates is calculated from the measurements of $\bf{y} = \mat{ x_u & y_u & d_u }$. The raw position observations are shown in Figures \label{fig:side-to-side-raw}, \label{fig:up-and-down-raw}, and \label{back-to-front-raw}; these are shown side-by-side with the actual tool position in world coordinates.
+
+\begin{figure}[h]
+    \begin{center}$
+        \begin{array}{c}
+            \includegraphics[width=0.8\textwidth]{side-to-side-raw}
+        \end{array}$
+    \end{center}
+    \caption{Side to side maneuver}
+    \label{fig:side-to-side-raw}
+\end{figure}
+
+\begin{figure}[h]
+    \begin{center}$
+        \begin{array}{c}
+            \includegraphics[width=0.8\textwidth]{up-and-down-raw}
+        \end{array}$
+    \end{center}
+    \caption{Up and down maneuver}
+    \label{fig:up-and-down-raw}
+\end{figure}
+
+\begin{figure}[h]
+    \begin{center}$
+        \begin{array}{c}
+            \includegraphics[width=0.8\textwidth]{back-to-front-raw}
+        \end{array}$
+    \end{center}
+    \caption{Back to front maneuver}
+    \label{fig:back-to-front-raw}
+\end{figure}
+
+\subsection{Dynamic Model}
+
+\subsection{Hidden State Estimation}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%% Attitude Estimation
