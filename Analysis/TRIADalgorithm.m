@@ -1,6 +1,6 @@
 current_folder = pwd; 
 data_folder = ([pwd, '\Data']); 
-file_name = 'test10test10.csv'; 
+file_name = 'test1test1.csv'; 
 M = csvread([data_folder, '\', file_name]); 
 M = M(2:end, :); 
 N = size(M, 1); 
