@@ -1,6 +1,6 @@
 current_folder = pwd; 
 data_folder = ([pwd, '\Data']); 
-file_name = 'test2test2.csv'; 
+file_name = 'test10test10.csv'; 
 M = csvread([data_folder, '\', file_name]); 
 M = M(2:end, :); 
 N = size(M, 1); 
@@ -13,8 +13,8 @@ QuatEst = zeros(size(QuatRef));
 
 for i = 1:N
   
-    v1 = [0; 0; 9.81]; 
-    v2 = [18006; -1566; 53490]; 
+    v1 = [0; 0; 9.81];
+    v2 = [0.3; -1; 0]; % v2 = [0.3; -1; 0];
     v1 = v1 / norm(v1); 
     v2 = v2 / norm(v2); 
     
@@ -22,33 +22,37 @@ for i = 1:N
     r2 = cross(v1, v2) / norm(cross(v1, v2)); 
     r3 = cross(r1, r2); 
     
-    T = [0 -1 0; 1 0 0; 0 0 1]; % sensor alignment matrix
-    w1 = AccelData(i, :)'; % w1 = T * w1; 
-    w2 = MagnData(i, :)'; % w2 = T * w2; 
-    w1 = w1 / norm(w1);
-    w2 = w2 / norm(w2);
+    T = [0 1 0; -1 0 0; 0 0 1]; % sensor alignment matrix from body to sensor
     
-    b1 = w1; 
-    b2 = cross(w1, w2) / norm(cross(w1, w2)); 
-    b3 = cross(b1, b2); 
+    m1 = AccelData(i, :)'; % w1 = T * w1; 
+    m2 = MagnData(i, :)'; % w2 = T * w2; 
+    m1 = m1 / norm(m1);
+    m2 = m2 / norm(m2);
+    
+    s1 = m1; 
+    s2 = cross(m1, m2) / norm(cross(m1, m2)); 
+    s3 = cross(s1, s2); 
     
     M_r = cat(2, r1, r2, r3); 
-    M_b = cat(2, b1, b2, b3);
+    M_s = cat(2, s1, s2, s3);
    
-    R = M_b * M_r'; 
+    R = (T' * M_s) * M_r';
     
-    A = T * R;  
-    
-    q = rotm2quat(A'); 
-    QuatEst(i, :) = q; 
+    q = rotm2quat(R'); 
+    QuatEst(i, :) = [q(1), q(2), q(3), q(4)]; 
 end
 
 figure(1)
 subplot(1,2,1)
 plot(rad2deg(quat2eul(QuatEst)))
+legend('Yaw', 'Pitch', 'Roll')
+% plot(QuatEst)
+% legend('w', 'x', 'y', 'z')
 title('Tool Orientation (Estimate)')
-legend('Yaw', 'Pitch', 'Roll')
 subplot(1,2,2)
-plot(rad2deg(quat2eul(QuatRef)))
-title('Tool Orientation (Absolute)')
+plot(rad2deg(quat2eul(cat(2, QuatRef(:,1), QuatRef(:, 2:4)))))
 legend('Yaw', 'Pitch', 'Roll')
+% plot(QuatRef)
+% legend('w', 'x', 'y', 'z')
+title('Tool Orientation (Absolute)')
+

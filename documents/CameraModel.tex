@@ -13,7 +13,7 @@
 
 % Latex commands
     \newcommand{\mat}[2][ccccccccccccccccccccccccccccccccccccccccccccc]{\left[
-        \arraycolsep=1.2pt\def\arraystretch{1.5}
+        \arraycolsep=4pt\def\arraystretch{1.5}
         \begin{array}{#1} #2 \\ 
         \end{array} 
         \right]}
@@ -229,11 +229,13 @@ with
 
 \subsection{Deterministic Attitude Determination}
 
-The TRIAD algorithm finds the attitude matrix $A$ that maps three reference frame vectors $\vec{r}_k$ to their corresponding body frame vectors $\vec{b}_k$ for $k = 1, 2, 3$ \cite{Shuster2004}. Two observations of reference frame vectors provide sufficient information to compute a right-handed orthonormal triad of vectors in the reference frame. If $\vec{v}_1$ and $\vec{v}_2$ are reference frame vectors for the accelerometer and the magnetometer, respecitively, then 
+\subsubsection{TRIAD Attitude Estimation}
 
-$$ \vec{v}_1 = \mat{ 0 & 0 & 1 }^{T} \tab \textrm{and} \tab \vec{v}_2 = \mat{ 18006 & -1566 & 53490 }^{T} $$ 
+The TRIAD estimation method finds the attitude matrix $A$ that maps three reference frame vectors $\vec{r}_k$ to their corresponding body frame vectors $\vec{b}_k$ for $k = 1, 2, 3$ \cite{Shuster2004}. Two observations of reference frame vectors provide sufficient information to compute a right-handed orthonormal triad of vectors in the reference frame. If $\vec{v}_1$ and $\vec{v}_2$ are reference frame vectors for the accelerometer and the magnetometer, respecitively, then 
 
-so that the gravity vector points down and the magnetometer vector points in the direction of North in Boston. The orthonormal vector triad representing the reference frame is given by, 
+$$ \vec{v}_1 = \mat{ 0 \\ 0 \\ 9.81 } \tab \textrm{and} \tab \vec{v}_2 = \mat{ 0.3 & \\ -1 & \\ 0 } $$ 
+
+so that the gravity vector points down and the magnetometer vector points in the direction of magnetic North in Boston, relative to the world reference frame. The orthonormal vector triad representing the reference frame is given by, 
 
 $$ \vec{r}_1 = \frac{\vec{v}_1}{\| \vec{v}_1 \|}, \tab \vec{r}_2 = \frac{\vec{v}_1 \times \vec{v}_2}{\| \vec{v}_1 \times \vec{v}_2 \|}, \tab \vec{r}_3 = \vec{r}_1 \times \vec{r}_2 $$
 
@@ -253,6 +255,82 @@ $$ M_r = \mat{ \vec{r}_1 & \vec{r}_2 & \vec{r}_3 } $$
 Since $M_r$ is an orthogonal matrix, its inverse is equal to its transpose: $M_r^{-1} = M_r^{T}$. Thus, the solution for the attitude matrix is, 
 
 $$ A = M_b M_r^{T} $$
+
+\subsubsection{TRIAD Estimation Measurements}
+
+If $A$ is the rotation matrix from world coordinates to body coordinates, then its inverse, $A^{-1} = A^{T}$, is the rotation matrix from body coordinates to world coordinates.
+
+\medskip
+
+A vector $\vec{r}$ in the reference coordinate system is related to a vector $\vec{s}$ in the sensor coordinate system by the relation, 
+
+$$ \vec{s} = T A \vec{r} $$
+
+where $A$ is the attitude of the interaction tool and $T$ is the rotation matrix that transforms vectors in the body coordinate system to vectors in the sensor coordinate system. $T$ is known as the sensor alignment matrix \cite{Shuster2004}. The sensor alignment matrix depends on how the sensor is mounted to the rigid body. For the interaction tool, the sensor alignment matrix is, 
+
+$$ T = \mat{0 & 1 & 0 \\ -1 & 0 & 0 \\ 0 & 0 & 1} $$
+
+which is a rotation of 90 degrees clockwise around the z-axis of the body coordinate system. This is the rotation required to align the body coordinate system with the sensor coordinate system, given the mounting position of the inertial measurement unit on the device. 
+
+\medskip
+
+In order to find attitude from measurements of the gravity and b-field vector in the sensor coordinate system, the TRIAD estimation method must be modified to account for the mounting position of the inertial measurement unit. If $m_1$ is the measured gravity vector in the sensor coordinate system and $m_2$ is the measured b-field reference vector in sensor coordinates, then $M_s = \mat{ s_1 & s_2 & s_3 }$, with
+
+$$\vec{s}_1 = \frac{\vec{m}_1}{\| \vec{m}_1 \|}, \tab \vec{s}_2 = \frac{\vec{m}_1 \times \vec{m}_2}{\| \vec{m}_1 \times \vec{m}_2 \|}, \tab \vec{s}_3 = \vec{m}_1 \times \vec{m}_2 $$
+
+If there was no noise in the system, then it would be the case that $\vec{s}_k = T A \vec{r}_k$ for $k=1,2,3$. An equivalent way of writing this in matrix form is the following: 
+
+$$ M_b = T^{-1} M_s = A M_r $$ 
+
+Then, 
+
+$$ A = M_b M_r^{-1} = T^{-1} M_s M_r^{-1} $$
+
+This attitude is the composition of the yaw, pitch, and roll of the interaction tool. Yaw is the rotation of the interaction tool around the z-axis, pitch around the y-axis, and roll around the x-axis. 
+
+\medskip
+
+Yaw maneuver: 
+
+\begin{figure}[h]
+    \begin{center}$
+        \begin{array}{c}
+            \includegraphics[width=0.8\textwidth]{test8_yaw_raw}
+        \end{array}$
+    \end{center}
+    \caption{Yaw maneuver}
+    \label{fig:yaw_raw}
+\end{figure}
+
+\medskip
+
+Pitch maneuver:
+
+\begin{figure}[h]
+    \begin{center}$
+        \begin{array}{c}
+            \includegraphics[width=0.8\textwidth]{test10_pitch_raw}
+        \end{array}$
+    \end{center}
+    \caption{Pitch maneuver}
+    \label{fig:pitch_raw}
+\end{figure}
+
+
+\medskip
+
+Roll maneuver: 
+
+\begin{figure}[h]
+    \begin{center}$
+        \begin{array}{c}
+            \includegraphics[width=0.8\textwidth]{test9_roll_raw}
+        \end{array}$
+    \end{center}
+    \caption{Roll maneuver}
+    \label{fig:roll_raw}
+\end{figure}
+
 
 \subsection{Dynamic Model for Rotations}
 
