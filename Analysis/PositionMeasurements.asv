@@ -1,0 +1,22 @@
+current_folder = pwd; 
+data_folder = ([pwd, '\Data']); 
+file_name = 'test10test10.csv'; 
+params1 = [277.17 276.8257 325.7718 253.6234]; % fx fy cx cy, tests 1-5, 7
+dC = 25; % (mm), object size ... not sure if this is right
+
+M = csvread([data_folder, '\', file_name]); 
+M = M(2:end, :); 
+xU = M(:, 2:4); 
+
+params = params1; 
+
+fx = params(1); 
+fy = params(2); 
+cx = params(3); cy = params(4); % don't need these, cx, cy already subtracted
+
+zC = dC ./ (xu(3)' * 
+
+
+y = 
+
+Ralign = [0 0 -1; -1 0 0; 0 -1 0]; 

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9) (preloaded format=pdflatex 2016.2.23)  6 MAR 2016 16:25
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9) (preloaded format=pdflatex 2016.2.23)  9 MAR 2016 13:34
 entering extended mode
 **./CameraModel.tex
 (CameraModel.tex
@@ -460,28 +460,34 @@ and-down-raw.jpg> <./images/back-to-front-raw.jpg>] [7] [8]
 File: images/test8_yaw_raw.jpg Graphic file (type jpg)
 
 <use images/test8_yaw_raw.jpg>
-Package pdftex.def Info: images/test8_yaw_raw.jpg used on input line 298.
-(pdftex.def)             Requested size: 276.00105pt x 130.9475pt.
-
-<images/test10_pitch_raw.jpg, id=56, 1927.2pt x 914.41624pt>
-File: images/test10_pitch_raw.jpg Graphic file (type jpg)
-
-<use images/test10_pitch_raw.jpg>
-Package pdftex.def Info: images/test10_pitch_raw.jpg used on input line 312.
-(pdftex.def)             Requested size: 276.00105pt x 130.9475pt.
-
-<images/test9_roll_raw.jpg, id=57, 1927.2pt x 914.41624pt>
-File: images/test9_roll_raw.jpg Graphic file (type jpg)
-
-<use images/test9_roll_raw.jpg>
-Package pdftex.def Info: images/test9_roll_raw.jpg used on input line 327.
+Package pdftex.def Info: images/test8_yaw_raw.jpg used on input line 321.
 (pdftex.def)             Requested size: 276.00105pt x 130.9475pt.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-[9 <./images/test8_yaw_raw.jpg> <./images/test10_pitch_raw.jpg>] [10 <./images/
-test9_roll_raw.jpg>] [11] [12] (CameraModel.bbl) [13] (CameraModel.aux)
+<images/test10_pitch_raw.jpg, id=56, 1927.2pt x 914.41624pt>
+File: images/test10_pitch_raw.jpg Graphic file (type jpg)
+
+<use images/test10_pitch_raw.jpg>
+Package pdftex.def Info: images/test10_pitch_raw.jpg used on input line 335.
+(pdftex.def)             Requested size: 276.00105pt x 130.9475pt.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+<images/test9_roll_raw.jpg, id=57, 1927.2pt x 914.41624pt>
+File: images/test9_roll_raw.jpg Graphic file (type jpg)
+
+<use images/test9_roll_raw.jpg>
+Package pdftex.def Info: images/test9_roll_raw.jpg used on input line 350.
+(pdftex.def)             Requested size: 276.00105pt x 130.9475pt.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[9] [10 <./images/test8_yaw_raw.jpg> <./images/test10_pitch_raw.jpg>] [11 <./im
+ages/test9_roll_raw.jpg>] [12] (CameraModel.bbl [13]) [14] (CameraModel.aux)
 
 LaTeX Warning: There were multiply-defined labels.
 
@@ -489,7 +495,7 @@ LaTeX Warning: There were multiply-defined labels.
 Here is how much of TeX's memory you used:
  2031 strings out of 493634
  26487 string characters out of 3132789
- 90529 words of memory out of 3000000
+ 90531 words of memory out of 3000000
  5398 multiletter control sequences out of 15000+200000
  8860 words of font info for 31 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
@@ -509,9 +515,9 @@ eX 2.9/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Program Files (x86)/MiKTeX 2
 .9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files (x86)/MiKTeX 2.9
 /fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Program Files (x86)/MiKTeX 2.9/fo
 nts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on CameraModel.pdf (13 pages, 3703046 bytes).
+Output written on CameraModel.pdf (14 pages, 3705211 bytes).
 PDF statistics:
- 122 PDF objects out of 1000 (max. 8388607)
+ 125 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  66 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -189,9 +189,32 @@ The position of the tool eraser in camera coordinates is calculated from the mea
     \label{fig:back-to-front-raw}
 \end{figure}
 
-\subsection{Dynamic Model}
+\subsection{Dynamic Model: White-noise acceleration model}
 
-\subsection{Hidden State Estimation}
+Assume that the acceleration of the interaction tool is small, as is likely to be the case if the interaction tool is moved slowly. If the acceleration is small, then it can be modeled as error in the plant of the dynamic model for an inertial object moving at constant velocity. The dynamic model for an object at constant velocity has state, $\vec{x} = \mat{ x & \dot{x} & y & \dot{y} & z & \dot{z} }^{T}$. 
+
+$$ \dot{\vec{x}}(t) = \textrm{blkdiag}(A, A, A) \vec{x}(t) + \textrm{blkdiag}(B, B, B) \vec{w}(t) $$
+
+where 
+
+$$ A = \mat{0 & 1 \\ 0 & 0} \tab \textrm{and} \tab B = \mat{ 0 \\ 1 } $$ 
+
+In discrete time, the dynamic model becomes, 
+
+$$ \vec{x}_{k+1} = \textrm{diag}(F, F, F) \vec{x}_k + \textrm{diag}(G, G, G) \vec{w}_k $$
+
+with 
+
+$$ F = \mat{ 1 & T \\ 0 & 1 } \tab \textrm{and} \tab G = \mat{ \frac{T^2 }{2} \\ T } $$
+
+$T$ is the time between samples. For the interaction tool, only the position of the tool is measured. Therefore, the observation model is the following: 
+
+$$ \vec{z}_{k+1} = \textrm{diag}(H, H, H) \vec{x}_{k+1} $$
+
+with $ H = \mat{ 1 & 0 } $. Using the Kalman filter equations, the hidden state $\vec{x}$ can be measured. 
+
+
+\subsection{Dynamic Model: Wiener-sequence acceleration model}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
