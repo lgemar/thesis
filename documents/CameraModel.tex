@@ -452,6 +452,8 @@ with the input matrix $B(\overline{q})$:
 
 \[ B(\overline{q}) = \frac{1}{2} \Xi(\overline{q}) = \mat{q_4 \bf{I}_{3x3} + [\vec{q}\times] \\ -\vec{q}^T } \]
 
+Integrate the dynamic model over the time interval $[t_k, t_{k+1}]$. 
+
 Treating the attitude quaternion $\overline{q}$ as roughly constant over a small time interval, the process model can be discretized: 
 
 \[ \overline{q}_{k+1} = B_k(\overline{q}_k) \vec{\omega_k} \]

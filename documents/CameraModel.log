@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9) (preloaded format=pdflatex 2016.2.23)  9 MAR 2016 13:34
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9) (preloaded format=pdflatex 2016.2.23)  12 MAR 2016 11:25
 entering extended mode
 **./CameraModel.tex
 (CameraModel.tex
@@ -487,7 +487,7 @@ Package pdftex.def Info: images/test9_roll_raw.jpg used on input line 350.
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 [9] [10 <./images/test8_yaw_raw.jpg> <./images/test10_pitch_raw.jpg>] [11 <./im
-ages/test9_roll_raw.jpg>] [12] (CameraModel.bbl [13]) [14] (CameraModel.aux)
+ages/test9_roll_raw.jpg>] [12] [13] (CameraModel.bbl) [14] (CameraModel.aux)
 
 LaTeX Warning: There were multiply-defined labels.
 
@@ -515,7 +515,7 @@ eX 2.9/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Program Files (x86)/MiKTeX 2
 .9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files (x86)/MiKTeX 2.9
 /fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Program Files (x86)/MiKTeX 2.9/fo
 nts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on CameraModel.pdf (14 pages, 3705211 bytes).
+Output written on CameraModel.pdf (14 pages, 3705836 bytes).
 PDF statistics:
  125 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
