@@ -31,10 +31,10 @@ Ralign = R3 * R2 * R1;
 Talign = [38.2; -18.3; 490.5]; 
 pW = Ralign * pC + repmat(Talign, 1, size(pC, 2)); % position of the object in world coordinates
 
-figure(1)
+f = figure(1)
 subplot(1,3,1)
 plot(t, pW')
-title('State Observations: $\hat{\vec{x}}$', 'Interpreter', 'Latex')
+title('State Estimates: $\hat{\vec{x}}$', 'Interpreter', 'Latex')
 xlabel('Time stamp (s)')
 ylabel('Position (mm)')
 legend('x_{w}', 'y_{w}', 'z_{w}')
@@ -46,8 +46,24 @@ ylabel('Position (mm)')
 legend('x_{w}', 'y_{w}', 'z_{w}')
 subplot(1,3,3)
 plot(t, pW' - 1000*M(:, 18:20))
-str = 'Error: $\hat{\vec{x}} - \vec{x}$'; 
+str = 'Error: $\epsilon = \hat{\vec{x}} - \vec{x}$'; 
 title(str, 'Interpreter', 'Latex')
 xlabel('Time stamp (s)')
 ylabel('Position error (mm)')
-legend('x_{w}', 'y_{w}', 'z_{w}')
+legend('\epsilon_x', '\epsilon_y', '\epsilon_z')
+
+% % create the data
+% d = [1 2 3; 4 5 6; 7 8 9];
+% 
+% % Create the column and row names in cell arrays 
+% cnames = {'E[\epsilon_i]','E[\','Z-Data'};
+% rnames = {'First','Second','Third'};
+% 
+% % Create the uitable
+% t = uitable(f,'Data',d,...
+%             'ColumnName',cnames,... 
+%             'RowName',rnames);
+% 
+% % Set width and height
+% t.Position(3) = t.Extent(3);
+% t.Position(4) = t.Extent(4);
