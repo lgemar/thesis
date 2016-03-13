@@ -34,7 +34,7 @@ pW = Ralign * pC + repmat(Talign, 1, size(pC, 2)); % position of the object in w
 figure(1)
 subplot(1,3,1)
 plot(t, pW')
-title('State observations: $\hat{\vec{x}}$', 'Interpreter', 'Latex')
+title('State Observations: $\hat{\vec{x}}$', 'Interpreter', 'Latex')
 xlabel('Time stamp (s)')
 ylabel('Position (mm)')
 legend('x_{w}', 'y_{w}', 'z_{w}')
