@@ -1,6 +1,6 @@
 current_folder = pwd; 
 data_folder = ([pwd, '\Data']); 
-file_name = 'test1test1.csv'; 
+file_name = 'test9test9.csv'; 
 M = csvread([data_folder, '\', file_name]); 
 M = M(2:end, :); 
 N = size(M, 1); 
@@ -44,15 +44,15 @@ end
 
 figure(1)
 subplot(1,2,1)
-plot(rad2deg(quat2eul(QuatEst)))
-legend('Yaw', 'Pitch', 'Roll')
-% plot(QuatEst)
-% legend('w', 'x', 'y', 'z')
+% plot(rad2deg(quat2eul(QuatEst)))
+% legend('Yaw', 'Pitch', 'Roll')
+plot(QuatEst)
+legend('w', 'x', 'y', 'z')
 title('Tool Orientation (Estimate)')
 subplot(1,2,2)
-plot(rad2deg(quat2eul(cat(2, QuatRef(:,1), QuatRef(:, 2:4)))))
-legend('Yaw', 'Pitch', 'Roll')
-% plot(QuatRef)
-% legend('w', 'x', 'y', 'z')
+% plot(rad2deg(quat2eul(cat(2, QuatRef(:,1), QuatRef(:, 2:4)))))
+% legend('Yaw', 'Pitch', 'Roll')
+plot(QuatRef)
+legend('w', 'x', 'y', 'z')
 title('Tool Orientation (Absolute)')
 
