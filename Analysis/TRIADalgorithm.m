@@ -42,17 +42,29 @@ for i = 1:N
     QuatEst(i, :) = [q(1), q(2), q(3), q(4)]; 
 end
 
-figure(1)
-subplot(1,2,1)
-% plot(rad2deg(quat2eul(QuatEst)))
-% legend('Yaw', 'Pitch', 'Roll')
-plot(QuatEst)
-legend('w', 'x', 'y', 'z')
-title('Tool Orientation (Estimate)')
-subplot(1,2,2)
-% plot(rad2deg(quat2eul(cat(2, QuatRef(:,1), QuatRef(:, 2:4)))))
-% legend('Yaw', 'Pitch', 'Roll')
-plot(QuatRef)
-legend('w', 'x', 'y', 'z')
-title('Tool Orientation (Absolute)')
+f = figure(1);
+
+subplot(1,3,1)
+DegEst = rad2deg( quat2eul( QuatEst ) );
+plot( DegEst )
+legend('\theta_Z', '\theta_Y', '\theta_X')
+% plot( QuatEst )
+% legend('w', 'x', 'y', 'z')
+title('Orientation Estimate: $\hat{\vec{\theta}}$', 'Interpreter', 'Latex')
+
+subplot(1,3,2)
+DegRef = rad2deg( quat2eul( cat(2, QuatRef(:,1), QuatRef(:, 2:4) ) ) );
+plot( DegRef )
+legend('\theta_Z', '\theta_Y', '\theta_X')
+% plot(QuatRef)
+% legend('w', 'x', 'y', 'z')
+title('Orientation Reference: $\vec{\theta}$', 'Interpreter', 'Latex')
+
+subplot(1,3,3)
+plot(t, DegEst - DegRef )
+str = 'Error: $\epsilon = \hat{\vec{\theta}} - \vec{\theta}$'; 
+title(str, 'Interpreter', 'Latex')
+xlabel('Time stamp (s)')
+ylabel('Error (degrees)', 'Interpreter', 'Latex')
+legend('\epsilon_{\theta_Z}', '\epsilon_{\theta_Y}', '\epsilon_{\theta_X}')
 

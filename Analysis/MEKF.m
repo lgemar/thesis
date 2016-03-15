@@ -1,35 +1,35 @@
 current_folder = pwd; 
 data_folder = ([pwd, '\Data']); 
-file_name = 'test1test1.csv'; 
+file_name = 'test2test2.csv'; 
 M = csvread([data_folder, '\', file_name]); 
 M = M(2:end, :); 
 N = size(M, 1); % Number of samples
 
 % Data vectors
-QuatRef = M(:, 21:24)'; % (w, x, y, z)
 AccelData = M(:, 9:11)'; 
-GyroData = M(:, 12:14)'; 
+GyroData = M(:, 12:14)';
 MagnData = M(:, 15:17)'; 
 
-% Output allocation
+% Reference attitudes: (w, x, y, z) in row format
+QuatRef = M(:, 21:24);
+
+%% Output allocation
 QuatEst = zeros(size(QuatRef)); 
 
 % Time vector
 t = M(:, 1); t = t - min(t); 
 
-% Reference vectors in world coordinates
-gw = [0; 0; 9.81]; % gravity vector
-bw = [0.3; -1; 0]; % magnetic field vector (unsure)
+% Sensor alignment matrix
 T = [0 1 0; -1 0 0; 0 0 1]; % sensor alignment matrix from body to sensor
 
 % Initalize Kalman Filter Variables
 dT = t(2) - t(1); 
-Sr = 10; Sq = 1; % trust measurements, trust model
+Sr = 1000; Sq = 1; % trust measurements, trust model
 Q = Sq * dT * eye(3,3); 
 R = Sr * dT * eye(6,6); 
 
-% Intialization of covariance (arbitrary)
-P = dT * eye(3,3); 
+% Intialization of covariance estimate (arbitrary?): Pe
+Pe = 0.001 * dT * eye(3,3); 
 
 % Compute initial state vector using TRIAD algorithm
 v1 = gw; v2 = bw; 
@@ -48,56 +48,117 @@ s3 = cross(s1, s2);
 M_r = cat(2, r1, r2, r3); 
 M_s = cat(2, s1, s2, s3);
 A = (T' * M_s) * M_r';
-q = rotm2quat(A); 
+q = rotm2quat(A'); 
 
-% Intialize state
-QuatEst(:, 1) = [q(2), q(3), q(4), q(1)]; 
+% Initial State Estimate (Qe)
+Qe = [q(2); q(3); q(4); q(1)]; 
+QuatEst(1, :) = [Qe(4), Qe(1), Qe(2), Qe(3)]; 
+
+% Check the observation model accuracy
+pS1 = AccelData(:,1); 
+pS2 = MagnData(:,1); 
+Z = [ pS1; pS2 ]; 
+Ze = [ T * AMat( Qe ) * gw ; T * AMat( Qe ) * bw]; 
+
+% State matrices
+Rsd = []; 
+QpRsd = []; 
+QeRsd = []; 
+ThetaIn = []; 
 
 for k = 2:N
     % Time step update
     dT = t(k) - t(k-1); 
     
-    % Covariance and state prediction
-    P_minus = P + 0.25 * Q; 
-    qX = [0 -QuatEst(3,k-1) QuatEst(2,k-1); QuatEst(3,k-1) 0 -QuatEst(1,k-1); -QuatEst(2,k-1) QuatEst(1,k-1) 0]; 
-    q_minus = QuatEst(:, k-1) + [ (QuatEst(4,k-1) * eye(3,3) + qX); -QuatEst(1:3,k-1)' ] * (0.5 * GyroData(:,k) * dT); 
-    q_minus = q_minus / norm(q_minus); 
+    if( dT > 0 )
 
-    % Sensitivity matrix
-    pB_g = quat2rotm([q_minus(4) q_minus(1:3)']) * (gw/norm(gw)); 
-    pB_b = quat2rotm([q_minus(4) q_minus(1:3)']) * (bw/norm(bw));
-    vX1 = [0 -pB_g(3) pB_g(2); pB_g(3) 0 -pB_g(1); -pB_g(2) pB_g(1) 0]; 
-    vX2 = [0 -pB_b(3) pB_b(2); pB_b(3) 0 -pB_b(1); -pB_b(2) pB_b(1) 0]; 
-    H = [-2*T*vX1; -2*T*vX2]; 
-    
-    % Kalman gain
-    K = P_minus * H' / (H * P_minus * H' + R); 
-    
-    % Prediction error and gain
-    a = AccelData(:,k) / norm(AccelData(:,k)); 
-    b = MagnData(:,k) / norm(MagnData(:,k)); 
-    z = [a; b]; 
-    z_est = [ T*quat2rotm([q_minus(4) q_minus(1:3)'])*(gw/norm(gw)) ; T*quat2rotm([q_minus(4) q_minus(1:3)'])*(bw/norm(bw))]; 
-    dq_vec = K * (z - z_est); 
-    dq = [dq_vec; 1]; 
-    
-    % State update and prediction update
-    QuatEst(:,k) = q_minus + [q_minus(4) -q_minus(3) q_minus(2); q_minus(3) q_minus(4) -q_minus(1); -q_minus(2) q_minus(1) q_minus(4); -q_minus(1) -q_minus(2) -q_minus(3)] * dq_vec;
-    P = (eye(3,3) - K * H) * P_minus;
+        % Covariance prediction (Pp)
+        Pp = Pe + 0.25 * Q 
+
+        % State prediction (Qp)
+        DeltaTheta = GyroData(:,k-1) * dT; 
+        Alpha = cos( norm(DeltaTheta)/2 ); Beta = sin( norm(DeltaTheta)/2 ) / norm( DeltaTheta ); 
+        Qp = Alpha * Qe + Beta * XiMat( Qe ) * DeltaTheta; 
+        Qp = Qp / norm( Qp ); 
+        
+        % Save state from the prediction step
+        ThetaIn = [ThetaIn DeltaTheta]; 
+        QpRsd = [QpRsd Beta*XiMat( Qe )*DeltaTheta];
+
+        % Sensitivity matrix
+        v1 = gw; v2 = bw; v1 = v1 / norm(v1); v2 = v2 / norm(v2); 
+        pB1 = AMat( Qp ) * v1; pB2 = AMat( Qp ) * v2;
+        H = [2*T*CrossMat(pB1); 2*T*CrossMat(pB2)]; 
+
+        % Kalman gain
+        K = Pp * H' / (H * Pp * H' + R)
+
+        % Observation, Prediction error
+        pS1 = AccelData(:,k) / norm(AccelData(:,k)); 
+        pS2 = MagnData(:,k) / norm(MagnData(:,k)); 
+        Z = [ pS1; pS2 ]; 
+        Ze = [ T * AMat( Qp ) * v1 ; T * AMat( Qp ) * v2]; 
+        Nu = (Z-Ze); 
+        dq = [K * Nu; 1]; 
+
+        % State update and prediction update
+        Qe = Qp + XiMat( Qp ) * dq(1:3); Qe = Qe / norm(Qe); 
+        Pe = (eye(3,3) - K * H) * Pp;
+        
+        % Save state from the update step
+        Rsd = [Rsd Nu]; % residuals
+        QeRsd = [QeRsd Beta*XiMat( Qp )*dq(1:3)];
+        QuatEst(k, :) = [Qe(4), Qe(1), Qe(2), Qe(3)]; 
+    end
 end
 
-figure(1)
-subplot(1,2,1)
-plot(rad2deg(quat2eul([QuatEst(4,:)' -QuatEst(1:3,:)'])))
-legend('Yaw', 'Pitch', 'Roll')
-% plot(QuatEst)
+f = figure(1);
+
+subplot(1,3,1)
+DegEst = rad2deg( quat2eul( cat(2, QuatEst(:,1), QuatEst(:, 2:4) ) ) );
+plot( DegEst )
+ylim([-180 180])
+legend('\theta_Z', '\theta_Y', '\theta_X')
+% plot( QuatEst )
 % legend('w', 'x', 'y', 'z')
-title('Tool Orientation (Estimate)')
-subplot(1,2,2)
-plot(rad2deg(quat2eul(cat(2, QuatRef(1,:)', QuatRef(2:4, :)'))))
-legend('Yaw', 'Pitch', 'Roll')
+title('Orientation Estimate: $\hat{\vec{\theta}}$', 'Interpreter', 'Latex')
+
+subplot(1,3,2)
+DegRef = rad2deg( quat2eul( cat(2, QuatRef(:,1), QuatRef(:, 2:4) ) ) );
+plot( DegRef )
+ylim([-180 180])
+legend('\theta_Z', '\theta_Y', '\theta_X')
 % plot(QuatRef)
 % legend('w', 'x', 'y', 'z')
-title('Tool Orientation (Absolute)')
+title('Orientation Reference: $\vec{\theta}$', 'Interpreter', 'Latex')
+
+subplot(1,3,3)
+plot(t, DegEst - DegRef )
+str = 'Error: $\epsilon = \hat{\vec{\theta}} - \vec{\theta}$'; 
+title(str, 'Interpreter', 'Latex')
+xlabel('Time stamp (s)')
+ylabel('Error (degrees)', 'Interpreter', 'Latex')
+legend('\epsilon_{\theta_Z}', '\epsilon_{\theta_Y}', '\epsilon_{\theta_X}')
+
+f = figure(2);
+subplot(2,3,1)
+plot( rad2deg( ThetaIn )' )
+title( 'Gyro Input ' )
+legend('x','y','z')
+subplot(2,3,2)
+plot( quat2eul(QpRsd') )
+title( 'Prediction Residual (degrees)' )
+legend('x','y','z')
+subplot(2,3,3)
+plot( Rsd(1:3,:)' )
+title( 'Prediction Error (Accelerometer)' )
+legend('x','y','z')
+subplot(2,3,4)
+plot( Rsd(4:6,:)' )
+title( 'Prediction Error (Magnetometer)' )
+legend('x','y','z')
+subplot(2,3,5)
+plot( quat2eul(QeRsd') )
+title( 'Filtering Residual (degrees)' )
 
 
