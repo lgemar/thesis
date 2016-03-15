@@ -1,6 +1,6 @@
 current_folder = pwd; 
 data_folder = ([pwd, '\Data']); 
-file_name = 'test2test2.csv'; 
+file_name = 'test1test1.csv'; 
 M = csvread([data_folder, '\', file_name]); 
 M = M(2:end, :); 
 N = size(M, 1); % Number of samples
@@ -13,7 +13,15 @@ MagnData = M(:, 15:17)';
 % Reference attitudes: (w, x, y, z) in row format
 QuatRef = M(:, 21:24);
 
-%% Output allocation
+% Output allocation
+
+NTrials = 50; 
+ad = linspace(0,2*pi,NTrials); 
+    
+gw = [0; 0; 9.81];
+bw = [cos(1.7)*19.5; sin(1.7)*(-5.2); -48.2]; 
+%bw = [cos(ad(i))*19.5; sin(ad(i))*-5.2; -48.2]; 
+
 QuatEst = zeros(size(QuatRef)); 
 
 % Time vector
@@ -24,12 +32,12 @@ T = [0 1 0; -1 0 0; 0 0 1]; % sensor alignment matrix from body to sensor
 
 % Initalize Kalman Filter Variables
 dT = t(2) - t(1); 
-Sr = 1000; Sq = 1; % trust measurements, trust model
+Sr = 1; Sq = 1.5; % trust measurements, trust model
 Q = Sq * dT * eye(3,3); 
 R = Sr * dT * eye(6,6); 
 
 % Intialization of covariance estimate (arbitrary?): Pe
-Pe = 0.001 * dT * eye(3,3); 
+Pe = dT * eye(3,3); 
 
 % Compute initial state vector using TRIAD algorithm
 v1 = gw; v2 = bw; 
@@ -73,12 +81,12 @@ for k = 2:N
     if( dT > 0 )
 
         % Covariance prediction (Pp)
-        Pp = Pe + 0.25 * Q 
+        Pp = Pe + 0.25 * Q ;
 
         % State prediction (Qp)
-        DeltaTheta = GyroData(:,k-1) * dT; 
+        DeltaTheta = GyroData(:,k) * dT; 
         Alpha = cos( norm(DeltaTheta)/2 ); Beta = sin( norm(DeltaTheta)/2 ) / norm( DeltaTheta ); 
-        Qp = Alpha * Qe + Beta * XiMat( Qe ) * DeltaTheta; 
+        Qp = Alpha * Qe + Beta * XiMat( Qe ) * ([DeltaTheta(1:2); -DeltaTheta(3)]); 
         Qp = Qp / norm( Qp ); 
         
         % Save state from the prediction step
@@ -91,14 +99,14 @@ for k = 2:N
         H = [2*T*CrossMat(pB1); 2*T*CrossMat(pB2)]; 
 
         % Kalman gain
-        K = Pp * H' / (H * Pp * H' + R)
+        K = Pp * H' / (H * Pp * H' + R);
 
         % Observation, Prediction error
         pS1 = AccelData(:,k) / norm(AccelData(:,k)); 
         pS2 = MagnData(:,k) / norm(MagnData(:,k)); 
         Z = [ pS1; pS2 ]; 
         Ze = [ T * AMat( Qp ) * v1 ; T * AMat( Qp ) * v2]; 
-        Nu = (Z-Ze); 
+        Nu = (Z - Ze); 
         dq = [K * Nu; 1]; 
 
         % State update and prediction update
@@ -142,11 +150,11 @@ legend('\epsilon_{\theta_Z}', '\epsilon_{\theta_Y}', '\epsilon_{\theta_X}')
 
 f = figure(2);
 subplot(2,3,1)
-plot( rad2deg( ThetaIn )' )
+plot( rad2deg( ThetaIn' ) )
 title( 'Gyro Input ' )
 legend('x','y','z')
 subplot(2,3,2)
-plot( quat2eul(QpRsd') )
+plot( rad2deg( quat2eul(QpRsd') ) )
 title( 'Prediction Residual (degrees)' )
 legend('x','y','z')
 subplot(2,3,3)
@@ -158,7 +166,7 @@ plot( Rsd(4:6,:)' )
 title( 'Prediction Error (Magnetometer)' )
 legend('x','y','z')
 subplot(2,3,5)
-plot( quat2eul(QeRsd') )
+plot( rad2deg( quat2eul(QeRsd') ) )
 title( 'Filtering Residual (degrees)' )
 
 
