@@ -1,13 +1,24 @@
+%% Read the data into a matrix
 current_folder = pwd; 
 data_folder = ([pwd, '\Data']); 
-file_name = 'test9test9.csv'; 
+file_name = 'pitch1.csv'; 
 M = csvread([data_folder, '\', file_name]); 
 M = M(2:end, :); 
 N = size(M, 1); 
 
+%% True of tests 1-15 collected on 3/5 (about) 
 QuatRef = M(:, 21:24); % (w, x, y, z)
 AccelData = M(:, 9:11); 
 MagnData = M(:, 15:17); 
+T = [0 1 0; -1 0 0; 0 0 1]; % sensor alignment matrix from body to sensor
+
+%% True of yaw,pitch,roll tests collected on 3/15
+QuatRef = M(:, 2:5); % (w, x, y, z)
+AccelData = M(:, 6:8); 
+MagnData = M(:, 12:14); 
+T = [1 0 0; 0 1 0; 0 0 1]; % sensor alignment matrix from body to sensor
+
+%% T
 
 QuatEst = zeros(size(QuatRef)); 
 
@@ -21,8 +32,6 @@ for i = 1:N
     r1 = v1; 
     r2 = cross(v1, v2) / norm(cross(v1, v2)); 
     r3 = cross(r1, r2); 
-    
-    T = [0 1 0; -1 0 0; 0 0 1]; % sensor alignment matrix from body to sensor
     
     m1 = AccelData(i, :)'; % w1 = T * w1; 
     m2 = MagnData(i, :)'; % w2 = T * w2; 
@@ -61,10 +70,10 @@ legend('\theta_Z', '\theta_Y', '\theta_X')
 title('Orientation Reference: $\vec{\theta}$', 'Interpreter', 'Latex')
 
 subplot(1,3,3)
-plot(t, DegEst - DegRef )
+plot( DegEst - DegRef )
 str = 'Error: $\epsilon = \hat{\vec{\theta}} - \vec{\theta}$'; 
 title(str, 'Interpreter', 'Latex')
-xlabel('Time stamp (s)')
+xlabel('Sample number')
 ylabel('Error (degrees)', 'Interpreter', 'Latex')
 legend('\epsilon_{\theta_Z}', '\epsilon_{\theta_Y}', '\epsilon_{\theta_X}')
 

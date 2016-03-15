@@ -18,9 +18,11 @@
 */
 
 /* Set the delay between fresh samples */
-#define BNO055_SAMPLERATE_DELAY_MS (100)
+#define BNO055_SAMPLERATE_DELAY_MS (10)
 
 Adafruit_BNO055 bno = Adafruit_BNO055();
+
+long previousMillis = 0;   
 
 /**************************************************************************/
 /*
@@ -88,6 +90,13 @@ void loop(void)
   Serial.print(quat.z(), 4);
   Serial.print("\t\t");
   */
+
+  // check to see if it's time to blink the LED; that is, if the 
+  // difference between the current time and last time you blinked 
+  // the LED is bigger than the interval at which you want to 
+  // blink the LED.
+  unsigned long currentMillis = millis();
+  Serial.print(currentMillis); Serial.print(","); 
   Serial.print(quat.w()); Serial.print(","); 
   Serial.print(quat.x()); Serial.print(","); 
   Serial.print(quat.y()); Serial.print(","); 
@@ -108,3 +117,4 @@ void loop(void)
 
   delay(BNO055_SAMPLERATE_DELAY_MS);
 }
+
