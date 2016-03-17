@@ -1,19 +1,22 @@
 %% Read in data samples into a matrix
 current_folder = pwd; 
 data_folder = ([pwd, '\Data']); 
-file_name = 'pitch1.csv'; 
+file_name = 'yaw1.csv'; 
 M = csvread([data_folder, '\', file_name]); 
 M = M(2:end, :); 
 N = size(M, 1); % Number of samples
 
-%% True of tests collected on about 3/5
-AccelData = M(:, 9:11)'; 
-GyroData = M(:, 12:14)';
-MagnData = M(:, 15:17)'; 
-QuatRef = M(:, 21:24); % (w, x, y, z)
-T = [0 1 0; -1 0 0; 0 0 1]; % sensor alignment matrix from body to sensor
-% Time vector
-t = M(:, 1); t = t - min(t); 
+% %% True of tests collected on about 3/5
+% AccelData = M(:, 9:11)'; 
+% GyroData = M(:, 12:14)';
+% MagnData = M(:, 15:17)'; 
+% QuatRef = M(:, 21:24); % (w, x, y, z)
+% T = [0 1 0; -1 0 0; 0 0 1]; % sensor alignment matrix from body to sensor
+% % Time vector
+% t = M(:, 1); t = t - min(t); 
+% gw = [0; 0; 9.81];
+% bw = [cos(1.7)*19.5; sin(1.7)*(-5.2); -48.2]; 
+
 
 %% True of yaw,pitch,roll tests collected on 3/15
 QuatRef = M(:, 2:5); % (w, x, y, z)
@@ -23,6 +26,8 @@ MagnData = M(:, 12:14)';
 T = [1 0 0; 0 1 0; 0 0 1]; % sensor alignment matrix from body to sensor
 % Time vector
 t = M(:, 1) / 1000; t = t - min(t); 
+gw = [0; 0; 9.81];
+bw = MagnData(:,1) / norm(MagnData(:,1)); 
 
 %%
 
@@ -31,20 +36,18 @@ t = M(:, 1) / 1000; t = t - min(t);
 NTrials = 50; 
 ad = linspace(0,2*pi,NTrials); 
     
-gw = [0; 0; 9.81];
-bw = [cos(1.7)*19.5; sin(1.7)*(-5.2); -48.2]; 
-%bw = [cos(ad(i))*19.5; sin(ad(i))*-5.2; -48.2]; 
+
 
 QuatEst = zeros(size(QuatRef)); 
 
 % Initalize Kalman Filter Variables
 dT = t(2) - t(1); 
 Sr = 100; Sq = 1; % trust measurements, trust model
-Q = Sq * dT * eye(3,3); 
-R = Sr * dT * eye(6,6); 
+Q = Sq * eye(3,3); 
+R = Sr * eye(6,6); 
 
 % Intialization of covariance estimate (arbitrary?): Pe
-Pe = dT * eye(3,3); 
+Pe = 1 * eye(3,3); 
 
 % Compute initial state vector using TRIAD algorithm
 v1 = gw; v2 = bw; 
@@ -81,19 +84,23 @@ QpRsd = [];
 QeRsd = []; 
 ThetaIn = []; 
 
+tprev = t(1); 
+
 for k = 2:N
     % Time step update
-    dT = t(k) - t(k-1); 
+    dT = t(k) - tprev; 
+    DeltaTheta = GyroData(:,k) * dT; 
     
-    if( dT > 0 )
+    if( dT > 0 && norm( DeltaTheta ) > 0)
+        
+        tprev = t(k); 
 
         % Covariance prediction (Pp)
         Pp = Pe + 0.25 * Q ;
 
         % State prediction (Qp)
-        DeltaTheta = GyroData(:,k) * dT; 
         Alpha = cos( norm(DeltaTheta)/2 ); Beta = sin( norm(DeltaTheta)/2 ) / norm( DeltaTheta ); 
-        Qp = Alpha * Qe + Beta * XiMat( Qe ) * ([DeltaTheta(1:2); -DeltaTheta(3)]); 
+        Qp = Alpha * Qe + Beta * XiMat( Qe ) * ([DeltaTheta(1:2); DeltaTheta(3)]); 
         Qp = Qp / norm( Qp ); 
         
         % Save state from the prediction step
@@ -161,7 +168,7 @@ plot( rad2deg( ThetaIn' ) )
 title( 'Gyro Input ' )
 legend('x','y','z')
 subplot(2,3,2)
-plot( rad2deg( quat2eul(QpRsd') ) )
+plot( rad2deg( quat2eul([QpRsd(4,:)' QpRsd(1:3,:)']) ) )
 title( 'Prediction Residual (degrees)' )
 legend('x','y','z')
 subplot(2,3,3)

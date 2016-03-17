@@ -18,7 +18,7 @@
 */
 
 /* Set the delay between fresh samples */
-#define BNO055_SAMPLERATE_DELAY_MS (10)
+#define BNO055_SAMPLERATE_DELAY_MS (5)
 
 Adafruit_BNO055 bno = Adafruit_BNO055();
 
@@ -31,7 +31,7 @@ long previousMillis = 0;
 /**************************************************************************/
 void setup(void)
 {
-  Serial.begin(9600);
+  Serial.begin(38400);
   while(!Serial); 
   // Serial.println("Orientation Sensor Raw Data Test"); Serial.println("");
 

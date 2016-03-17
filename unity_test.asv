@@ -29,9 +29,9 @@ size = 10;
 while(1) 
     if(t.BytesAvailable > size)
         data = fread(t, t.BytesAvailable);
-        str = char(data');
+        str = char(data)';
         if( str(1) == 'B' && STATE == READY)
-            Observations = zeros(1, N+M); 
+            Observations = zeros(1, N); 
             time_stamp = sscanf(str, 'B: %s \n'); 
             disp(time_stamp); 
             STATE = ACQUIRING;
@@ -40,9 +40,9 @@ while(1)
             disp(file_name);
             STATE = SAVING; 
         elseif( STATE == ACQUIRING ) 
-            DataFrame = strsplit(char(data'), '\n');
+            DataFrame = strsplit(char(data), '\n');
             for i = 1:length(DataFrame)
-                C = strsplit(char(DataFrame{i}), '\t');
+                C = strsplit(char(DataFrame{i})', '\t');
                 D = str2double(C); 
 
                 if( M > 0 )
@@ -54,20 +54,18 @@ while(1)
                         D = cat(2, D, y');  % note:  cat(2, 3,[4; 5; 6]', [7; 8; 9]') works
                     end
                 end
-                if( length(D) == (N+M) )
-                    D = cat(2, D, y');  % note:  cat(2, 3,[4; 5; 6]', [7; 8; 9]') works
-                end
                 Observations = cat(1, Observations, D);
             end
         end
             
         if( STATE == SAVING ) 
-            disp('Saving the data'); 
-            STATE = READY; 
-            csvwrite(['C:\Users\Lukas Gemar\thesis\Analysis\Data-3-16\', file_name, '.csv'], Observations); 
+
         end
     end
 end
+
+            disp('Saving the data'); 
+            csvwrite(['C:\Users\Lukas Gemar\thesis\Analysis\Data-3-16\', file_name, '.csv'], Observations); 
 
 
 %%

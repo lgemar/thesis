@@ -56,8 +56,8 @@ fopen(IMU);
 % [atool, gtool] = getIMUData(IMU);
 % qtoolprev = orientationModel(atool,gtool,qtoolprev,0); 
 
-vFrame = LCMCoordinateFrame('vicon',JLCMCoder(vicon.ViconLCMCoder()),'v');
-vFrame.subscribe('VICON_wand');
+% vFrame = LCMCoordinateFrame('vicon',JLCMCoder(vicon.ViconLCMCoder()),'v');
+% vFrame.subscribe('VICON_wand');
 
 % =========================================================================
 % INITIALIZE CLOCKS
