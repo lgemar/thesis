@@ -21,7 +21,7 @@
 M = 7; % number of data elements from VICON
 
 vFrame = LCMCoordinateFrame('vicon',JLCMCoder(vicon.ViconLCMCoder()),'v');
-vFrame.subscribe('VICON_wand2');
+vFrame.subscribe('VICON_computer');
 
 % =========================================================================
 % READ FROM TCP CONNECTION 
@@ -33,7 +33,7 @@ pause(0.1);
 %%
 Observations = zeros(1, M+1); 
 time_stamp = 0; 
-file_name = 'VideoTake';
+file_name = 'Computer';
 size = 10; 
 while(1) 
     y = vFrame.getNextMessage(1000);

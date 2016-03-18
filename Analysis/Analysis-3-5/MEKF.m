@@ -96,7 +96,7 @@ for k = 2:N
         tprev = t(k); 
 
         % Covariance prediction (Pp)
-        Pp = Pe + 0.25 * Q ;
+        Pp = Pe + Q ;
 
         % State prediction (Qp)
         Alpha = cos( norm(DeltaTheta)/2 ); Beta = sin( norm(DeltaTheta)/2 ) / norm( DeltaTheta ); 
