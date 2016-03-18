@@ -14,7 +14,7 @@ UnityData = csvread([DataFolder, UnityFile]); UnityData = UnityData(2:end, :);
 ViconFile = [ViconTestName, '_vicon.csv']; 
 ViconDataMat = dlmread([DataFolder, ViconFile], ','); ViconDataMat = ViconDataMat(2:end, :); 
 
-tVicon = ViconDataMat(:,1) - min(ViconDataMat(:,1)); 
+tVicon = ViconDataMat(:,1); 
 tApp = UnityData(:,1); 
 tSensor = UnityData(:,6); 
 
@@ -28,9 +28,9 @@ Tv = (max(tVicon) - min(tVicon)) / length(tVicon); disp(['Vicon sample rate: ', 
 Ta = (max(tApp) - min(tApp)) / length(tApp); disp(['App sample rate: ', num2str(1/Ta), ' Hz']); 
 Ts = (max(tSensor) - min(tSensor)) / length(tSensor); disp(['Sensor sample rate: ', num2str(1/Ts), ' Hz']); 
 
-Fv = round(1/Tv); 
-Fa = round(1/Ta); 
-Fs = round(1/Ts); 
+Fv = 1/Tv; 
+Fa = 1/Ta; 
+Fs = 1/Ts; 
 
 % Upsample the app and sensor data streams
 
@@ -41,14 +41,8 @@ yD = -UnityData(:,3);
 zW = ViconDataMat(:,4); 
 
 % Resample the data
-rVicon = linspace(min(tVicon), max(tVicon), ceil( length(tVicon) * Fa / Fv ))'; 
-rzW = resample(zW,Fa,Fv);
-
-raX = resample(aX,Fv,Fs);
-rSensor = linspace(min(tSensor), max(tSensor), ceil( length(tSensor) * Fv / Fs ))'; 
-
-ryD = resample(yD,Fv,Fa);
-rApp = linspace(min(tApp), max(tApp), ceil( length(tApp) * Fv / Fa ))'; 
+rVicon = linspace(min(tVicon), max(tVicon), ceil( length(tVicon) * round(Fa) / round(Fv) ))'; 
+rzW = resample(zW,round(Fa),round(Fv));
 
 clf
 
@@ -114,5 +108,25 @@ plot(acorSW)
 title('Sensor and ref autocorrelation')
 
 disp(['Latency is ', num2str(1000 * (timeDiffDW - timeDiffSW)), ' ms'])
+
+% The lagDiffSW is the true offset between the sensor clock and world clock
+offsetSW = mean( rVicon(-lagDiffSW:(-lagDiffSW+length(tSensor)-1)) - tSensor )
+offsetDW = mean( rVicon(-lagDiffSW:(-lagDiffSW+length(tApp)-1)) - tApp )
+
+offsetSD1 = offsetDW - offsetSW % offset between the sensor clock and app clock, as measured by both referenced to vicon
+offsetSD2 = mean( tSensor - tApp ) % offset between sensor clock and app clock, as measured directly
+
+% Create latency plot  
+
+ayD = conv(ayD, ones(10,1)/10, 'same'); 
+
+figure; 
+subplot(1,2,1)
+plot(tSensor(2:end-1), aX(2:end-1), tSensor(2:end-1), azW((-lagDiffSW+2):((-lagDiffSW+2)+(length(tSensor)-2)-1)))
+legend('aX', 'azW')
+subplot(1,2,2)
+plot(tSensor(2:end-1), aX(2:end-1), tSensor(2:end-1), ayD / 1000)
+legend('aX', 'ayD')
+
 
 
