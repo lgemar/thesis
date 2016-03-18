@@ -3,7 +3,7 @@ DataFolder = (['C:\Users\Lukas Gemar\thesis\Analysis\Analysis-3-17\', 'Data\']);
 AllTestNames = {'yawslow', 'yawmed', 'yawfast', 'rollslow', 'rollmed', 'rollfast'}; 
 ViconTestNames = {'AllTests'}; 
 
-UnityTestName = AllTestNames{1}; 
+UnityTestName = AllTestNames{4}; 
 ViconTestName = ViconTestNames{1}; 
 
 UnityFile = [UnityTestName, '.csv']; 
@@ -15,7 +15,8 @@ ViconDataMat = dlmread([DataFolder, ViconFile], ','); ViconDataMat = ViconDataMa
 % Align the time vectors relative to the clock on the sensor
 tSensor = UnityData(:,6); 
 tVicon = ViconDataMat(:,1) - (min(tSensor) + 1458243948.5022); 
-tApp = UnityData(:,1) - min(tApp); 
+tApp = UnityData(:,1); 
+tApp = tApp - min(tApp); 
 tSensor = tSensor - min(tSensor); 
 
 % Plot the position and orientation as a sanity check
@@ -45,7 +46,7 @@ t = tSensor;
 
 % Reference vectors
 g = [0; 0; -1]; % world coordinates
-b = [1; 0; 0]; % world coordinates
+b = [cos(0)*1; sin(0)*1; 0]; % world coordinates
 
 % Simulation variables
 qref = qV; % quaternion reference array
@@ -90,7 +91,7 @@ qe = triadFun(g,mg,b,mb,eye(3,3)); % column-major quaternion
 
 % Initalize the covariance matrix, process noise, and measurement noise
 Sp = [0.05; 0.05; 0.05]; Pe = diag(Sp); 
-Sq = dt * [0.01 0.01 0.01]'.^2; Q = diag(Sq); 
+Sq = [3e-5 3e-5 3e-5]'; Q = diag(Sq); 
 Sr = (0.05 * ones(6,1)); R = diag(Sr); 
 
 for k = 2:N
@@ -132,17 +133,22 @@ for k = 2:N
 end
 
 figure(3)
-subplot(1,2,1)
-plot( rad2deg( quat2eul( qref ) ) )
+subplot(1,3,1)
+plot( rad2deg( quat2eul( qS ) ) )
 legend('yaw', 'pitch', 'roll')
 % plot( theta, qref )
 % legend('w','x','y','z')
 title('Quaternion Ref')
 
-subplot(1,2,2)
+subplot(1,3,2)
 plot( rad2deg( quat2eul( qestK ) ) )
 legend('yaw', 'pitch', 'roll')
 % plot( theta, qestT )
 % legend('w','x','y','z')
 title('Quaternion Est')
+
+subplot(1,3,3)
+plot( rad2deg( quat2eul( qestK - qS ) ) )
+title('Error')
+
 

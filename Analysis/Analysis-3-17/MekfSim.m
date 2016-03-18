@@ -8,7 +8,7 @@ n = [1; 5; 15]; % Axis of rotation (in the world frame)
 n = n / norm(n);
 
 % Reference vectors
-g = [0; 0; -1]; % world coordinates
+g = [0; 0; 1]; % world coordinates
 b = [1; 0; 0]; % world coordinates
 
 % Simulation variables
@@ -22,12 +22,12 @@ for i = 1:length(theta)
     
     % Process noise
     muProc = [0 0 0]'; 
-    sigmaProc = dt * diag([0.01 0.01 0.01]'); 
+    sigmaProc = diag([3e-5 3e-5 3e-5]'); 
     r = mvnrnd(muProc,sigmaProc)'; 
 
     % Measurement noise
     muMeas = [0 0 0]'; 
-    sigmaMeas = diag([0.05 0.05 0.05]'); 
+    sigmaMeas = diag([0.09 0.09 0.09]'); 
     w = mvnrnd(muMeas,sigmaMeas)';
     
     % Find the reference quaternion
@@ -43,8 +43,8 @@ for i = 1:length(theta)
     % Generate the gyro input measurement
     if( i > 1 ) 
         qdiff = qmultiply( qr, qinv( qflip( qref(i-1,:) ) ) );
-        qdiff(1:3) = qdiff(1:3) + r; 
-        omega(i,:) = qdiff(1:3)' / dt; 
+        qdiff(1:3) = qdiff(1:3); 
+        omega(i,:) = (qdiff(1:3) / dt + r)'; 
     end
 end
 
@@ -105,7 +105,7 @@ qe = triadFun(g,mg,b,mb,eye(3,3)); % column-major quaternion
 
 % Initalize the covariance matrix, process noise, and measurement noise
 Sp = [0.05; 0.05; 0.05]; Pe = diag(Sp); 
-Sq = dt * [0.01 0.01 0.01]'.^2; Q = diag(Sq); 
+Sq = [3e-5 3e-5 3e-5]'; Q = diag(Sq); 
 Sr = (0.05 * ones(6,1)); R = diag(Sr); 
 
 for k = 2:N
