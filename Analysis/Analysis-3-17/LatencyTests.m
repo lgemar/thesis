@@ -5,8 +5,8 @@ AllTestNames = {'TsTest', 'ClockAlign', 'ClockAlign2', 'horzslow', 'horzmed', ..
     'failure1'}; 
 ViconTestNames = {'TsTest', 'ClockAlign', 'ClockAlign2', 'AllTests', 'ClockAlign3', 'FailureTests'}; 
 
-UnityTestName = AllTestNames{3}; 
-ViconTestName = ViconTestNames{3}; 
+UnityTestName = AllTestNames{11}; 
+ViconTestName = ViconTestNames{5}; 
 
 UnityFile = [UnityTestName, '.csv']; 
 UnityData = csvread([DataFolder, UnityFile]); UnityData = UnityData(2:end, :); 
