@@ -4,10 +4,11 @@
 DataFolder = (['C:\Users\Lukas Gemar\thesis\Analysis\Analysis-3-17\', 'Data\Sensor\']); 
 AllTestNames = {'roll1', 'pitch1', 'yaw1'}; 
 
-TestName = AllTestNames{1}; 
+TestNumber = 2; 
+TestName = AllTestNames{TestNumber}; 
 
 SensorFile = [TestName, '.csv']; 
-SensorData = csvread([DataFolder, SensorFile]); SensorData = SensorData(2:end, :); 
+SensorData = csvread([DataFolder, SensorFile]); SensorData = SensorData(3:end, :); 
 tSensor = SensorData(:,1)/1000; % it's in milliseconds 
 
 N = size(SensorData,1); % Number of samples
@@ -23,6 +24,7 @@ qestK = zeros(N,4); % Kalman filter estimates
 z = [SensorData(:,6:8),...
      SensorData(:,12:14)]; % sensor measurements
 omega = SensorData(:,9:11); % gyro measurements
+% omega = omega - repmat(mean(omega,1),N,1); % mean-subtracted gyro measurements
 
 % Reference vectors
 g = [0; 0; 9.81]; % world coordinates
@@ -86,7 +88,8 @@ for i = 1:N
     qerrorT(i,:) = qflip( qmultiply( qflip( qref(i,:) ), qinv( qflip( qestT(i,:) ) ) ) ); 
 end
 
-plot( t, rad2deg( quat2eul( qerrorT ) ) )
+plot(t, rad2deg( quat2eul( qestT ) ) - rad2deg( quat2eul( qref ) ))
+% plot( t, rad2deg( quat2eul( qerrorT ) ) )
 legend('yaw', 'pitch', 'roll')
 % plot( theta, qestT )
 % legend('w','x','y','z')
@@ -102,11 +105,12 @@ meanSquaredError = mean( qerrorT.^2, 1 )
 mg = z(1,1:3)'; % measurement of g vector in body
 mb = z(1,4:6)'; % measurement of b vector in body
 qe = triadFun(g,mg,b,mb,eye(3,3)); % column-major quaternion 
+qestK(1,:) = qflip( qe ); 
 
 % Initalize the covariance matrix, process noise, and measurement noise
-Sp = [0.006 0.007 0.08]; Pe = diag(Sp); 
-Sq = [2.8e-6 2.8e-6 2.8e-6]'; Q = diag(Sq); 
-Sr = [1.1e-6*ones(1,3) 17*ones(1,3)]'; R = diag(Sr); 
+Sp = (1)^2*[0.006 0.006 0.006]; Pe = diag(Sp); 
+Sq = (1)^2*[2.8e-6 2.8e-6 2.8e-6]'; Q = diag(Sq); 
+Sr = [(120)^2 * 1.1e-6*ones(1,3), (0.5)^2 * 17*ones(1,3)]'; R = diag(Sr); 
 
 for k = 2:N
 
@@ -135,8 +139,8 @@ for k = 2:N
 
     % Observation, Prediction error
     Zm = z(k,:)'; 
-    Zm(1:3) = Zm(1:3) / norm(Zm(1:3)); 
-    Zm(4:6) = Zm(4:6) / norm(Zm(4:6)); 
+    Zm(1:3) = Zm(1:3); 
+    Zm(4:6) = Zm(4:6); 
     Ze = [ AMat( qp ) * r1 ; AMat( qp ) * r2]; 
     Nu = (Zm - Ze); 
     dq = [K * Nu; 1]; 
@@ -173,13 +177,17 @@ subplot(1,3,3)
 
 qerrorK = zeros(N,4); 
 for i = 1:N
-    qerrorK(i,:) = qflip( qmultiply( qflip( qref(i,:) ), qinv( qflip( qestK(i,:) ) ) ) ); 
+    qerrorK(i,:) = qflip( qmultiply( qflip( qestK(i,:) ), qinv( qflip( qref(i,:) ) ) ) ); 
+    qerrorK(i,:) = qerrorK(i,:) / norm(qerrorK(i,:)); 
 end
 
-plot( t, rad2deg( quat2eul( qerrorK ) ) )
+% plot( t, rad2deg( quat2eul( qerrorK ) ) )
+degerrorK = rad2deg( quat2eul( qestK ) ) - rad2deg( quat2eul( qref ) ); 
+plot(t, degerrorK)
 legend('yaw', 'pitch', 'roll')
 % plot( theta, qestT )
 % legend('w','x','y','z')
+% title(['E[\epsilon] :', num2str(mean(degerrorK(:,1)))])
 title('Error')
 ylim([-181 181])
 
