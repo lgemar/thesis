@@ -3,7 +3,8 @@
 N = 100; % Number of samples
 dt = 0.02; % Simulation time step
 t = dt * (1:1:N); 
-theta = linspace(0, 2*pi, N); % Sweep of angles (in the world frame)
+theta = linspace(0, 4*pi, N); % Sweep of angles (in the world frame)
+theta = sin(theta); 
 n = [1; 5; 15]; % Axis of rotation (in the world frame)
 n = n / norm(n);
 

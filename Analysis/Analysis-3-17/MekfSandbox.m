@@ -2,9 +2,9 @@
 
 %% Load the test data
 DataFolder = (['C:\Users\Lukas Gemar\thesis\Analysis\Analysis-3-17\', 'Data\Sensor\']); 
-AllTestNames = {'roll1', 'pitch1', 'yaw1'}; 
+AllTestNames = {'roll1', 'pitch1', 'yaw1', 'no_manuever1'}; 
 
-TestNumber = 2; 
+TestNumber = 3; 
 TestName = AllTestNames{TestNumber}; 
 
 SensorFile = [TestName, '.csv']; 
@@ -43,7 +43,7 @@ legend('X', 'Y', 'Z')
 subplot(2,2,3)
 plot( t,z(:,1:3) )
 title('Accelerometer')
-ylim([-10 10])
+ylim([-1 1])
 legend('X', 'Y', 'Z')
 subplot(2,2,4)
 plot( t, z(:,4:6) )
@@ -88,15 +88,14 @@ for i = 1:N
     qerrorT(i,:) = qflip( qmultiply( qflip( qref(i,:) ), qinv( qflip( qestT(i,:) ) ) ) ); 
 end
 
-plot(t, rad2deg( quat2eul( qestT ) ) - rad2deg( quat2eul( qref ) ))
-% plot( t, rad2deg( quat2eul( qerrorT ) ) )
+plot( t, rad2deg( 2*qerrorT(:,2:4) ) )
 legend('yaw', 'pitch', 'roll')
 % plot( theta, qestT )
 % legend('w','x','y','z')
 title('Error')
 ylim([-181 181])
 
-meanSquaredError = mean( qerrorT.^2, 1 )
+Ptriad = cov(qerrorT(:,2:4));
 
 
 %% Run the MEKF over the data set
@@ -108,9 +107,19 @@ qe = triadFun(g,mg,b,mb,eye(3,3)); % column-major quaternion
 qestK(1,:) = qflip( qe ); 
 
 % Initalize the covariance matrix, process noise, and measurement noise
-Sp = (1)^2*[0.006 0.006 0.006]; Pe = diag(Sp); 
-Sq = (1)^2*[2.8e-6 2.8e-6 2.8e-6]'; Q = diag(Sq); 
-Sr = [(120)^2 * 1.1e-6*ones(1,3), (0.5)^2 * 17*ones(1,3)]'; R = diag(Sr); 
+Pe = (1/3)*deg2rad(5)^2*diag([1 1 1]); 
+
+Q = ((1/3) * 2.8e-6) * diag([1 1 1]); % units: radians
+Paccel = ((1/3)* 1.1e-6 ) * diag([1 1 1]);  % units: normalized
+Pmagn = ((1/3)* 17 ) * diag([1 1 1]); % units: normalized
+R = [Paccel zeros(3,3); zeros(3,3) Pmagn]; 
+
+pgain = zeros(N-1,3); 
+pgainref = zeros(N-1,3); 
+inngain = zeros(N-1,3); 
+ainnov = zeros(N-1,3);
+binnov = zeros(N-1,3); 
+sqerror = zeros(N-1,1); 
 
 for k = 2:N
 
@@ -118,16 +127,23 @@ for k = 2:N
     Pp = Pe + Q ;
 
     % State prediction (Qp)
-    DeltaTheta = deg2rad(omega(k,:))'; 
-    Alpha = cos( norm(DeltaTheta)/2 ); 
-    if( norm(DeltaTheta) > 0 )
-        Beta = sin( norm(DeltaTheta)/2 ) / norm( DeltaTheta ); 
-    else
-        Beta = 0.5; 
-    end
+    deltaTheta = deg2rad( omega(k,:) )'; % * dt; 
+   
+%     if( norm(deltaTheta) > 0 )
+%         beta = sin(norm(deltaTheta) / 2); 
+%     else
+%         beta = 0.5; 
+%     end
+    alpha = cos( norm(deltaTheta) / 2 ); 
+    qp = [XiMat( qe ) qe] * [(0.5 * deltaTheta); 1]; 
+    qp = qp / norm(qp);
     
-    qp = Alpha * qe + Beta * XiMat( qe ) * DeltaTheta; 
-    qp = qp / norm( qp ); 
+    % Actual gain and reference gain in the prediction step
+    dqp = qmultiply( qp, qinv( qe ) ); 
+    pgain(k,:) = 2*dqp(1:3)'; 
+    
+    dqpref = qmultiply( qflip( qref(k,:) ), qinv( qflip( qref(k-1,:) ) ) ); 
+    pgainref(k,:) = 2*dqpref(1:3)'; 
 
     % Sensitivity matrix
     r1 = g; r2 = b; 
@@ -139,18 +155,23 @@ for k = 2:N
 
     % Observation, Prediction error
     Zm = z(k,:)'; 
-    Zm(1:3) = Zm(1:3); 
-    Zm(4:6) = Zm(4:6); 
     Ze = [ AMat( qp ) * r1 ; AMat( qp ) * r2]; 
     Nu = (Zm - Ze); 
-    dq = [K * Nu; 1]; 
+    dqe = [K * Nu; 1]; 
+    
+    ainnov(k,:) = Nu(1:3)'; 
+    binnov(k,:) = Nu(4:6)'; 
 
     % State update and 
-    qe = qp + XiMat( qp ) * dq(1:3); 
+    qe = [XiMat( qp ) qp] * dqe; 
     qe = qe / norm(qe); 
+    
+    inngain(k,:) = rad2deg( 2*dqe(1:3)' ); 
     
     % Covariance update
     Pe = (eye(3,3) - K * H) * Pp;
+    
+    sqerror(k) = trace(Pe); 
     
     qestK(k,:) = qflip( qe ); 
         
@@ -175,11 +196,6 @@ ylim([-181 181])
 
 subplot(1,3,3)
 
-qerrorK = zeros(N,4); 
-for i = 1:N
-    qerrorK(i,:) = qflip( qmultiply( qflip( qestK(i,:) ), qinv( qflip( qref(i,:) ) ) ) ); 
-    qerrorK(i,:) = qerrorK(i,:) / norm(qerrorK(i,:)); 
-end
 
 % plot( t, rad2deg( quat2eul( qerrorK ) ) )
 degerrorK = rad2deg( quat2eul( qestK ) ) - rad2deg( quat2eul( qref ) ); 
@@ -190,6 +206,49 @@ legend('yaw', 'pitch', 'roll')
 % title(['E[\epsilon] :', num2str(mean(degerrorK(:,1)))])
 title('Error')
 ylim([-181 181])
+
+qerror = zeros(N,4); 
+for i = 1:N
+    qerror(i,:) = qflip( qmultiply( qflip( qref(i,:) ), qinv( qflip( qestK(i,:) ) ) ) ); 
+end
+
+figure(4)
+
+subplot(2,3,1)
+plot(t, pgain)
+title('Prediction gain: $\delta \hat{\vec{\theta}}{^{(-)}}_k$', 'Interpreter', 'Latex')
+ylabel('Rad')
+
+subplot(2,3,2)
+plot(t, pgainref)
+title('True prediction gain: $\delta \vec{\theta}{^{(-)}}_k$', 'Interpreter', 'Latex')
+ylabel('Rad')
+
+subplot(2,3,3)
+plot(t, pgain - pgainref)
+title(['Prediction gain error: $\delta \hat{\vec{\theta}}{^{(-)}}_k', ...
+    '- \delta \vec{\theta}{^{(-)}}_k$'], 'Interpreter', 'Latex')
+
+% subplot(2,3,3)
+% plot(t, ainnov)
+% title('$\vec{a}$ Innovation', 'Interpreter', 'Latex')
+% ylabel('g')
+subplot(2,3,4)
+plot(t, binnov)
+title('$\vec{b}$ Innovation', 'Interpreter', 'Latex')
+ylabel('uT')
+subplot(2,3,5)
+plot(t, inngain)
+title('Innovation gain: $\delta \vec{\theta}{^{(+)}}_k$', 'Interpreter', 'Latex')
+ylabel('Degrees')
+subplot(2,3,6)
+plot(t, rad2deg( 2*qerror(:,2:4) ) )
+title('True error: $\delta \vec{\theta}_k \approx 2 vec( \overline{q} \otimes \hat{\overline{q}}^{-1})$', 'Interpreter', 'Latex')
+ylabel('Degrees')
+% subplot(2,3,6)
+% plot(t, rad2deg( sqerror ) )
+% title('Estimate variance: $tr(P)$', 'Interpreter', 'Latex')
+% ylabel('Degrees')
 
 
 
