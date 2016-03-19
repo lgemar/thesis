@@ -2,9 +2,9 @@
 
 %% Load the test data
 DataFolder = (['C:\Users\Lukas Gemar\thesis\Analysis\Analysis-3-17\', 'Data\Sensor\']); 
-AllTestNames = {'roll1', 'pitch1', 'yaw1'}; 
+AllTestNames = {'roll1', 'pitch1', 'yaw1', 'no_manuever1', 'rollslow1'}; 
 
-TestName = AllTestNames{1}; 
+TestName = AllTestNames{5}; 
 
 SensorFile = [TestName, '.csv']; 
 SensorData = csvread([DataFolder, SensorFile]); SensorData = SensorData(2:end, :); 
@@ -104,14 +104,19 @@ mb = z(1,4:6)'; % measurement of b vector in body
 qe = triadFun(g,mg,b,mb,eye(3,3)); % column-major quaternion 
 
 % Initalize the covariance matrix, process noise, and measurement noise
-Sp = [0.006 0.007 0.08]; Pe = diag(Sp); 
-Sq = [2.8e-6 2.8e-6 2.8e-6]'; Q = diag(Sq); 
-Sr = [1.1e-6*ones(1,3) 17*ones(1,3)]'; R = diag(Sr); 
+Sp = [deg2rad(10)^2 deg2rad(10)^2 deg2rad(15)^2]; Pe = diag(Sp); 
+Sq = 0.1*(1/3)*[2.8e-6 2.8e-6 2.8e-6]'; Q = diag(Sq); 
+Sr = (1/3)*[1.1e-6*ones(1,3) 17*ones(1,3)]'; R = diag(Sr); 
+
+% Gyro gain and gyro gain reference
+pgain = zeros(N-1,3); 
+pgainref = zeros(N-1,3); 
+inngain = zeros(N-1,3);
 
 for k = 2:N
 
     % Covariance prediction (Pp)
-    Pp = Pe + Q ;
+    Pp = Pe + Q;
 
     % State prediction (Qp)
     DeltaTheta = deg2rad(omega(k,:))'; 
@@ -122,8 +127,15 @@ for k = 2:N
         Beta = 0.5; 
     end
     
-    qp = Alpha * qe + Beta * XiMat( qe ) * DeltaTheta; 
+    qp = Alpha * qe + 0.7 * XiMat( qe ) * DeltaTheta; 
     qp = qp / norm( qp ); 
+    
+    % Store gyro input, estimation and reference
+    dqp = qmultiply( qp, qinv( qe ) ); 
+    pgain(k,:) = 2*dqp(1:3)'; 
+    
+    dqpref = qmultiply( qflip( qref(k,:) ), qinv( qflip( qref(k-1,:) ) ) ); 
+    pgainref(k,:) = 2*dqpref(1:3)'; 
 
     % Sensitivity matrix
     r1 = g; r2 = b; 
@@ -140,6 +152,9 @@ for k = 2:N
     Ze = [ AMat( qp ) * r1 ; AMat( qp ) * r2]; 
     Nu = (Zm - Ze); 
     dq = [K * Nu; 1]; 
+    
+    % Store innovation gain
+    inngain(k,:) = 2*dq(1:3)'; 
 
     % State update and 
     qe = qp + XiMat( qp ) * dq(1:3); 
@@ -153,7 +168,7 @@ for k = 2:N
 end
 
 figure(3)
-subplot(1,3,1)
+subplot(2,3,1)
 plot( t, rad2deg( quat2eul( qref ) ) )
 legend('yaw', 'pitch', 'roll')
 % plot( theta, qref )
@@ -161,7 +176,7 @@ legend('yaw', 'pitch', 'roll')
 title('Reference')
 ylim([-181 181])
 
-subplot(1,3,2)
+subplot(2,3,2)
 plot( t, rad2deg( quat2eul( qestK ) ) )
 legend('yaw', 'pitch', 'roll')
 % plot( theta, qestT )
@@ -169,7 +184,7 @@ legend('yaw', 'pitch', 'roll')
 title('Estimate')
 ylim([-181 181])
 
-subplot(1,3,3)
+subplot(2,3,3)
 
 qerrorK = zeros(N,4); 
 for i = 1:N
@@ -183,5 +198,19 @@ legend('yaw', 'pitch', 'roll')
 title('Error')
 ylim([-181 181])
 
+subplot(2,3,4)
+plot(t, pgain)
+title('Prediction gain: $\delta \hat{\vec{\theta}}{^{(-)}}_k$', 'Interpreter', 'Latex')
+ylabel('Rad')
+
+subplot(2,3,5)
+plot(t, pgainref)
+title('True prediction gain: $\delta \vec{\theta}{^{(-)}}_k$', 'Interpreter', 'Latex')
+ylabel('Rad')
+
+subplot(2,3,6)
+plot(t, inngain)
+title('Innovation gain: $\delta \vec{\theta}{^{(+)}}_k$', 'Interpreter', 'Latex')
+ylabel('Rad')
 
 
