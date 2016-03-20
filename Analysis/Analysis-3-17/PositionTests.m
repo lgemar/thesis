@@ -26,11 +26,12 @@ dtva = 1.458245808409409e+09;
 tA = UnityData(:,1); 
 tV = ViconDataMat(:,1) - (dtva + min(tA)); % Transform vicon time to app time
 tA = tA - min(tA); % Transform app time to 0
+N = length(tA); 
 
 % Read the position and acceleration measurement vectors
 pV = ViconDataMat(:,2:4) * 1000; % (x,y,z) in world coordinates (mm)
 pA = UnityData(:,2:5); % (x,y,w,h) in distorted image coordinates
-aS = UnityData(:,11:13); % (a_x, a_y,a_z) in body coordinates
+aW = UnityData(:,11:13); % (a_x, a_y,a_z) in body coordinates
 
 % Compute sample rates and frequencies
 Ts = (max(tA) - min(tA)) / length(tA); disp(['Sensor sample rate: ', num2str(1/Ts), ' Hz']); 
@@ -56,7 +57,7 @@ subplot(1,3,1)
 plot( tVpr, pVpr )
 legend('x','y','z')
 subplot(1,3,2)
-plot( aS )
+plot( aW )
 subplot(1,3,3)
 plot( tA, pA )
 legend('x', 'y')
@@ -134,28 +135,30 @@ plot( tA(1:length(pVpr),:), zW(1:length(pVpr),:) - pVpr )
 legend('x', 'y', 'z')
 ylim([-800 800])
 
-%% Constant jerk estimation model: http://www.jneurosci.org/content/5/7/1688.full.pdf
+%% Constant jerk estimation model: http://www.jneurosci.org/content/5/7/1688.full.pdf, for assumptinos
 
 % Initalize Variables
-T = t(2) - t(1); 
-Sr = 0.1; Sq = 1; 
-R = Sr * T * eye(3,3); 
-Q = Sq * T * eye(3,3); 
+dt = tA(2) - tA(1); % application time step
+Sr = 1; Sq = 1000; 
+R = Sr * dt * eye(6,6); 
+Q = Sq * dt * eye(3,3); 
 
 % State transition and observation matrices
-F2 = [1 T T^2/2 T^3/6; 0 1 T T^2/2; 0 0 1 T; 0 0 0 1]; A = blkdiag(F2, F2, F2); 
-H = blkdiag([1 0 0 0], [1 0 0 0], [1 0 0 0]); 
+F2 = [1 dt dt^2/2 dt^3/6; 0 1 dt dt^2/2; 0 0 1 dt; 0 0 0 1]; A = blkdiag(F2, F2, F2); 
+H2 = [1 0 0 0; 0 0 1 0]; H = blkdiag(H2, H2, H2); 
+
+% Run Kalman Filter
 
 % Initialization
 x = zeros(12, N); 
-x(:, 1) = [pW(1, 1) 0 0 0 pW(2, 1) 0 0 0 pW(3, 1) 0 0 0]'; % start at 0 velocity
-P = T * eye(12,12);
+x(:, 1) = [zW(1,1) 0 aW(1,1) 0 zW(1,2) 0 aW(1,2) 0 zW(1,3) 0 aW(1,3) 0]'; % start at 0 velocity
+P = 1 * dt * eye(12,12);
 
 for i = 2:N
     % Update transition matrix
-    T = t(i) - t(i-1); 
-    F2 = [1 T T^2/2 T^3/6; 0 1 T T^2/2; 0 0 1 T; 0 0 0 1]; A = blkdiag(F2, F2, F2); 
-    G2 = [T^3/6; T^2/2; T; 1]; G = blkdiag(G2, G2, G2); 
+    dt = tA(i) - tA(i-1); 
+    F2 = [1 dt dt^2/2 dt^3/6; 0 1 dt dt^2/2; 0 0 1 dt; 0 0 0 1]; A = blkdiag(F2, F2, F2); 
+    G2 = [dt^3/6; dt^2/2; dt; 1]; G = blkdiag(G2, G2, G2); 
 
     % Prediction 
     Ppred = A * P * A' + G * Q * G'; 
@@ -164,35 +167,38 @@ for i = 2:N
     % Update
     P = inv( inv(Ppred) + H' * R' * H ); 
     K = P * H' * R'; 
-    x(:, i) = xpred + K * (pW(:, i) - H * xpred); 
+    x(:, i) = xpred + K * ([zW(i,1); aW(i,1); zW(i,2); aW(i,2); zW(i,3); aW(i,3)]  - H * xpred); 
 end
 
 figure(1)
 
-subplot(1,3,1)
-plot(t, pW')
+subplot(1,4,1)
+plot(tA, aW)
+title('Acceleration Measurement')
+xlabel('Time stamp (s)')
+ylabel('Position (m / s^2)')
+
+subplot(1,4,2)
+plot(tA, zW)
 title('State observations (World)')
 xlabel('Time stamp (s)')
 ylabel('Position (mm)')
 legend('{x}_{w}', 'y_{w}', 'z_{w}')
-xlim([min(t) max(t)])
-ylim([-750 750])
+xlim([min(tA) max(tA)])
+ylim([-1000 1000])
 
-subplot(1,3,2)
-plot(t, x([1 5 9], :)')
+subplot(1,4,3)
+plot(tA, x([1 5 9], :)')
 title('State estimates (world)')
 xlabel('Time stamp (s)')
 ylabel('Position (mm)')
-legend('x_{w}', 'y_{w}', 'z_{w}')
-xlim([min(t) max(t)])
-ylim([-750 750])
+xlim([min(tA) max(tA)])
+ylim([-1000 1000])
 
-subplot(1,3,3)
-plot(t, 1000*M(:, 18:20))
+subplot(1,4,4)
+plot(tVpr, pVpr)
 title('State absolute')
 xlabel('Time stamp (s)')
 ylabel('Position (mm)')
-legend('x_{w}', 'y_{w}', 'z_{w}')
-xlim([min(t) max(t)])
-ylim([-750 750])
-
+xlim([min(tVpr) max(tVpr)])
+ylim([-1000 1000])
