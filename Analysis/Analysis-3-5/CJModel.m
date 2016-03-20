@@ -43,7 +43,7 @@ Q = Sq * T * eye(3,3);
 F2 = [1 T T^2/2 T^3/6; 0 1 T T^2/2; 0 0 1 T; 0 0 0 1]; A = blkdiag(F2, F2, F2); 
 H = blkdiag([1 0 0 0], [1 0 0 0], [1 0 0 0]); 
 
-%% Run Kalman Filter
+%% CJ Kalman Filter
 
 % Initialization
 x = zeros(12, N); 

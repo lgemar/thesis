@@ -151,6 +151,8 @@ for k = 2:N
     Zm(1:3) = Zm(1:3) / norm(Zm(1:3)); 
     Zm(4:6) = Zm(4:6) / norm(Zm(4:6)); 
     Ze = [ AMat( qp ) * r1 ; AMat( qp ) * r2]; 
+    Ze(1:3) = Ze(1:3) / norm(Ze(1:3)); 
+    Ze(4:6) = Ze(4:6) / norm(Ze(4:6)); 
     Nu = (Zm - Ze); 
     dq = [K * Nu; 1]; 
     
