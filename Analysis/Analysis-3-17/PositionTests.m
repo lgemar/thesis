@@ -10,7 +10,7 @@ ViconTestNames = {'TsTest', 'ClockAlign', 'ClockAlign2', 'AllTests', ...
                   'ClockAlign3', 'FailureTests'}; 
 
 % Read Unity Data file
-UnityTestName = AllTestNames{4}; 
+UnityTestName = AllTestNames{17}; 
 UnityFile = [UnityTestName, '.csv']; 
 UnityData = csvread([DataFolder, UnityFile]); UnityData = UnityData(2:end, :); 
 
@@ -31,7 +31,12 @@ N = length(tA);
 % Read the position and acceleration measurement vectors
 pV = ViconDataMat(:,2:4) * 1000; % (x,y,z) in world coordinates (mm)
 pA = UnityData(:,2:5); % (x,y,w,h) in distorted image coordinates
-aW = UnityData(:,11:13); % (a_x, a_y,a_z) in body coordinates
+aS = UnityData(:,11:13); % (a_x, a_y,a_z) in body coordinates
+
+aS = aS - repmat(mean(aS,1),size(aS,1),1); 
+
+% Read the absolute orientation 
+qB = ViconDataMat(:,5:8);
 
 % Compute sample rates and frequencies
 Ts = (max(tA) - min(tA)) / length(tA); disp(['Sensor sample rate: ', num2str(1/Ts), ' Hz']); 
@@ -57,7 +62,7 @@ subplot(1,3,1)
 plot( tVpr, pVpr )
 legend('x','y','z')
 subplot(1,3,2)
-plot( aW )
+plot( aS )
 subplot(1,3,3)
 plot( tA, pA )
 legend('x', 'y')
@@ -94,22 +99,16 @@ title('Undistorted points')
 %% Undistorted image, camera measurements, world measurements
 
 % Undistorted image measurements
-zU = [0.5*(pU(:,1)+pU(:,3)) 0.5*(pU(:,2)+pU(:,4)) 0.5*(pU(:,3)-pU(:,1) + pU(:,4)-pU(:,2))]; 
+zU = [0.5*(pU(:,1)+pU(:,3)) 0.5*(pU(:,2)+pU(:,4)) (pU(:,4)-pU(:,2))]; 
 
 % Camera measurements
-dC = 30 ./ ( zU(:,3) * sqrt( 1/fx^2 + 1/fy^2 ) ); % small blue ball is x mm
+dC = 22 ./ ( zU(:,3) * sqrt( 1/fx^2 + 1/fy^2 ) ); % small blue ball is x mm
 xC = (dC / fx) .* ( pU(:,1) - cx ); 
 yC = (dC / fy) .* ( cy - pU(:,2) ); 
 
 zC = [xC yC dC]; % (x,y,z), obeying the right hand rule
 
 % Camera rotation matrix
-
-ViconFile = 'camerarotm.csv'; 
-ViconDataMat = dlmread([DataFolder, ViconFile], ','); 
-ViconDataMat = ViconDataMat(2:end, :); 
-qC = ViconDataMat(:,5:8);
-
 S = [0 0 -1; -1 0 0; 0 1 0]; 
 A = AMat( [ sin(atan(13/50)/2) * [0;1;0]; cos(atan(13/50)/2) ] ); % attitude of camera, aka rotm from world to camera
 wRc = S * A;  
@@ -135,70 +134,107 @@ plot( tA(1:length(pVpr),:), zW(1:length(pVpr),:) - pVpr )
 legend('x', 'y', 'z')
 ylim([-800 800])
 
-%% Constant jerk estimation model: http://www.jneurosci.org/content/5/7/1688.full.pdf, for assumptinos
+%% Weiner estimation model: http://www.jneurosci.org/content/5/7/1688.full.pdf, for assumptinos
 
+% Transform the acceleration maeasurements to the world coordinate frame
+% Multiply by rotation matrix from body to world
+sTb = [0 1 0; -1 0 0; 0 0 1]; 
+bTs = sTb'; % rotation matrix from the sensor to the body
+aW = zeros(size(aS)); 
+for i = 1:N
+    wRb = quat2rotm(qB(i, :)); 
+    aW(i, :) = (wRb * bTs * aS(i,:)')'; 
+    
+    if( i <= size(pVpr,1) )
+        pVpr(i,:) = pVpr(i,:) + (wRb * [0; 70; 0])'; 
+    else
+        pVpr(i,:) = pVpr(end,:) + (wRb * [0; 70; 0])';
+    end
+end
+
+% aW(:,3) = aW(:,3) - 9.81; 
+aW = 9.81 * aW * 1000; % mm/s^2
+    
+%%
 % Initalize Variables
 dt = tA(2) - tA(1); % application time step
-Sr = 1; Sq = 1000; 
-R = Sr * dt * eye(6,6); 
-Q = Sq * dt * eye(3,3); 
+
+Sr = [0.8 0.4 0.4].^2 / dt; 
+R = diag(Sr); 
+
+naccel = 9.81*1000*150e-6; 
+Q2 = (naccel^2 / dt)*[dt^4/4 dt^3/2; dt^3/2 dt^2/2]; Q = blkdiag(0.05*Q2, 10*Q2, 10*Q2); 
 
 % State transition and observation matrices
-F2 = [1 dt dt^2/2 dt^3/6; 0 1 dt dt^2/2; 0 0 1 dt; 0 0 0 1]; A = blkdiag(F2, F2, F2); 
-H2 = [1 0 0 0; 0 0 1 0]; H = blkdiag(H2, H2, H2); 
+F2 = [1 dt; 0 1]; A = blkdiag(F2, F2, F2); 
+G2 = [dt^2/2; dt]; G = blkdiag(G2, G2, G2); 
 
 % Run Kalman Filter
 
 % Initialization
-x = zeros(12, N); 
-x(:, 1) = [zW(1,1) 0 aW(1,1) 0 zW(1,2) 0 aW(1,2) 0 zW(1,3) 0 aW(1,3) 0]'; % start at 0 velocity
-P = 1 * dt * eye(12,12);
+x = zeros(6, N); 
+x(:, 1) = [zW(1,1) 0 zW(1,2) 0 zW(1,3) 0]'; % start at 0 velocity
+H2 = [1 0]; H = blkdiag(H2, H2, H2);
+
+Ppr = [10 0.001].^2; P = blkdiag(diag([5 0.001]), diag([5 0.001]), diag([10 0.001]));
 
 for i = 2:N
-    % Update transition matrix
-    dt = tA(i) - tA(i-1); 
-    F2 = [1 dt dt^2/2 dt^3/6; 0 1 dt dt^2/2; 0 0 1 dt; 0 0 0 1]; A = blkdiag(F2, F2, F2); 
-    G2 = [dt^3/6; dt^2/2; dt; 1]; G = blkdiag(G2, G2, G2); 
-
+    
     % Prediction 
-    Ppred = A * P * A' + G * Q * G'; 
-    xpred = A * x(:, i-1);  
+    Ppred = A * P * A' + Q; 
+    xpred = A * x(:, i-1) + G * aW(i-1,:)'*dt;  
     
     % Update
     P = inv( inv(Ppred) + H' * R' * H ); 
     K = P * H' * R'; 
-    x(:, i) = xpred + K * ([zW(i,1); aW(i,1); zW(i,2); aW(i,2); zW(i,3); aW(i,3)]  - H * xpred); 
+    x(:, i) = xpred + K * ([zW(i,1); zW(i,2); zW(i,3)] - H * xpred); 
+    
 end
 
-figure(1)
+figure(3)
 
-subplot(1,4,1)
-plot(tA, aW)
-title('Acceleration Measurement')
-xlabel('Time stamp (s)')
-ylabel('Position (m / s^2)')
+% subplot(2,2,1)
+% plot(tA, aW)
+% title('Acceleration Measurement')
+% xlabel('Time stamp (s)')
+% ylabel('Position (m / s^2)')
+% legend('{x}', 'y', 'z')
 
-subplot(1,4,2)
+subplot(2,2,1)
 plot(tA, zW)
 title('State observations (World)')
 xlabel('Time stamp (s)')
 ylabel('Position (mm)')
-legend('{x}_{w}', 'y_{w}', 'z_{w}')
+legend('{x}', 'y', 'z')
 xlim([min(tA) max(tA)])
 ylim([-1000 1000])
 
-subplot(1,4,3)
-plot(tA, x([1 5 9], :)')
+subplot(2,2,2)
+plot(tA, x([1 3 5], :)')
 title('State estimates (world)')
 xlabel('Time stamp (s)')
 ylabel('Position (mm)')
+legend('{x}', 'y', 'z')
 xlim([min(tA) max(tA)])
 ylim([-1000 1000])
 
-subplot(1,4,4)
-plot(tVpr, pVpr)
+subplot(2,2,3)
+plot(tA, pVpr)
 title('State absolute')
 xlabel('Time stamp (s)')
 ylabel('Position (mm)')
+legend('{x}', 'y', 'z')
 xlim([min(tVpr) max(tVpr)])
 ylim([-1000 1000])
+
+subplot(2,2,4)
+plot(tA, x([1,3,5],:)' - pVpr)
+title('State error')
+xlabel('Time stamp (s)')
+ylabel('Position (mm)')
+legend('{x}', 'y', 'z')
+xlim([min(tVpr) max(tVpr)])
+ylim([-1000 1000])
+
+% figure(4)
+% scatter(sqrt(pVpr(1,:).^2), (x(1,:)' - pVpr(1,:))^2)
