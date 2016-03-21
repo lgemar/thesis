@@ -2,9 +2,9 @@
 
 %% Load the test data
 DataFolder = (['C:\Users\Lukas Gemar\thesis\Analysis\Analysis-3-17\', 'Data\Sensor\']); 
-AllTestNames = {'roll1', 'pitch1', 'yaw1', 'no_manuever1', 'rollslow1', 'yawslow1'}; 
+AllTestNames = {'roll1', 'pitch1', 'yaw1', 'no_manuever1', 'rollslow1', 'yawslow1', 'all3'}; 
 
-TestName = AllTestNames{6}; 
+TestName = AllTestNames{7}; 
 
 SensorFile = [TestName, '.csv']; 
 SensorData = csvread([DataFolder, SensorFile]); SensorData = SensorData(2:end, :); 
@@ -26,8 +26,9 @@ omega = SensorData(:,9:11); % gyro measurements
 
 % Reference vectors
 g = [0; 0; 9.81]; % world coordinates
-% b = [cos(-pi/2-0.05)*1; sin(-pi/2-0.05)*1; 0]; % world coordinates
-b = z(1,4:6)'; 
+% b = [cos(pi/2)*1; sin(pi/2-0.05)*1; 0]; % world coordinates
+th = deg2rad(160);
+b = [cos(th) -sin(th) 0; sin(th) cos(th) 0; 0 0 1] * z(1,4:6)'; 
 
 figure(1)
 subplot(2,2,1)
@@ -105,8 +106,11 @@ qe = triadFun(g,mg,b,mb,eye(3,3)); % column-major quaternion
 
 % Initalize the covariance matrix, process noise, and measurement noise
 Sp = [deg2rad(10)^2 deg2rad(10)^2 deg2rad(15)^2]; Pe = diag(Sp); 
-Sq = 0.1*(1/3)*[2.8e-6 2.8e-6 2.8e-6]'; Q = diag(Sq); 
-Sr = (1/3)*[1.1e-6*ones(1,3) 17*ones(1,3)]'; R = diag(Sr); 
+% These two work really well: 
+% Sq = 20*(1/3)*[2.8e-6 2.8e-6 12*2.8e-6]'; Q = diag(Sq); 
+% Sr = 0.001*(1/3)*[1.1e-6*ones(1,3) 17*[1,1,1]]'; R = diag(Sr); 
+Sq = 20*(1/3)*[2.8e-6 2.8e-6 12*2.8e-6]'; Q = diag(Sq); 
+Sr = (1/3)*[200*1.1e-6*ones(1,3) 0.001*17*[1,1,1]]'; R = diag(Sr); 
 
 % Gyro gain and gyro gain reference
 pgain = zeros(N-1,3); 
@@ -128,7 +132,7 @@ for k = 2:N
     end
     
     % OR:  qp = Alpha * qe + 0.7 * XiMat( qe ) * DeltaTheta;
-    qp = [XiMat( qe ) qe] * [(0.7 * DeltaTheta); Alpha]; 
+    qp = [XiMat( qe ) qe] * [(0.72 * DeltaTheta); Alpha]; 
     qp = qp / norm( qp ); 
     
     % Store gyro input, estimation and reference
