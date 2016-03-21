@@ -110,7 +110,7 @@ Sp = [deg2rad(10)^2 deg2rad(10)^2 deg2rad(15)^2]; Pe = diag(Sp);
 % Sq = 20*(1/3)*[2.8e-6 2.8e-6 12*2.8e-6]'; Q = diag(Sq); 
 % Sr = 0.001*(1/3)*[1.1e-6*ones(1,3) 17*[1,1,1]]'; R = diag(Sr); 
 Sq = 20*(1/3)*[2.8e-6 2.8e-6 12*2.8e-6]'; Q = diag(Sq); 
-Sr = (1/3)*[200*1.1e-6*ones(1,3) 0.001*17*[1,1,1]]'; R = diag(Sr); 
+Sr = (1/3)*[200*1.1e-6*ones(1,3) 0.0008*17*[1,1,1]]'; R = diag(Sr); 
 
 % Gyro gain and gyro gain reference
 pgain = zeros(N-1,3); 
@@ -203,7 +203,8 @@ legend('yaw', 'pitch', 'roll')
 % plot( theta, qestT )
 % legend('w','x','y','z')
 title('Error')
-ylim([-181 181])
+ylim([-40 40])
+xlim([4.8 6.5])
 
 subplot(2,3,4)
 plot(t, pgain)
