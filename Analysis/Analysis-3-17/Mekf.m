@@ -2,9 +2,9 @@
 
 %% Load the test data
 DataFolder = (['C:\Users\Lukas Gemar\thesis\Analysis\Analysis-3-17\', 'Data\Sensor\']); 
-AllTestNames = {'roll1', 'pitch1', 'yaw1', 'no_manuever1', 'rollslow1', 'yawslow1', 'all3'}; 
+AllTestNames = {'roll1', 'pitch1', 'yaw1', 'no_manuever1', 'rollslow1', 'yawslow1', 'all3', 'yawstep2'}; 
 
-TestName = AllTestNames{7}; 
+TestName = AllTestNames{8}; 
 
 SensorFile = [TestName, '.csv']; 
 SensorData = csvread([DataFolder, SensorFile]); SensorData = SensorData(2:end, :); 
