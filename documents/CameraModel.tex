@@ -260,7 +260,7 @@ $$ \vec{v}_1 = \mat{ 0 \\ 0 \\ 9.81 } \tab \textrm{and} \tab \vec{v}_2 = \mat{ 0
 
 so that the gravity vector points down and the magnetometer vector points in the direction of magnetic North in Boston, relative to the world reference frame. The orthonormal vector triad representing the reference frame is given by, 
 
-$$ \vec{r}_1 = \frac{\vec{v}_1}{\| \vec{v}_1 \|}, \tab \vec{r}_2 = \frac{\vec{v}_1 \times \vec{v}_2}{\| \vec{v}_1 \times \vec{v}_2 \|}, \tab \vec{r}_3 = \vec{r}_1 \times \vec{r}_2 $$
+$$ 	\vec{r}_1 = \frac{\vec{v}_1}{\| \vec{v}_1 \|}, \tab \vec{r}_2 = \frac{\vec{v}_1 \times \vec{v}_2}{\| \vec{v}_1 \times \vec{v}_2 \|}, \tab \vec{r}_3 = \vec{r}_1 \times \vec{r}_2 $$
 
 Let $\vec{w}_1$ be the measurement of the normalized unit vector from the accelerometer and $\vec{w}_2$ be the measurement of the normalized unit vector from the magnetometer, then the orthonormal vector triads for the reference vectors are given by, 
 
@@ -423,7 +423,7 @@ The Kalman filter has three steps: (1) initialization, (2) time update, and (3) 
 During the time update, also known as the prediction step, the \textit{a priori} estimates for the state and the covariance matrix are given by the following equations: 
 
 $$ P{^{-}_{k+1}} = A_k P_k A_k^{T} + G_k Q_k G_k^{T} $$
-$$ \hat{x}{^{-}_{k+1}} = A_k \hat{k} + B_k u_k $$
+$$ \hat{x}{^{-}_{k+1}} = A_k \hat{x} + B_k u_k $$
 
 The measurement update converts the \textit{a priori} predictions for the state and covariance into their \textit{a posteriori} filtered estimates based on the observation of $z_k$: 
 

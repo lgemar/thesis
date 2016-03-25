@@ -2,9 +2,9 @@
 
 %% Load the test data
 DataFolder = (['C:\Users\Lukas Gemar\thesis\Analysis\Analysis-3-17\', 'Data\Sensor\']); 
-AllTestNames = {'roll1', 'pitch1', 'yaw1', 'no_manuever1', 'rollslow1', 'yawslow1', 'all3', 'yawstep2'}; 
+AllTestNames = {'yaw5-1', 'pitch5-1', 'roll5-1', 'roll1', 'pitch1', 'yaw1', 'no_manuever1', 'rollslow1', 'yawslow1', 'all2', 'yawstep2'}; 
 
-TestName = AllTestNames{8}; 
+TestName = AllTestNames{3}; 
 
 SensorFile = [TestName, '.csv']; 
 SensorData = csvread([DataFolder, SensorFile]); SensorData = SensorData(2:end, :); 
@@ -13,7 +13,7 @@ tSensor = SensorData(:,1)/1000; % it's in milliseconds
 N = size(SensorData,1); % Number of samples
 dt = mean(diff(tSensor)); % Simulation time step
 t = tSensor - min(tSensor); 
-
+    
 % Simulation variables
 qref = SensorData(:,2:5); % quaternion reference array
 qestT = zeros(N,4); % Triad estimates
@@ -27,7 +27,7 @@ omega = SensorData(:,9:11); % gyro measurements
 % Reference vectors
 g = [0; 0; 9.81]; % world coordinates
 % b = [cos(pi/2)*1; sin(pi/2-0.05)*1; 0]; % world coordinates
-th = deg2rad(160);
+th = deg2rad(165); % typical: th = deg2rad(160);
 b = [cos(th) -sin(th) 0; sin(th) cos(th) 0; 0 0 1] * z(1,4:6)'; 
 
 figure(1)
@@ -107,10 +107,10 @@ qe = triadFun(g,mg,b,mb,eye(3,3)); % column-major quaternion
 % Initalize the covariance matrix, process noise, and measurement noise
 Sp = [deg2rad(10)^2 deg2rad(10)^2 deg2rad(15)^2]; Pe = diag(Sp); 
 % These two work really well: 
-% Sq = 20*(1/3)*[2.8e-6 2.8e-6 12*2.8e-6]'; Q = diag(Sq); 
-% Sr = 0.001*(1/3)*[1.1e-6*ones(1,3) 17*[1,1,1]]'; R = diag(Sr); 
 Sq = 20*(1/3)*[2.8e-6 2.8e-6 12*2.8e-6]'; Q = diag(Sq); 
-Sr = (1/3)*[200*1.1e-6*ones(1,3) 0.0008*17*[1,1,1]]'; R = diag(Sr); 
+Sr = 0.001*(1/3)*[1.1e-6*ones(1,3) 17*[1,1,1]]'; R = diag(Sr); 
+% Sq = 20*(1/3)*[2.8e-6 2.8e-6 12*2.8e-6]'; Q = diag(Sq); 
+% Sr = (1/3)*[200*1.1e-6*ones(1,3) 0.0008*17*[1,1,1]]'; R = diag(Sr); 
 
 % Gyro gain and gyro gain reference
 pgain = zeros(N-1,3); 
@@ -132,7 +132,7 @@ for k = 2:N
     end
     
     % OR:  qp = Alpha * qe + 0.7 * XiMat( qe ) * DeltaTheta;
-    qp = [XiMat( qe ) qe] * [(0.72 * DeltaTheta); Alpha]; 
+    qp = [XiMat( qe ) qe] * [(0.68 * DeltaTheta); Alpha]; 
     qp = qp / norm( qp ); 
     
     % Store gyro input, estimation and reference
@@ -204,7 +204,6 @@ legend('yaw', 'pitch', 'roll')
 % legend('w','x','y','z')
 title('Error')
 ylim([-40 40])
-xlim([4.8 6.5])
 
 subplot(2,3,4)
 plot(t, pgain)
@@ -220,3 +219,80 @@ subplot(2,3,6)
 plot(t, inngain)
 title('Innovation gain: $\delta \vec{\theta}{^{(+)}}_k$', 'Interpreter', 'Latex')
 ylabel('Rad')
+
+% Yaw estimate error
+xyzref = rad2deg( quat2eul( qref ) ); 
+xyzest = rad2deg( quat2eul( qestK ) ); 
+xyzerror = rad2deg( quat2eul( qerrorK ) ); 
+
+figure(5)
+
+subplot(1,3,1)
+plot( t, xyzref(:,3), 'r' )
+% plot( theta, qref )
+% legend('w','x','y','z')
+title('Reference: $\theta_X$', 'Interpreter', 'Latex')
+ylim([-181 181])
+
+subplot(1,3,2)
+plot( t, xyzest(:,3), 'r')
+% plot( theta, qestT )
+% legend('w','x','y','z')
+title('Estimate: $\hat{\theta}_X$', 'Interpreter', 'Latex')
+ylim([-181 181])
+
+subplot(1,3,3)
+
+plot( t, xyzerror(:,3), 'r')
+% plot( theta, qestT )
+% legend('w','x','y','z')
+title('Error: $\hat{\theta}_X -\theta_X$ ', 'Interpreter', 'Latex')
+ylim([-40 40])
+
+figure(6)
+subplot(1,3,1)
+plot( t, xyzref(:,3), 'g' )
+% plot( theta, qref )
+% legend('w','x','y','z')
+title('Reference: $\theta_Y$', 'Interpreter', 'Latex')
+ylim([-181 181])
+
+subplot(1,3,2)
+plot( t, xyzest(:,3), 'g')
+% plot( theta, qestT )
+% legend('w','x','y','z')
+title('Estimate: $\hat{\theta}_Y$', 'Interpreter', 'Latex')
+ylim([-181 181])
+
+subplot(1,3,3)
+
+plot( t, xyzerror(:,3), 'g')
+% plot( theta, qestT )
+% legend('w','x','y','z')
+title('Error: $\hat{\theta}_Y -\theta_Y$ ', 'Interpreter', 'Latex')
+ylim([-40 40])
+
+figure(7)
+subplot(1,3,1)
+plot( t, xyzref(:,1), 'b' )
+% plot( theta, qref )
+% legend('w','x','y','z')
+title('Reference: $\theta_Z$', 'Interpreter', 'Latex')
+ylim([-181 181])
+
+subplot(1,3,2)
+plot( t, xyzest(:,1), 'b')
+% plot( theta, qestT )
+% legend('w','x','y','z')
+title('Estimate: $\hat{\theta}_Z$', 'Interpreter', 'Latex')
+ylim([-181 181])
+
+subplot(1,3,3)
+
+plot( t, xyzerror(:,1), 'b')
+% plot( theta, qestT )
+% legend('w','x','y','z')
+title('Error: $\hat{\theta}_Z -\theta_Z$ ', 'Interpreter', 'Latex')
+ylim([-40 40])
+
+

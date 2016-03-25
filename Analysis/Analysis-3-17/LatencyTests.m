@@ -117,10 +117,10 @@ dtsa = dtva - dtvs
 figure(3)
 subplot(1,2,1)
 plot(acorav)
-title('Image and ref autocorrelation')
+title('Position estimate and VICON autocorrelation')
 subplot(1,2,2)
 plot(acorsv)
-title('Sensor and ref autocorrelation')
+title('Accelerometer and VICON data autocorrelation')
 
 disp(['Latency is ', num2str(1000 * -(dtva - dtvs)), ' ms'])
 
@@ -136,12 +136,15 @@ dtsa = mean( tS - tA ) % offset between sensor clock and app clock, as measured 
 ayD = conv(ayD, ones(10,1)/10, 'same'); 
 
 figure; 
-subplot(1,2,1)
 plot(tS(2:end-1), aX(2:end-1), tS(2:end-1), azW((-las+2):((-las+2)+(length(tS)-2)-1)))
 legend('aX', 'azW')
-subplot(1,2,2)
+
+figure;
 plot(tS(2:end-1), aX(2:end-1), tS(2:end-1), ayD / 1000)
-legend('aX', 'ayD')
+legend('VICON', 'Tool Tracker')
+xlabel('Time (s)')
+ylabel('Acceleration (m/s^2)')
+title('Reference and estimated acceleration')
 
 
 

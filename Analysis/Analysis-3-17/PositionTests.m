@@ -10,7 +10,7 @@ ViconTestNames = {'TsTest', 'ClockAlign', 'ClockAlign2', 'AllTests', ...
                   'ClockAlign3', 'FailureTests'}; 
 
 % Read Unity Data file
-UnityTestName = AllTestNames{17}; 
+UnityTestName = AllTestNames{22}; 
 UnityFile = [UnityTestName, '.csv']; 
 UnityData = csvread([DataFolder, UnityFile]); UnityData = UnityData(2:end, :); 
 
@@ -49,8 +49,12 @@ tV = linspace(min(tV), max(tV), ceil( length(tV) * round(Fs) / round(Fv) ))';
 pV = resample(pV,round(Fs),round(Fv));
 
 % Recompute the time and position vectors relative to the trial start times
-tVpr = tV( tV > 0 & tV < max(tA) ); % tV' and pV' 
-pVpr = pV( tV > 0 & tV < max(tA), : ); 
+tVpr2 = tV( tV > 0 & tV < max(tA) ); % tV' and pV' 
+pVpr2 = pV( tV > 0 & tV < max(tA), : ); 
+
+tVpr = resample(tVpr2, length(tA), length(tVpr2) );
+pVpr = resample(pVpr2, length(tA), length(tVpr2) );
+    
 
 % Recompute the sample rate of the vicon data after resampling
 Tv = (max(tVpr) - min(tVpr)) / length(tVpr); disp(['Resampled vicon sample rate: ', num2str(1/Tv), ' Hz']); 
@@ -117,7 +121,10 @@ T = [43.2; -18.3; 476.8];
 zW = (wRc * zC' + repmat(T,1,size(zC,1)))';  
 
 % Raw vicon data with world measurements
+
+% naive error
 figure(2)
+naiveerr = zW(1:min(length(tA),length(pVpr)),:) - pVpr(1:min(length(tA),length(pVpr)),:); 
 
 subplot(1,3,1)
 plot( tVpr, pVpr )
@@ -130,7 +137,7 @@ legend('x', 'y', 'z')
 ylim([-800 800])
 
 subplot(1,3,3)
-plot( tA(1:length(pVpr),:), zW(1:length(pVpr),:) - pVpr )
+plot( tA, naiveerr )
 legend('x', 'y', 'z')
 ylim([-800 800])
 
@@ -235,6 +242,3 @@ ylabel('Position (mm)')
 legend('{x}', 'y', 'z')
 xlim([min(tVpr) max(tVpr)])
 ylim([-1000 1000])
-
-% figure(4)
-% scatter(sqrt(pVpr(1,:).^2), (x(1,:)' - pVpr(1,:))^2)
