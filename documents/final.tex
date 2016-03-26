@@ -1,0 +1,54 @@
+\documentclass{report}
+\usepackage{pdfpages}
+
+\usepackage[english]{babel}
+% \usepackage[utf8]{inputenc}
+\usepackage{inputenc}
+\usepackage{graphicx}
+\graphicspath{ {images/final/} }
+
+\usepackage[nottoc]{tocbibind}
+
+% Latex commands / macros
+    \newcommand{\mat}[2][ccccccccccccccccccccccccccccccccccccccccccccc]
+	    {\left[ \arraycolsep=4pt\def\arraystretch{1.5}
+				\begin{array}{#1} #2 \\ 
+				\end{array} 
+		\right]}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% TITLE PAGE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+% https://en.wikibooks.org/wiki/LaTeX/Title_Creation
+\begin{titlepage}
+
+	\title{The 3D Interaction Tool: A Pointing Device for Virtual Reality Applications}
+	\author{Lukas Gemar}
+	\date{March 26, 2016}
+	\maketitle
+
+\end{titlepage}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% START DOCUMENT
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{abstract}
+The 3D Interaction Tool is a hand-held device that enables a user to interact with virtual reality applications. Since both the position and orientation of the tool are tracked, user input with the tool accomplishes tasks such as selecting, translating, and rotating three-dimensional objects, or free-hand drawing in space. The tool¿s position is tracked by a software application that filters observations from a camera attached to the virtual reality display, and the orientation is found by means of observations from an inertial measurement unit attached to the tool itself. Simple computer-aided design and drawing applications demonstrate the capabilities of the 3D Interaction Tool. 
+\end{abstract}
+
+
+\begin{flushleft}
+
+Hello world.
+
+
+\bibliographystyle{unsrt}
+\bibliography{references}
+
+\end{flushleft}
+\end{document} 
