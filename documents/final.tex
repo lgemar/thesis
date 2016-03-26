@@ -178,7 +178,7 @@ As much as \$25 billion could be spent on virtual reality (VR) and augmented rea
 
 With the advent of virtual reality applications the following question must be answered: which of these input paradigms -- indirect or direct -- will prove most useful for interacting with virtual reality applications? While indirect input devices have achieved widespread popularity for two-dimensional displays, the direct input paradigm for VR applications embraces the immersiveness of VR experiences by enabling intuitive interactions for users. Direct input devices allow users to reach out and interact with the objects of their virtual space, just as they would with objects in their physical space. 
 
-\subsection{Requirements: Device tracking system}
+\subsection{Requirements: 12 DOF device tracking}
 
 In order to enable direct input with the interaction tool, the tool's tracking system must estimate both the position and orientation of the interaction tool. Additionally, rendering a virtual representation of the tool requires measuring its position and orientation relative to the virtual reality display orientation, given by the attitude matrix $\Ad$. To track the tool's absolute trajectory, its position is determined relative to the world -- that is, relative to a non-accelerating, inertial coordinate system in the user's physical environment. The position and orientation of the tool in the world coordinates of the inertial frame are $\pf$ and $\At$, respectively. The position of the tool in the coordinate frame of the virtual reality display is denoted by a 'prime' sign: the tip or front of the tool in display coordinates is $\pfpr$. Thus, there are four tracking targets: $\pf$, $\At$, $\pfpr$, and $\Ad$; these are shown in Figure \ref{fig:requirements}. 
 
@@ -219,6 +219,31 @@ The performance requirements presented in Figure \ref{fig:performance} must be m
 
 \section{Tool Tracking Model}
 
+\subsection{Tracking Geometry 1: World-referenced}
+
+The world-referenced tracking geometry is shown in Figure \ref{fig:worldtopo}.
+
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=1\textwidth]{WorldTopo}
+	\end{center}
+	\caption{Position tracking with a world-referenced geometry}
+	\label{fig:worldtopo}
+\end{figure}
+
+\subsection{Tracking Geometry 2: Display-referenced}
+
+The display-referenced tracking geometry is shown in Figure \ref{fig:displaytopo}.
+
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=1\textwidth]{DisplayTopo}
+	\end{center}
+	\caption{Position tracking with a display-referenced geometry}
+	\label{fig:displaytopo}
+\end{figure}
+
+\subsection{Model Selection: Display-referenced tracking}
 
 \subsection{Tracking measurements}
 
