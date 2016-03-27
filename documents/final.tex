@@ -3,6 +3,11 @@
 \usepackage{float}
 \setlength{\columnsep}{1cm}
 
+% Center the section headers
+\usepackage{sectsty}
+\usepackage{lipsum}
+\sectionfont{\centering} % center just the titles
+
 \usepackage[a4paper,right=18mm,left=18mm,top=25mm,bottom=25mm]{geometry} % https://www.sharelatex.com/blog/2013/08/06/thesis-series-pt2.html
 \usepackage{pdfpages}
 
@@ -77,6 +82,10 @@
 	\newcommand{\Ppfpr}{\mathbf{P}'_{pf}}
 
 	\newcommand{\el}{\vec{l}}
+
+    \renewcommand{\thesection}{\Roman{section}} 
+    \renewcommand{\thesubsection}{\Alph{subsection}}
+    \renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}
 
 
 
