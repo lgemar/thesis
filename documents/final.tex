@@ -1,6 +1,9 @@
 \documentclass{article}
+\usepackage{multicol}
+\usepackage{float}
+\setlength{\columnsep}{1cm}
 
-\usepackage[a4paper,width=150mm,top=25mm,bottom=25mm]{geometry} % https://www.sharelatex.com/blog/2013/08/06/thesis-series-pt2.html
+\usepackage[a4paper,right=18mm,left=18mm,top=25mm,bottom=25mm]{geometry} % https://www.sharelatex.com/blog/2013/08/06/thesis-series-pt2.html
 \usepackage{pdfpages}
 
 \usepackage[english]{babel}
@@ -102,6 +105,7 @@
 The 3D Interaction Tool is a hand-held device that enables a user to interact with virtual reality applications. Since both the position and orientation of the tool are tracked, user input with the tool accomplishes tasks such as selecting, translating, and rotating three-dimensional objects, or free-hand drawing in space. The tool¿s position is tracked by a software application that filters observations from a camera attached to the virtual reality display, and the orientation is found by means of observations from an inertial measurement unit attached to the tool itself. Simple computer-aided design and drawing applications demonstrate the capabilities of the 3D Interaction Tool. 
 \end{abstract}
 
+\begin{multicols}{2}
 \begin{flushleft}
 
 \section{Nomenclature}
@@ -188,9 +192,9 @@ With the advent of virtual reality applications the following question must be a
 
 The usability requirements presented in Figure \ref{fig:usability} must be met for the tool to succeed as an \textit{input} device for VR software applications.
 
-\begin{figure}
+\begin{figure}[H]
 	\begin{center}
-		\includegraphics[width=1\textwidth]{Usability}
+		\includegraphics[width=0.5\textwidth]{Usability}
 	\end{center}
 	\caption{Usability design objectives}
 	\label{fig:usability}
@@ -200,9 +204,9 @@ The usability requirements presented in Figure \ref{fig:usability} must be met f
 
 The performance requirements presented in Figure \ref{fig:performance} must be met for the tool to succeed as a \textit{direct} input device for VR software applications.
 
-\begin{figure}
+\begin{figure}[H]
 	\begin{center}
-		\includegraphics[width=1\textwidth]{Performance}
+		\includegraphics[width=0.5\textwidth]{Performance}
 	\end{center}
 	\caption{Performance design objectives}
 	\label{fig:performance}
@@ -214,9 +218,9 @@ The performance requirements presented in Figure \ref{fig:performance} must be m
 
 In order to enable direct input with the interaction tool, the tool's tracking system must estimate both the position and orientation of the interaction tool. Additionally, rendering a virtual representation of the tool requires measuring its position and orientation relative to the virtual reality display orientation, given by the attitude matrix $\Ad$. To track the tool's absolute trajectory, its position is determined relative to the world -- that is, relative to a non-accelerating, inertial coordinate system in the user's physical environment. The position and orientation of the tool in the world coordinates of the inertial frame are $\pf$ and $\At$, respectively. The position of the tool in the coordinate frame of the virtual reality display is denoted by a 'prime' sign: the tip or front of the tool in display coordinates is $\pfpr$. Thus, there are four tracking targets: $\pf$, $\At$, $\pfpr$, and $\Ad$; these are shown in Figure \ref{fig:requirements}. 
 
-\begin{figure}
+\begin{figure}[H]
 	\begin{center}
-		\includegraphics[width=1\textwidth]{requirements}
+		\includegraphics[width=0.5\textwidth]{requirements}
 	\end{center}
 	\caption{Position and orientation tracking requirements}
 	\label{fig:requirements}
@@ -230,9 +234,9 @@ The geometry of the tool tracking system affects both the usability and the perf
 
 The world-referenced tracking geometry is shown in Figure \ref{fig:worldtopo}.
 
-\begin{figure}
+\begin{figure}[H]
 	\begin{center}
-		\includegraphics[width=1\textwidth]{WorldTopo}
+		\includegraphics[width=0.5\textwidth]{WorldTopo}
 	\end{center}
 	\caption{Position tracking with a world-referenced geometry}
 	\label{fig:worldtopo}
@@ -242,9 +246,9 @@ The world-referenced tracking geometry is shown in Figure \ref{fig:worldtopo}.
 
 The display-referenced tracking geometry is shown in Figure \ref{fig:displaytopo}.
 
-\begin{figure}
+\begin{figure}[H]
 	\begin{center}
-		\includegraphics[width=1\textwidth]{DisplayTopo}
+		\includegraphics[width=0.5\textwidth]{DisplayTopo}
 	\end{center}
 	\caption{Position tracking with a display-referenced geometry}
 	\label{fig:displaytopo}
@@ -262,9 +266,9 @@ The world-referenced tracking geometry requires a fixed coordinate system in the
 
 A combination between optical and inertial sensors was chosen to track the 3D Interaction Tool's position and orientation. The chart in Figure \ref{fig:trackingtech} summarizes the comparison between various alternatives for the choice of the tracking technology.
 
-\begin{figure}
+\begin{figure}[H]
 	\begin{center}
-		\includegraphics[width=1\textwidth]{TrackingTech}
+		\includegraphics[width=0.5\textwidth]{TrackingTech}
 	\end{center}
 	\caption{Comparison of five tracking technologies}
 	\label{fig:trackingtech}
@@ -294,18 +298,21 @@ $$ \Atpr = \Ad \Atinv \el $$
 \subsubsection{Orientation estimation error}
 \subsubsection{Model error}
 
-% Covariance equations
-$$ \Pprpr = \Ppspr + \crossmat{\pspr} \Pacpr \crossmat{\pspr}^T $$
-$$ \Ppr = \Acinv ( \Ppspr + \crossmat{\pspr} \Pacpr \crossmat{\pspr}^T ) (\Acinv)^T + \Ppc $$
-$$ \Ppf = \Ppr + \Atinv \crossmat{\el} \Patpr \crossmat{\el}^T (\Atinv)^T $$
-$$ \Ppfpr = \Ad ( \Ppf + \Ppd ) \Ad{^T} $$
-$$ \Ppfpr = \Ppspr + \crossmat{\pspr} \Pacpr \crossmat{\pspr}^T + \Atpr \crossmat{\el} \Patpr \crossmat{\el}^T (\Atpr)^T + 2\Ad\Ppd\Ad{^T} $$
 
 \subsection{Experimental Setup}
 
 \section{Position Tracking}
 
 \section{Orientation Tracking}
+
+\section{Performance Analysis}
+
+% Covariance equations
+$$ \Pprpr = \Ppspr + \crossmat{\pspr} \Pacpr \crossmat{\pspr}^T $$
+$$ \Ppr = \Acinv ( \Ppspr + \crossmat{\pspr} \Pacpr \crossmat{\pspr}^T ) (\Acinv)^T + \Ppc $$
+$$ \Ppf = \Ppr + \Atinv \crossmat{\el} \Patpr \crossmat{\el}^T (\Atinv)^T $$
+$$ \Ppfpr = \Ad ( \Ppf + \Ppd ) \Ad{^T} $$
+$$ \Ppfpr = \Ppspr + \crossmat{\pspr} \Pacpr \crossmat{\pspr}^T + \Atpr \crossmat{\el} \Patpr \crossmat{\el}^T (\Atpr)^T + 2\Ad\Ppd\Ad{^T} $$
 
 \section{Conclusion}
 
@@ -318,4 +325,5 @@ $$ \Ppfpr = \Ppspr + \crossmat{\pspr} \Pacpr \crossmat{\pspr}^T + \Atpr \crossma
 \bibliography{references}
 
 \end{flushleft}
+\end{multicols}
 \end{document} 
