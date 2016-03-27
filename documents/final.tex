@@ -1,4 +1,6 @@
 \documentclass{article}
+
+\usepackage[a4paper,width=150mm,top=25mm,bottom=25mm]{geometry} % https://www.sharelatex.com/blog/2013/08/06/thesis-series-pt2.html
 \usepackage{pdfpages}
 
 \usepackage[english]{babel}
@@ -170,7 +172,7 @@ $ \Patpr \equiv $ covariance of the interaction tool attitude angular error \\
 
 \section{Introduction}
 
-\subsection{Motivation: Direct input for VR}
+\subsection{Motivation}
 
 As much as \$25 billion could be spent on virtual reality (VR) and augmented reality (AR) software applications by 2025 \cite{Bloomberg-01-13}. There are two primary modes of user-input that are possible for these applications: indirect and direct. Indirect input devices translate the user's physical movements into the motion of a virtual cursor by means of a fixed transformation. Common examples of indirect input devices are a mouse or joystick. Direct input devices also translate physical to virtual movements, but this transformation is one-to-one. For example, a touch screen is a direct input device because the physical location of the user's press is colocated with the virtual click. 
 
@@ -178,22 +180,11 @@ As much as \$25 billion could be spent on virtual reality (VR) and augmented rea
 
 With the advent of virtual reality applications the following question must be answered: which of these input paradigms -- indirect or direct -- will prove most useful for interacting with virtual reality applications? While indirect input devices have achieved widespread popularity for two-dimensional displays, the direct input paradigm for VR applications embraces the immersiveness of VR experiences by enabling intuitive interactions for users. Direct input devices allow users to reach out and interact with the objects of their virtual space, just as they would with objects in their physical space. 
 
-\subsection{Requirements: 12 DOF device tracking}
-
-In order to enable direct input with the interaction tool, the tool's tracking system must estimate both the position and orientation of the interaction tool. Additionally, rendering a virtual representation of the tool requires measuring its position and orientation relative to the virtual reality display orientation, given by the attitude matrix $\Ad$. To track the tool's absolute trajectory, its position is determined relative to the world -- that is, relative to a non-accelerating, inertial coordinate system in the user's physical environment. The position and orientation of the tool in the world coordinates of the inertial frame are $\pf$ and $\At$, respectively. The position of the tool in the coordinate frame of the virtual reality display is denoted by a 'prime' sign: the tip or front of the tool in display coordinates is $\pfpr$. Thus, there are four tracking targets: $\pf$, $\At$, $\pfpr$, and $\Ad$; these are shown in Figure \ref{fig:requirements}. 
-
-\begin{figure}
-	\begin{center}
-		\includegraphics[width=1\textwidth]{requirements}
-	\end{center}
-	\caption{Position and orientation tracking requirements}
-	\label{fig:requirements}
-\end{figure}
 
 
 \subsection{Background}
 
-\subsection{Objectives: Tool usability}
+\subsection{Usability Objectives}
 
 The usability requirements presented in Figure \ref{fig:usability} must be met for the tool to succeed as an \textit{input} device for VR software applications.
 
@@ -205,7 +196,7 @@ The usability requirements presented in Figure \ref{fig:usability} must be met f
 	\label{fig:usability}
 \end{figure}
 
-\subsection{Objectives: Tool tracking performance}
+\subsection{Performance Objectives}
 
 The performance requirements presented in Figure \ref{fig:performance} must be met for the tool to succeed as a \textit{direct} input device for VR software applications.
 
@@ -217,9 +208,25 @@ The performance requirements presented in Figure \ref{fig:performance} must be m
 	\label{fig:performance}
 \end{figure}
 
-\section{Tool Tracking Model}
+\section{Tracking System Design}
 
-\subsection{Tracking Geometry 1: World-referenced}
+\subsection{Requirements}
+
+In order to enable direct input with the interaction tool, the tool's tracking system must estimate both the position and orientation of the interaction tool. Additionally, rendering a virtual representation of the tool requires measuring its position and orientation relative to the virtual reality display orientation, given by the attitude matrix $\Ad$. To track the tool's absolute trajectory, its position is determined relative to the world -- that is, relative to a non-accelerating, inertial coordinate system in the user's physical environment. The position and orientation of the tool in the world coordinates of the inertial frame are $\pf$ and $\At$, respectively. The position of the tool in the coordinate frame of the virtual reality display is denoted by a 'prime' sign: the tip or front of the tool in display coordinates is $\pfpr$. Thus, there are four tracking targets: $\pf$, $\At$, $\pfpr$, and $\Ad$; these are shown in Figure \ref{fig:requirements}. 
+
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=1\textwidth]{requirements}
+	\end{center}
+	\caption{Position and orientation tracking requirements}
+	\label{fig:requirements}
+\end{figure}
+
+\subsection{Geometry}
+
+The geometry of the tool tracking system affects both the usability and the performance of the interaction tool. The display-referenced geometry is chosen because it eliminates the burden on the user to pre-calibrate their environment before providing direct input to VR applications. At the same time, this geometry is compatible with VR applications with which a user interacts while seated.
+
+\subsubsection{Option 1: World-referenced geometry}
 
 The world-referenced tracking geometry is shown in Figure \ref{fig:worldtopo}.
 
@@ -231,7 +238,7 @@ The world-referenced tracking geometry is shown in Figure \ref{fig:worldtopo}.
 	\label{fig:worldtopo}
 \end{figure}
 
-\subsection{Tracking Geometry 2: Display-referenced}
+\subsubsection{Option 2: Display-referenced geometry}
 
 The display-referenced tracking geometry is shown in Figure \ref{fig:displaytopo}.
 
@@ -243,15 +250,35 @@ The display-referenced tracking geometry is shown in Figure \ref{fig:displaytopo
 	\label{fig:displaytopo}
 \end{figure}
 
-\subsection{Model Selection: Display-referenced tracking}
+\subsubsection{Geometry Selection: Comparing portability and tracking volume}
 
-\subsection{Tracking measurements}
+Tracking geometries 1 and 2 have advantages and disadvantages when evaluated using the usability design objectives. Relative to the usability criteria, the two geometries differ greatly in their portability and tracking volume. 
+
+\medskip
+
+The world-referenced tracking geometry requires a fixed coordinate system in the user's physical environment, decreasing portability by increasing the configuration overhead for using the direct input device. However, once this coordinate system is established, the user can provide direct input to a VR application over a very large tracking volume, up to the size of the room in which the tracking system is located. The display-referenced geometry, on the other hand, has the advantage of enabling a user to provide direct input to a VR application without pre-calibrating the physical environment in which they are using the VR display. The tradoff is that the tracking volume is small. Since the origin of the world coordinate system in the display-referenced geometry is located beneath the user's head, the user must remain seated while using a direct input device with a display-referenced tracking geometry.
+
+\subsection{Technology}
+
+A combination between optical and inertial sensors was chosen to track the 3D Interaction Tool's position and orientation. The chart in Figure \ref{fig:trackingtech} summarizes the comparison between various alternatives for the choice of the tracking technology.
+
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=1\textwidth]{TrackingTech}
+	\end{center}
+	\caption{Comparison of five tracking technologies}
+	\label{fig:trackingtech}
+\end{figure}
+
+\subsection{Final Design}
+
+\subsubsection{Tracking measurements}
 
 Not all of these three tracking targets are measured directly. The tracking targets are inferred from the measurements of the position of the rear of the interaction tool relative to the camera, the attitude of the camera, and the attitude of the tool. The position of the tool relative to the camera is denoted by $\pspr$, the attitude of the camera relative to the inertial coordinate system by $\Ac$ and the attitude of the tool relative to the inertial coordinate system by $\At$. The vector $\pspr$ is measured by finding the .
 
-\subsection{Inferring the tool position}
+\subsubsection{Inferring the tool position}
 
-\subsection{Inferring the tool attitude}
+\subsubsection{Inferring the tool attitude}
 
 % Position and attitude equations
 $$ \pr = \Acinv \pspr - \pc $$
@@ -259,13 +286,31 @@ $$ \pf = \pr + \Atinv \el $$
 $$ \pfpr = \Ad (\pf + \pd) $$
 $$ \Atpr = \Ad \Atinv \el $$
 
+        
+
+\subsection{Error Analysis}
+
+\subsubsection{Position estimation error}
+\subsubsection{Orientation estimation error}
+\subsubsection{Model error}
+
 % Covariance equations
 $$ \Pprpr = \Ppspr + \crossmat{\pspr} \Pacpr \crossmat{\pspr}^T $$
 $$ \Ppr = \Acinv ( \Ppspr + \crossmat{\pspr} \Pacpr \crossmat{\pspr}^T ) (\Acinv)^T + \Ppc $$
 $$ \Ppf = \Ppr + \Atinv \crossmat{\el} \Patpr \crossmat{\el}^T (\Atinv)^T $$
 $$ \Ppfpr = \Ad ( \Ppf + \Ppd ) \Ad{^T} $$
 $$ \Ppfpr = \Ppspr + \crossmat{\pspr} \Pacpr \crossmat{\pspr}^T + \Atpr \crossmat{\el} \Patpr \crossmat{\el}^T (\Atpr)^T + 2\Ad\Ppd\Ad{^T} $$
-        
+
+\subsection{Experimental Setup}
+
+\section{Position Tracking}
+
+\section{Orientation Tracking}
+
+\section{Conclusion}
+
+\section{Future Work}
+
 
 
 
