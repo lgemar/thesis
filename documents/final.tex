@@ -3,8 +3,10 @@
 \usepackage{float}
 \setlength{\columnsep}{1cm}
 
+\usepackage{breakcites} % break citations so they don't spill over margin
 % Center the section headers
 \usepackage{sectsty}
+% \usepackage{titlesec}
 \usepackage{lipsum}
 \sectionfont{\centering} % center just the titles
 
@@ -12,12 +14,12 @@
 \usepackage{pdfpages}
 
 \usepackage[english]{babel}
-% \usepackage[utf8]{inputenc}
 \usepackage{inputenc}
-\usepackage{url}
 
+ % insert clickable references and urls
+\usepackage{url}
 \usepackage{hyperref}
-\graphicspath{ {images/final/} }
+\graphicspath{ {images/final/} } % image path
 
 \usepackage[nottoc]{tocbibind}
 
@@ -81,12 +83,16 @@
 	\newcommand{\Pprpr}{\mathbf{P}'_{pr}}
 	\newcommand{\Ppfpr}{\mathbf{P}'_{pf}}
 
+	% Tool length macro
 	\newcommand{\el}{\vec{l}}
 
-    \renewcommand{\thesection}{\Roman{section}} 
-    \renewcommand{\thesubsection}{\Alph{subsection}}
-    \renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}
+	% Section header commands
+    \renewcommand{\thesection}{\Roman{section}.} 
+    \renewcommand{\thesubsection}{\Alph{subsection}.}
+    \renewcommand{\thesubsubsection}{\thesubsection\arabic{subsubsection}}
 
+	% Miscelanous macros
+	\newcommand{\tab}{ \textrm{ \ \ \ \ } }
 
 
 
@@ -183,6 +189,10 @@ $ \Pacpr \equiv $ covariance of the tracking camera attitude angular error \\
 $ \Padpr \equiv $ covariance of the display attitude angular error \\
 $ \Patpr \equiv $ covariance of the interaction tool attitude angular error \\
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% INTRODUCTION
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \section{Introduction}
 
 \subsection{Motivation}
@@ -192,7 +202,6 @@ As much as \$25 billion could be spent on virtual reality (VR) and augmented rea
 \medskip
 
 With the advent of virtual reality applications the following question must be answered: which of these input paradigms -- indirect or direct -- will prove most useful for interacting with virtual reality applications? While indirect input devices have achieved widespread popularity for two-dimensional displays, the direct input paradigm for VR applications embraces the immersiveness of VR experiences by enabling intuitive interactions for users. Direct input devices allow users to reach out and interact with the objects of their virtual space, just as they would with objects in their physical space. 
-
 
 
 \subsection{Background}
@@ -220,6 +229,10 @@ The performance requirements presented in Figure \ref{fig:performance} must be m
 	\caption{Performance design objectives}
 	\label{fig:performance}
 \end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Tracking system design
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Tracking System Design}
 
@@ -310,18 +323,188 @@ $$ \Atpr = \Ad \Atinv \el $$
 
 \subsection{Experimental Setup}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Position tracking
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \section{Position Tracking}
 
+\subsection{Measurement Model}
+
+The following is a model of a single frame from the camera. In this frame, shown in image Figure \ref{fig:computervis} the red circular object represents the back of the interaction tool. The back of the interaction tool is called the target. The width of the target along the $x$ dimension of the image is $d_{u}$. 
+
+\medskip
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[width=0.5\textwidth]{computerVision}
+	\end{center}
+	\caption{Computer vision tracking model}
+	\label{fig:computervis}
+\end{figure}
+
+\medskip
+
+The midpoint of the target in the ideal undistorted image is $\bf{x^u_E} = \mat{ x_u & y_u }^{T}$. The center of the undistorted image is $c_x$ in the x direction and $c_y$ in the y direction. The focal lengths in the x and y directions are $f_x$ and $f_y$, respectively. These parameters are found through the camera calibration routine. The measurements of the center of the target and its width are related to the hidden state $\bf{\bf{x_C}} = \mat{ x_C & y_C & z_C }^{T}$ in the following way: 
+
+\[
+    \bf{\bf{y}} = h(\bf{\bf{x}})
+        = \mat{x_u \\ y_u \\ d_{u} }
+        = \mat{ \frac{f_x x_c}{z_c} + c_x \\ 
+             \frac{f_y y_c}{z_c} + c_y \\ 
+             \frac{d_c}{z_c \sqrt{\frac{1}{f_x^{2}} + \frac{1}{f_y^{2}}}}
+           }
+\]
+
+These relationships are found through using a simple pin-hole camera model \cite{Tsai1987}.
+
+\subsection{Camera Calibration}
+
+The measurement model requires knowledge of the intrinsic camera parameters, $f_x, f_y, c_x, c_y$, and the radial and tangential distortion factors. There are two steps to translating a point from camera coordinates to image coordinates \cite{Tsai1987}. First, the pin-hole camera model shows how to find the ideal image coordinates of an object, $(\bf{x_u}, \bf{y_u})$ based on the position of the object in camera coordinates, $(x, y, z)$: 
+
+$$ \bf{x_u} = f_x \frac{x}{z} $$
+$$ \bf{y_u} = f_y \frac{y}{z} $$
+
+Second, the radial and tangential distortion relations show how the actual image coordinates, $(\bf{x_u}, \bf{y_u})$, relate to the image coordinates on the actual or distorted image plane, $(\bf{x_d}, \bf{y_d})$. The radial distortion correction equation is as follows: \\
+
+$$ \bf{x_u} = x_d (1 + k_1 r^2 + k_2 r^4 + k_3 r^6) $$
+$$ \bf{y_u} = y_d (1 + k_1 r^2 + k_2 r^4 + k_3 r^6) $$
+
+and the tangential distortion equation is given by, 
+
+$$ \bf{x_u} = x_d + (2 p_1 x y + p_2 (r^2 + 2x^2))$$
+$$ \bf{y_u} = y_d + (p_1 (r^2 + 2y^2) + 2p_2 x y)$$
+
+Thus, the five distortion parameters are summarized in a vector $D$: 
+
+$$D = \mat{ k_1 & k_2 & p_1 p_2 & k_3 }$$
+
+The calibration parameters are discovered by using an open source implementation provided by OpenCV. The camera collects a series of images that contain a checkerboard pattern. The calibration computes the transformation from the image coordinates of the checkerboard to its real world coordinates. The calibration images look like the ones in figure 1 below. 
+
+\begin{figure}[H]
+    \begin{center}$
+        \begin{array}{cc}
+            \includegraphics[width=0.2\textwidth]{image1} &
+            \includegraphics[width=0.2\textwidth]{image2} \\
+            \includegraphics[width=0.2\textwidth]{image3} &
+            \includegraphics[width=0.2\textwidth]{image4} \\
+        \end{array}$
+    \end{center}
+    \caption{Camera calibration routine}
+    \label{fig:cameracalib}
+\end{figure}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Orientation tracking
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \section{Orientation Tracking}
+
+The orientation of the interaction tool relative to the world coordinate frame can be represented in a number of ways. The two representations that will be important here are the attitude matrix and the attitude quaternion. First, the attitude of the orientation tool can be described by the attitude matrix $A$. The attitude matrix typically maps a vector in the reference frame to a vector in the the body frame \cite{Markley2007}. This mapping is given by the relation, 
+
+\[ \bf{b} = A \bf{r} \]
+
+Second, the attitude of the interaction tool can be represented as a quaternion. A rotation in three-dimensions is equivalent to an axis of rotation and and angle of rotation. If $\hat{n}$ is the axis of a rotation and $\theta$ is the angle of the rotation, then the quaternion $\overline{q}$ represents the attitude: 
+
+\[ \overline{q} = \mat{\vec{q} \\ q_4} \] 
+
+with $\vec{q} = \hat{n} \sin{\frac{\theta}{2}}$ and $q_4 = \cos{\frac{\theta}{2}}$. The quaternion must have length 1: $\overline{q}^T \overline{q} = 1$. 
+
+The attitude matrix and the quaternion representing attitude are related by the following equation, where $A$ is a function of $\overline{q}$ \cite{Shuster1982}: 
+
+\[ A(\overline{q}) = (q_4^2 - {\| \vec{q} \|}^2) I_{3x3} + 2 \vec{q}\vec{q}^T - 2 q_4 [\vec{q}\times] \]
+
+where ${[\vec{q}\times}]$ is the skew-symmetric cross product matrix, 
+
+\[ [\vec{q}\times] = \mat{ 0 & -q_3 & q_2 \\ q_3 & 0 & -q_1 \\ -q_2 & q_1 & 0} \]
+
+The relationship between $A$ and $\overline{q}$ can also be expressed as the product of two matrices \cite{Markley2007}: 
+
+\[ A(\overline{q}) = \Xi(\overline{q})^{T} \Psi(\overline{q}) \]
+
+with 
+
+\[ \Xi(\overline{q}) = \mat{q_4 \bf{I}_{3x3} + [\vec{q}\times] \\ -\vec{q}^T } \]
+
+\[ \Psi(\overline{q}) = \mat{q_4 \bf{I}_{3x3} - [\vec{q}\times] \\ -\vec{q}^T } \]
+
+\subsection{TRIAD Attitude Estimation}
+
+The TRIAD estimation method finds the attitude matrix $A$ that maps three reference frame vectors $\vec{r}_k$ to their corresponding body frame vectors $\vec{b}_k$ for $k = 1, 2, 3$ \cite{Shuster2004}. Two observations of reference frame vectors provide sufficient information to compute a right-handed orthonormal triad of vectors in the reference frame. If $\vec{v}_1$ and $\vec{v}_2$ are reference frame vectors for the accelerometer and the magnetometer, respecitively, then 
+
+$$ \vec{v}_1 = \mat{ 0 \\ 0 \\ 9.81 } \tab \textrm{and} \tab \vec{v}_2 = \mat{ 0.3 & \\ -1 & \\ 0 } $$ 
+
+so that the gravity vector points down and the magnetometer vector points in the direction of magnetic North in Boston, relative to the world reference frame. The orthonormal vector triad representing the reference frame is given by, 
+
+$$ 	\vec{r}_1 = \frac{\vec{v}_1}{\| \vec{v}_1 \|}, \tab \vec{r}_2 = \frac{\vec{v}_1 \times \vec{v}_2}{\| \vec{v}_1 \times \vec{v}_2 \|}, \tab \vec{r}_3 = \vec{r}_1 \times \vec{r}_2 $$
+
+Let $\vec{w}_1$ be the measurement of the normalized unit vector from the accelerometer and $\vec{w}_2$ be the measurement of the normalized unit vector from the magnetometer, then the orthonormal vector triads for the reference vectors are given by, 
+
+$$ \vec{b}_1 = \frac{\vec{w}_1}{\| \vec{w}_1 \|}, \tab \vec{b}_2 = \frac{\vec{w}_1 \times \vec{w}_2}{\| \vec{w}_1 \times \vec{w}_2 \|}, \tab \vec{b}_3 = \vec{w}_1 \times \vec{w}_2 $$
+
+If there was no noise in the system, then it would be the case that $\vec{b}_k = A \vec{r}_k$ for $k=1,2,3$. An equivalent way of writing this in matrix form is the following: 
+
+$$ M_b = A M_r $$ 
+
+where 
+
+$$ M_b = \mat{ \vec{b}_1 & \vec{b}_2 & \vec{b}_3 } $$
+$$ M_r = \mat{ \vec{r}_1 & \vec{r}_2 & \vec{r}_3 } $$
+
+Since $M_r$ is an orthogonal matrix, its inverse is equal to its transpose: $M_r^{-1} = M_r^{T}$. Thus, the solution for the attitude matrix is, 
+
+$$ A = M_b M_r^{T} $$
+
+\subsection{Dynamic Model for Rotations}
+
+The rate of change of the attitude can be written in the form of a general state space model: 
+
+\[ \dot{\vec{x}} = A(\vec{x}, t) \vec{x} + B(\vec{x}, t) \vec{u} \]
+
+The kinematic equation for the change in attitude as a function of the angular rate can be written as a rate of change of the attitude matrix or a rate of change in the quaternion \cite{Shuster1982}. The angular velocity vector is given by $\vec{\omega}$. The rate of change of the attitude matrix is, 
+
+\[ \dot{A}(t) = [\vec{\omega}\times] A(t) \]
+
+In this equation, $[\vec{\omega}\times]$ is an instance of the state transition matrix $A(\vec{x}, t)$ from the general schema for a state space model. The kinematic relation for the rate of change of the quaternion can be written in the following two ways: 
+
+\[ \dot{\overline{q}} = \frac{1}{2} \Omega( \vec{\omega} ) \overline{q} \]
+
+\[ \dot{\overline{q}} = \frac{1}{2} \Xi( \overline{q} )\vec{\omega} \]
+
+where the first relation is a state space model with state transition matrix $A(\vec{\omega}) = \Omega(\omega)$, where the state transition matrix is a function of the angular rate vector $\vec{\omega}$:
+
+\[ \Omega(\vec{\omega}) = \mat{ -[\vec{\omega}\times] & \vec{w} \\ -\vec{\omega}^T & 0 } \] 
+
+The second kinematic equation for the rate of change of the quaternion is an instance of the schema for the state space model where the angular rate $\vec{\omega}$ is treated as the input $\vec{u}$ to the system and the input matrix $B(\overline{q}) = \Xi(\overline{q})$ is a function of the current attitude $\overline{q}$. 
+
+\medskip
+
+There are two good reasons to use the quaternion representation of attitude: first, the rate of change of the quaternion is linearly related to the state of the quaternion; and second, successive rotations are computed by taking the product of quaternions \cite{Markley2007}. The following identity holds of the composition of quaternions \cite{Shuster1982}: 
+
+\[ A(\overline{q}_1) A(\overline{q}_2) = A(\overline{q}_1 \otimes \overline{q}_2) \]
+
+with the operation $A(\overline{q})$ finding the attitude matrix $A$ that corresponds with the quaternion $\overline{q}$. Following the notation in \cite{Markley2007}, the product of the quaternion is linear in each of the quaternions $\overline{q}_1$ and $\overline{q}_2$: 
+
+\[ \overline{q}_1 \otimes \overline{q}_2 = \mat{ \Psi({\overline{q}_1}) & \overline{q}_1} \overline{q}_2 = \mat{ \Xi({\overline{q}_1}) & \overline{q}_1 } \overline{q}_2 \]
+
+The inverse of the quaternion is found by negating the imaginary component of the quaternion: 
+
+\[ \overline{q}^{-1} = \mat{ -\vec{q} \\ q_4 } \]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Performance Analysis
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 \section{Performance Analysis}
 
 % Covariance equations
-$$ \Pprpr = \Ppspr + \crossmat{\pspr} \Pacpr \crossmat{\pspr}^T $$
-$$ \Ppr = \Acinv ( \Ppspr + \crossmat{\pspr} \Pacpr \crossmat{\pspr}^T ) (\Acinv)^T + \Ppc $$
-$$ \Ppf = \Ppr + \Atinv \crossmat{\el} \Patpr \crossmat{\el}^T (\Atinv)^T $$
-$$ \Ppfpr = \Ad ( \Ppf + \Ppd ) \Ad{^T} $$
-$$ \Ppfpr = \Ppspr + \crossmat{\pspr} \Pacpr \crossmat{\pspr}^T + \Atpr \crossmat{\el} \Patpr \crossmat{\el}^T (\Atpr)^T + 2\Ad\Ppd\Ad{^T} $$
+% $$ \Pprpr = \Ppspr + \crossmat{\pspr} \Pacpr \crossmat{\pspr}^T $$
+% $$ \Ppr = \Acinv ( \Ppspr + \crossmat{\pspr} \Pacpr \crossmat{\pspr}^T ) (\Acinv)^T + \Ppc $$
+% $$ \Ppf = \Ppr + \Atinv \crossmat{\el} \Patpr \crossmat{\el}^T (\Atinv)^T $$
+% $$ \Ppfpr = \Ad ( \Ppf + \Ppd ) \Ad{^T} $$
+% $$ \Ppfpr = \Ppspr + \crossmat{\pspr} \Pacpr \crossmat{\pspr}^T + \Atpr \crossmat{\el} \Patpr \crossmat{\el}^T (\Atpr)^T + 2\Ad\Ppd\Ad{^T} $$
 
 \section{Conclusion}
 

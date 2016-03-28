@@ -1,100 +1,155 @@
-%% Load a data set of quaternions
+set(groot,'defaultAxesColorOrder',[1 0 0;0 1 0;0 0 1],...
+      'defaultAxesLineStyleOrder','-|--|:')
 
-%% Load the test data
-DataFolder = (['C:\Users\Lukas Gemar\thesis\Analysis\Analysis-3-17\', 'Data\Sensor\']); 
+%% Test Data
+% Specify the test name and file location
 AllTestNames = {'yaw5-1', 'pitch5-1', 'roll5-1', 'roll1', 'pitch1', 'yaw1', 'no_manuever1', 'rollslow1', 'yawslow1', 'all2', 'yawstep2'}; 
+TestName = AllTestNames{3}; % specify the trial test name
+SensorFile = [TestName, '.csv']; % find the sensor data file
 
-TestName = AllTestNames{3}; 
+DataFolder = (['C:\Users\Lukas Gemar\thesis\Analysis\Analysis-3-17\', 'Data\Sensor\']); 
+SensorData = csvread([DataFolder, SensorFile]); SensorData = SensorData(2:end, :); % read the sensor data
 
-SensorFile = [TestName, '.csv']; 
-SensorData = csvread([DataFolder, SensorFile]); SensorData = SensorData(2:end, :); 
-tSensor = SensorData(:,1)/1000; % it's in milliseconds 
-
-N = size(SensorData,1); % Number of samples
+% Number of data samples
+N = size(SensorData,1);
+ 
+% Clock and timing variables
+tSensor = SensorData(:,1); tSensor = tSensor/1000; % it's in milliseconds - convert to seconds
+t = tSensor - min(tSensor); % align the time vec with the beginning of the trial
 dt = mean(diff(tSensor)); % Simulation time step
-t = tSensor - min(tSensor); 
+
+% Observations
+a = SensorData(:,6:8); % accelerometer observations
+g = SensorData(:,9:11); % gyro measurements
+m = SensorData(:,12:14); % magnetometer observations
+z = [a, m]; % sensor observations
+qr = SensorData(:,2:5); % quaternion reference array
+tr = fliplr(rad2deg( quat2eul( qr ) )); 
     
-% Simulation variables
-qref = SensorData(:,2:5); % quaternion reference array
-qestT = zeros(N,4); % Triad estimates
-qestK = zeros(N,4); % Kalman filter estimates
-% z = [SensorData(:,6:8)./repmat(VectorNorm(SensorData(:,6:8)),1,3)...
-%      SensorData(:,12:14)./repmat(VectorNorm(SensorData(:,12:14)),1,3)]; % sensor measurements
-z = [SensorData(:,6:8),...
-     SensorData(:,12:14)]; % sensor measurements
-omega = SensorData(:,9:11); % gyro measurements
+% Simulation variable allocation
+qet = zeros(N,4); % Triad estimates
+qek = zeros(N,4); % Kalman filter estimates
+dqt = zeros(N,4); % TRIAD quaternion error
+dqk = zeros(N,4); % Kalman quaternion error
 
 % Reference vectors
-g = [0; 0; 9.81]; % world coordinates
-% b = [cos(pi/2)*1; sin(pi/2-0.05)*1; 0]; % world coordinates
-th = deg2rad(165); % typical: th = deg2rad(160);
-b = [cos(th) -sin(th) 0; sin(th) cos(th) 0; 0 0 1] * z(1,4:6)'; 
+th = deg2rad(180); % location of magnetic North, typical: th = deg2rad(160); 
+gr = [0; 0; 9.81]; % gravity reference vector
+br = [cos(th) -sin(th) 0; sin(th) cos(th) 0; 0 0 1] * m(1,:)'; % b-field reference vector
 
+% Build strings of important notation
+tstr = 'Orientation Reference, $\vec{\theta}$'; 
+testr = 'Orientation Estimate, $\hat{\vec{\theta}}$';
+dtstr = 'Esimation Error, $\delta\vec{\theta}$'; 
+dtxstr = '$\delta\vec{\theta}_x$'; 
+dtystr = '$\delta\vec{\theta}_y$'; 
+dtzstr = '$\delta\vec{\theta}_z$'; 
+
+% Display the raw data
 figure(1)
+
 subplot(2,2,1)
-plot( t, rad2deg( quat2eul( qref ) ) )
-title('Quaternion Ref')
-legend('yaw', 'pitch', 'roll')
-subplot(2,2,2)
-plot( t, omega )
-title('Omega Input')
-legend('X', 'Y', 'Z')
-subplot(2,2,3)
-plot( t,z(:,1:3) )
+plot(t,a)
 title('Accelerometer')
 ylim([-10 10])
+xlabel('time (s)')
+ylabel('m/s^2')
 legend('X', 'Y', 'Z')
+
+subplot(2,2,2)
+plot(t,g)
+title('Gyroscope')
+xlabel('time (s)')
+s = sprintf('%c/s', char(176)); xlabel('time (s)'); 
+ylabel(s)
+legend('X', 'Y', 'Z')
+
+subplot(2,2,3)
+plot(t,m)
+title('Magnetometer')
+xlabel('time (s)')
+ylabel('\mu T')
+legend('X', 'Y', 'Z')
+
 subplot(2,2,4)
-plot( t, z(:,4:6) )
-title('B Field')
-legend('X', 'Y', 'Z')
+plot(t,tr)
+title('Orientation')
+xlabel('time (s)')
+s = sprintf('%c', char(176)); xlabel('time (s)'); 
+ylabel(s)
+legend('yaw', 'pitch', 'roll')
 
+%% TRIAD algorithm
 
-%% Run the TRIAD algorithm over the data set
-
-for i = 1:size(qref,1)
-    
-    mg = z(i,1:3)'; % measurement of g vector in body
-    mb = z(i,4:6)'; % measurement of b vector in body
-    
-    qe =  triadFun(g,mg,b,mb,eye(3,3)); % column-major quaternion 
-    qestT(i,:) = qflip( qe ); % row-major quaternion estimate
-    
+% Compute the quaternion estimates
+for i = 1:size(qr,1)
+    qe =  triadFun(gr,a(i,:)',br,m(i,:)',eye(3,3)); % column-major quaternion 
+    qet(i,:) = qflip( qe ); % row-major quaternion estimate, row vectors are written as (w,x,y,z) quaternions
 end
+tet = fliplr(rad2deg( quat2eul(qet) )); 
 
-figure(2)
-subplot(1,3,1)
-degref = rad2deg( quat2eul( qref ) ); 
-plot( t, degref )
-legend('yaw', 'pitch', 'roll')
-% plot( theta, qref )
-% legend('w','x','y','z')
-title('Reference')
-ylim([-181 181])
-
-subplot(1,3,2)
-degestT = rad2deg( quat2eul( qestT ) ); 
-plot( t, degestT )
-legend('yaw', 'pitch', 'roll')
-% plot( theta, qestT )
-% legend('w','x','y','z')
-title('Estimate')
-ylim([-181 181])
-
-subplot(1,3,3)
-qerrorT = zeros(N,4); 
+% Compute the quaternion error of estimates
 for i = 1:N
-    qerrorT(i,:) = qflip( qmultiply( qflip( qref(i,:) ), qinv( qflip( qestT(i,:) ) ) ) ); 
+    dqt(i,:) = qflip( qmultiply( qflip( qr(i,:) ), qinv( qflip( qet(i,:) ) ) ) ); 
+end
+dtt = rad2deg(2 * dqt(:,2:4)); 
+
+% Compute bias and variance of the error
+mudtt = mean(dtt,1); % bias - mean of the error
+Pdtt = cov(dtt,1); % compute covariance of error, rows are observations
+biasdtt = norm(mudtt);  
+vardtt = trace(Pdtt);  % target variance is 5^2 + 5^2 + 5^2, for a 5degree change in orientation is unnoticable
+
+% Mean-squared magnitude of the unbiased error, three possible calculations
+msme1 = trace(Pdtt);
+[Q, D] = eig(Pdtt); msme2 = trace(D); 
+msme3 = mean( sum( (dtt - repmat(mudtt,N,1)).^2, 2) ); 
+
+% Trace comparison
+figure(2)
+
+subplot(1,2,1)
+plot( t, tr )
+title(tstr, 'Interpreter', 'Latex')
+ylim([-181 181])
+legend('Roll', 'Pitch', 'Yaw')
+
+subplot(1,2,2)
+plot( t, tet )
+title(testr, 'Interpreter', 'Latex')
+ylim([-181 181])
+legend('Roll', 'Pitch', 'Yaw')
+
+% Error for x,y,z
+figure(3)
+subplot(2,2,1)
+plot( t, dtt)
+legend('\delta\theta_x', '\delta\theta_y', '\delta\theta_z')
+title(dtstr, 'Interpreter', 'Latex') 
+dttrange = [-max(dtt(:))-10 max(dtt(:))+10];
+ylim(dttrange)
+
+biasstr = ['$$ | E[\delta\vec{\theta}] | = ', num2str(biasdtt), ' $$'];
+text(0.05 * max(t),dttrange(2)-10,biasstr,'Interpreter','latex')
+varstr = ['$$ \textrm{tr}(\textrm{Var}(\delta\vec{\theta})) = ', num2str(vardtt), ' $$'];                                                
+text(0.05 * max(t),dttrange(2)-20,varstr,'Interpreter','latex')
+
+xyzstr = {'x', 'y', 'z'}; 
+rpystr = {'Roll', 'Pitch', 'Yaw'};
+colorstr = {'r', 'g', 'b'}
+
+for j = 1:3
+    subplot(2,2,j+1)
+    plot(t, dtt(:,j), colorstr{j})
+    title(['$ E[\delta\theta_', xyzstr{j}, '] = ', num2str(mudtt(j), '%.1f'), ...
+        '^{\circ} $ and ', '$ \textrm{Var}(\delta\theta_', xyzstr{j}, ')) = ('....
+        , num2str(sqrt(Pdtt(j,j)), '%.1f'), '^{\circ})^2 $'], 'Interpreter', 'Latex')
+    ylim([-181 181])
+    xlim([min(t) max(t)])
 end
 
-plot( t, rad2deg( quat2eul( qerrorT ) ) )
-legend('yaw', 'pitch', 'roll')
-% plot( theta, qestT )
-% legend('w','x','y','z')
-title('Error')
-ylim([-181 181])
+% Trace and error comparison maneuver by maneuver
 
-meanSquaredError = mean( qerrorT.^2, 1 )
 
 
 %% Run the MEKF over the data set
@@ -102,7 +157,7 @@ meanSquaredError = mean( qerrorT.^2, 1 )
 % Compute initial state vector using TRIAD algorithm
 mg = z(1,1:3)'; % measurement of g vector in body
 mb = z(1,4:6)'; % measurement of b vector in body
-qe = triadFun(g,mg,b,mb,eye(3,3)); % column-major quaternion 
+qe = triadFun(gr,mg,br,mb,eye(3,3)); % column-major quaternion 
 
 % Initalize the covariance matrix, process noise, and measurement noise
 Sp = [deg2rad(10)^2 deg2rad(10)^2 deg2rad(15)^2]; Pe = diag(Sp); 
@@ -123,7 +178,7 @@ for k = 2:N
     Pp = Pe + Q;
 
     % State prediction (Qp)
-    DeltaTheta = deg2rad(omega(k,:))'; 
+    DeltaTheta = deg2rad(g(k,:))'; 
     Alpha = cos( norm(DeltaTheta)/2 ); 
     if( norm(DeltaTheta) > 0 )
         Beta = sin( norm(DeltaTheta)/2 ) / norm( DeltaTheta ); 
@@ -139,11 +194,11 @@ for k = 2:N
     dqp = qmultiply( qp, qinv( qe ) ); 
     pgain(k,:) = 2*dqp(1:3)'; 
     
-    dqpref = qmultiply( qflip( qref(k,:) ), qinv( qflip( qref(k-1,:) ) ) ); 
+    dqpref = qmultiply( qflip( qr(k,:) ), qinv( qflip( qr(k-1,:) ) ) ); 
     pgainref(k,:) = 2*dqpref(1:3)'; 
 
     % Sensitivity matrix
-    r1 = g; r2 = b; 
+    r1 = gr; r2 = br; 
     pB1 = AMat( qp ) * r1; pB2 = AMat( qp ) * r2;
     H = [ 2*CrossMat( pB1 ); 2*CrossMat( pB2 )]; 
 
@@ -170,23 +225,23 @@ for k = 2:N
     % Covariance update
     Pe = (eye(3,3) - K * H) * Pp;
     
-    qestK(k,:) = qflip( qe ); 
+    qek(k,:) = qflip( qe ); 
         
 end
 
 figure(3)
 subplot(2,3,1)
-plot( t, rad2deg( quat2eul( qref ) ) )
+plot( t, rad2deg( quat2eul( qr ) ) )
 legend('yaw', 'pitch', 'roll')
-% plot( theta, qref )
+% plot( theta, qr )
 % legend('w','x','y','z')
 title('Reference')
 ylim([-181 181])
 
 subplot(2,3,2)
-plot( t, rad2deg( quat2eul( qestK ) ) )
+plot( t, rad2deg( quat2eul( qek ) ) )
 legend('yaw', 'pitch', 'roll')
-% plot( theta, qestT )
+% plot( theta, qet )
 % legend('w','x','y','z')
 title('Estimate')
 ylim([-181 181])
@@ -195,12 +250,12 @@ subplot(2,3,3)
 
 qerrorK = zeros(N,4); 
 for i = 1:N
-    qerrorK(i,:) = qflip( qmultiply( qflip( qref(i,:) ), qinv( qflip( qestK(i,:) ) ) ) ); 
+    qerrorK(i,:) = qflip( qmultiply( qflip( qr(i,:) ), qinv( qflip( qek(i,:) ) ) ) ); 
 end
 
 plot( t, rad2deg( quat2eul( qerrorK ) ) )
 legend('yaw', 'pitch', 'roll')
-% plot( theta, qestT )
+% plot( theta, qet )
 % legend('w','x','y','z')
 title('Error')
 ylim([-40 40])
@@ -221,22 +276,22 @@ title('Innovation gain: $\delta \vec{\theta}{^{(+)}}_k$', 'Interpreter', 'Latex'
 ylabel('Rad')
 
 % Yaw estimate error
-xyzref = rad2deg( quat2eul( qref ) ); 
-xyzest = rad2deg( quat2eul( qestK ) ); 
+xyzref = rad2deg( quat2eul( qr ) ); 
+xyzest = rad2deg( quat2eul( qek ) ); 
 xyzerror = rad2deg( quat2eul( qerrorK ) ); 
 
 figure(5)
 
 subplot(1,3,1)
 plot( t, xyzref(:,3), 'r' )
-% plot( theta, qref )
+% plot( theta, qr )
 % legend('w','x','y','z')
 title('Reference: $\theta_X$', 'Interpreter', 'Latex')
 ylim([-181 181])
 
 subplot(1,3,2)
 plot( t, xyzest(:,3), 'r')
-% plot( theta, qestT )
+% plot( theta, qet )
 % legend('w','x','y','z')
 title('Estimate: $\hat{\theta}_X$', 'Interpreter', 'Latex')
 ylim([-181 181])
@@ -244,7 +299,7 @@ ylim([-181 181])
 subplot(1,3,3)
 
 plot( t, xyzerror(:,3), 'r')
-% plot( theta, qestT )
+% plot( theta, qet )
 % legend('w','x','y','z')
 title('Error: $\hat{\theta}_X -\theta_X$ ', 'Interpreter', 'Latex')
 ylim([-40 40])
@@ -252,14 +307,14 @@ ylim([-40 40])
 figure(6)
 subplot(1,3,1)
 plot( t, xyzref(:,3), 'g' )
-% plot( theta, qref )
+% plot( theta, qr )
 % legend('w','x','y','z')
 title('Reference: $\theta_Y$', 'Interpreter', 'Latex')
 ylim([-181 181])
 
 subplot(1,3,2)
 plot( t, xyzest(:,3), 'g')
-% plot( theta, qestT )
+% plot( theta, qet )
 % legend('w','x','y','z')
 title('Estimate: $\hat{\theta}_Y$', 'Interpreter', 'Latex')
 ylim([-181 181])
@@ -267,7 +322,7 @@ ylim([-181 181])
 subplot(1,3,3)
 
 plot( t, xyzerror(:,3), 'g')
-% plot( theta, qestT )
+% plot( theta, qet )
 % legend('w','x','y','z')
 title('Error: $\hat{\theta}_Y -\theta_Y$ ', 'Interpreter', 'Latex')
 ylim([-40 40])
@@ -275,14 +330,14 @@ ylim([-40 40])
 figure(7)
 subplot(1,3,1)
 plot( t, xyzref(:,1), 'b' )
-% plot( theta, qref )
+% plot( theta, qr )
 % legend('w','x','y','z')
 title('Reference: $\theta_Z$', 'Interpreter', 'Latex')
 ylim([-181 181])
 
 subplot(1,3,2)
 plot( t, xyzest(:,1), 'b')
-% plot( theta, qestT )
+% plot( theta, qet )
 % legend('w','x','y','z')
 title('Estimate: $\hat{\theta}_Z$', 'Interpreter', 'Latex')
 ylim([-181 181])
@@ -290,7 +345,7 @@ ylim([-181 181])
 subplot(1,3,3)
 
 plot( t, xyzerror(:,1), 'b')
-% plot( theta, qestT )
+% plot( theta, qet )
 % legend('w','x','y','z')
 title('Error: $\hat{\theta}_Z -\theta_Z$ ', 'Interpreter', 'Latex')
 ylim([-40 40])
