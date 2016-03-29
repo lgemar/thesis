@@ -149,6 +149,19 @@ for j = 1:3
 end
 
 % Trace and error comparison maneuver by maneuver
+for j = 1:3
+    figure(4+j)
+    
+    subplot(1,2,1)
+    plot(t, tr(:,j), t, tet(:,j))
+    title(['Reference Trajectory, \theta_', xyzstr{j}, ...
+        'Versus Estimate, \hat{\theta_', xyzstr{j}, '}'])
+    legend('Reference', 'Estimate')
+    
+%     subplot(1,2,2)
+%     title(['Reference Trajectory, \delta\vec{\theta}', ...
+%     'Versus Estimate, \delta\hat{\vec{\theta}}'])
+end
 
 
 
