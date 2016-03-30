@@ -10,7 +10,7 @@ ViconTestNames = {'TsTest', 'ClockAlign', 'ClockAlign2', 'AllTests', ...
                   'ClockAlign3', 'FailureTests'}; 
 
 % Read Unity Data file
-UnityTestName = AllTestNames{22}; 
+UnityTestName = AllTestNames{4}; 
 UnityFile = [UnityTestName, '.csv']; 
 UnityData = csvread([DataFolder, UnityFile]); UnityData = UnityData(2:end, :); 
 

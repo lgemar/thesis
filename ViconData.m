@@ -5,12 +5,12 @@
 % 
 % addpath(temp); 
 % 
-% addpath('C:\Users\Lukas Gemar\thesis\'); 
-% addpath('C:\Users\Lukas Gemar\thesis\ViconInterface')
-% addpath('C:\Users\Lukas Gemar\thesis\ViconInterface\java')
-% javaaddpath('C:\Users\Lukas Gemar\thesis\ViconInterface')
-% javaaddpath('C:\Users\Lukas Gemar\thesis\ViconInterface\java')
-% javaaddpath('C:\Users\Lukas Gemar\thesis\ViconInterface\java\vicon')
+addpath('C:\Users\Lukas Gemar\thesis\'); 
+addpath('C:\Users\Lukas Gemar\thesis\ViconInterface')
+addpath('C:\Users\Lukas Gemar\thesis\ViconInterface\java')
+javaaddpath('C:\Users\Lukas Gemar\thesis\ViconInterface')
+javaaddpath('C:\Users\Lukas Gemar\thesis\ViconInterface\java')
+javaaddpath('C:\Users\Lukas Gemar\thesis\ViconInterface\java\vicon')
 % 
 % savepath 'C:\Users\Lukas Gemar\thesis\pathdef.m'
 
@@ -18,23 +18,33 @@
 %% INITIALIZE TCP and VICON CONNECTION 
 % =========================================================================
 
+disp('Start connection...');
 M = 7; % number of data elements from VICON
 
 vFrame = LCMCoordinateFrame('vicon',JLCMCoder(vicon.ViconLCMCoder()),'v');
-vFrame.subscribe('VICON_computer');
+vFrame.subscribe('VICON_wand');
+
+y = vFrame.getNextMessage(1000)
+t = vFrame.getLastTimestamp() / (10^6)
 
 % =========================================================================
 % READ FROM TCP CONNECTION 
 % =========================================================================
 
-disp('Connected made. Starting acquisition'); 
+disp('Connection made. Starting acquisition'); 
 pause(0.1); 
 
 %%
+M = 7; 
 Observations = zeros(1, M+1); 
 time_stamp = 0; 
-file_name = 'Computer';
+file_name = 'complextests';
 size = 10; 
+
+h1 = figure; 
+title('Acquisition going...')
+% plot(linspace(0, 10, 100)); 
+
 while(1) 
     y = vFrame.getNextMessage(1000);
     t = vFrame.getLastTimestamp() / (10^6);
@@ -44,8 +54,7 @@ while(1)
 end
 %% 
 
-disp('Saving the data');     
-% csvwrite(['C:\Users\Lukas Gemar\thesis\Analysis\Analysis-3-17\Data\', file_name, '_vicon.csv'], Observations); 
-dlmwrite(['C:\Users\Lukas Gemar\thesis\Analysis\Analysis-3-17\Data\', file_name, '_vicon.csv'], Observations, 'delimiter', ',', 'precision', 16); 
+disp('Saving the data');      
+dlmwrite(['C:\Users\Lukas Gemar\thesis\Analysis\Analysis-3-29\Data\', file_name, '_vicon.csv'], Observations, 'delimiter', ',', 'precision', 16); 
 
 
