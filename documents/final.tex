@@ -47,6 +47,8 @@
     \newcommand{\pc}{\pvec{p}_c}
     \newcommand{\pd}{\pvec{p}_d}
 
+    \newcommand{\pu}{\pvec{p}_u}
+
     % Attitude macros
     \newcommand{\Ad}{\mathbf{A}_d} % attitude of the display
     \newcommand{\Ac}{\mathbf{A}_c} % attitude of the camera
@@ -65,6 +67,7 @@
 	\newcommand{\qt}{\q_t}
 
 	% Covariance matrix macros
+    \newcommand{\cov}{\mathbf{P}}
 	\newcommand{\Pac}{\mathbf{P}_{ac}}
 	\newcommand{\Pad}{\mathbf{P}_{ad}}
 	\newcommand{\Pat}{\mathbf{P}_{at}}
@@ -94,6 +97,14 @@
 	% Miscelanous macros
 	\newcommand{\tab}{ \textrm{ \ \ \ \ } }
 
+    \newcommand{\z}{\mathbf{\vec{z}}}
+    \newcommand{\y}{\mathbf{\vec{y}}}
+    \newcommand{\x}{\mathbf{\vec{x}}}
+
+    % Object tracking commands
+    \newcommand{\xd}{\dot{x}}
+    \newcommand{\xdd}{\ddot{x}}
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -113,14 +124,14 @@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% START DOCUMENT
+%% Abstract
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{abstract}
 The 3D Interaction Tool is a hand-held device that enables a user to interact with virtual reality applications. Since both the position and orientation of the tool are tracked, user input with the tool accomplishes tasks such as selecting, translating, and rotating three-dimensional objects, or free-hand drawing in space. The tool¿s position is tracked by a software application that filters observations from a camera attached to the virtual reality display, and the orientation is found by means of observations from an inertial measurement unit attached to the tool itself. Simple computer-aided design and drawing applications demonstrate the capabilities of the 3D Interaction Tool. 
 \end{abstract}
 
-\begin{multicols}{2}
+% \begin{multicols}{2}
 \begin{flushleft}
 
 \section{Nomenclature}
@@ -234,7 +245,7 @@ The performance requirements presented in Figure \ref{fig:performance} must be m
 %% Tracking system design
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Tracking System Design}
+\section{Design}
 
 \subsection{Requirements}
 
@@ -296,111 +307,84 @@ A combination between optical and inertial sensors was chosen to track the 3D In
 	\label{fig:trackingtech}
 \end{figure}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Final Design
 \subsection{Final Design}
 
+The final system layout is shown in figure \ref{fig:finaldesign}.
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[width=0.5\textwidth]{FinalDesign}
+	\end{center}
+    \caption{Final tracking system design: a display-referenced tracking topology}
+	\label{fig:finaldesign}
+\end{figure}
+
+%% Inferring the tool position
 \subsubsection{Tracking measurements}
 
 Not all of these three tracking targets are measured directly. The tracking targets are inferred from the measurements of the position of the rear of the interaction tool relative to the camera, the attitude of the camera, and the attitude of the tool. The position of the tool relative to the camera is denoted by $\pspr$, the attitude of the camera relative to the inertial coordinate system by $\Ac$ and the attitude of the tool relative to the inertial coordinate system by $\At$. The vector $\pspr$ is measured by finding the .
 
+%% Inferring the tool position
 \subsubsection{Inferring the tool position}
 
-\subsubsection{Inferring the tool attitude}
+The position of the front of the tool in world coordinates is given by $\pf$. This position is inferred through measurements of the position of the rear of the tool and the tool's orientation. The equation for the position of the front of the tool is 
 
-% Position and attitude equations
-$$ \pr = \Acinv \pspr - \pc $$
 $$ \pf = \pr + \Atinv \el $$
+
+where the position of the rear of the tool, $\pr$ is given by
+
+$$ \pr = \Acinv \pspr - \pc $$
+
+The attitude matrix, $\Atinv$, is the rotation from the body coordinates of the tool to the world coordinate system.
+
+In order to render the tool on the display for the user, the position of the tool must be known to the VR application in the coordinate system of the VR display. The position of the front of the tool in display coordinates is $\pfpr$ and it is found by multiplying the tool's position in the world coordinate system by the attitude of the display. Additionally, the position of the display must be added to the tool position before multiplying by the display attitude matrix:
+
 $$ \pfpr = \Ad (\pf + \pd) $$
+
+The tool attitude in the coordinate system of the display is denoted by $\Atpr$ and it is found by composing the rotation from the tool's body coordinates to world coordinates with the display attitude matrix: 
+
 $$ \Atpr = \Ad \Atinv \el $$
 
-        
-
-\subsection{Error Analysis}
-
-\subsubsection{Position estimation error}
-\subsubsection{Orientation estimation error}
-\subsubsection{Model error}
-
-
-\subsection{Experimental Setup}
+This is the tool orientation visible to the user. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Position tracking
+%% Implementation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Implementation}
 
-\section{Position Tracking}
-
-\subsection{Measurement Model}
-
-The following is a model of a single frame from the camera. In this frame, shown in image Figure \ref{fig:computervis} the red circular object represents the back of the interaction tool. The back of the interaction tool is called the target. The width of the target along the $x$ dimension of the image is $d_{u}$. 
-
-\medskip
+The system's physical layout is shown in \ref{fig:systemlayout}. For simplicity, the tracking camera is assumed to be fixed. The model for this system is geometrically equivalent to the one presented in Figure \ref{fig:finaldesign}. The webcam of the computer is used as the tracking camera. The inertial measurement unit, the Adafruit BNO055, is attached to the breadboard. A colored foam sphere is attached to the rear of the interaction tool to serve as the tracking target.
 
 \begin{figure}[H]
 	\begin{center}
-		\includegraphics[width=0.5\textwidth]{computerVision}
+		\includegraphics[width=0.5\textwidth]{SystemLayout}
 	\end{center}
-	\caption{Computer vision tracking model}
-	\label{fig:computervis}
+    \caption{Geometrically equivalent tracking system}
+	\label{fig:systemdiagram}
 \end{figure}
 
-\medskip
+The virtual reality application runs on the computer shown in Figure \ref{fig:systemlayout}. While this virtual reality application is not immersive, it creates a virtual 3D environment displayed to the user on the computer screen, where they can interact with virtual objects. Thus, this geometry is sufficient to prove the usefulness of the 3D Interaction Tool for virtual reality applications.
 
-The midpoint of the target in the ideal undistorted image is $\bf{x^u_E} = \mat{ x_u & y_u }^{T}$. The center of the undistorted image is $c_x$ in the x direction and $c_y$ in the y direction. The focal lengths in the x and y directions are $f_x$ and $f_y$, respectively. These parameters are found through the camera calibration routine. The measurements of the center of the target and its width are related to the hidden state $\bf{\bf{x_C}} = \mat{ x_C & y_C & z_C }^{T}$ in the following way: 
+The spherical tracking target is chosen because its size in each image does not depend on its orientation. Additionally, if the angle subtended by the tracking target in the field of view is small, then the midpoint of the tracking target in world coordinates is on the same plane as the vanishing points on the edges of the target.
 
-\[
-    \bf{\bf{y}} = h(\bf{\bf{x}})
-        = \mat{x_u \\ y_u \\ d_{u} }
-        = \mat{ \frac{f_x x_c}{z_c} + c_x \\ 
-             \frac{f_y y_c}{z_c} + c_y \\ 
-             \frac{d_c}{z_c \sqrt{\frac{1}{f_x^{2}} + \frac{1}{f_y^{2}}}}
-           }
-\]
-
-These relationships are found through using a simple pin-hole camera model \cite{Tsai1987}.
-
-\subsection{Camera Calibration}
-
-The measurement model requires knowledge of the intrinsic camera parameters, $f_x, f_y, c_x, c_y$, and the radial and tangential distortion factors. There are two steps to translating a point from camera coordinates to image coordinates \cite{Tsai1987}. First, the pin-hole camera model shows how to find the ideal image coordinates of an object, $(\bf{x_u}, \bf{y_u})$ based on the position of the object in camera coordinates, $(x, y, z)$: 
-
-$$ \bf{x_u} = f_x \frac{x}{z} $$
-$$ \bf{y_u} = f_y \frac{y}{z} $$
-
-Second, the radial and tangential distortion relations show how the actual image coordinates, $(\bf{x_u}, \bf{y_u})$, relate to the image coordinates on the actual or distorted image plane, $(\bf{x_d}, \bf{y_d})$. The radial distortion correction equation is as follows: \\
-
-$$ \bf{x_u} = x_d (1 + k_1 r^2 + k_2 r^4 + k_3 r^6) $$
-$$ \bf{y_u} = y_d (1 + k_1 r^2 + k_2 r^4 + k_3 r^6) $$
-
-and the tangential distortion equation is given by, 
-
-$$ \bf{x_u} = x_d + (2 p_1 x y + p_2 (r^2 + 2x^2))$$
-$$ \bf{y_u} = y_d + (p_1 (r^2 + 2y^2) + 2p_2 x y)$$
-
-Thus, the five distortion parameters are summarized in a vector $D$: 
-
-$$D = \mat{ k_1 & k_2 & p_1 p_2 & k_3 }$$
-
-The calibration parameters are discovered by using an open source implementation provided by OpenCV. The camera collects a series of images that contain a checkerboard pattern. The calibration computes the transformation from the image coordinates of the checkerboard to its real world coordinates. The calibration images look like the ones in figure 1 below. 
+The block diagram of the implmented tracking system is shown in Figure \ref{fig:systemdiagram}.
 
 \begin{figure}[H]
-    \begin{center}$
-        \begin{array}{cc}
-            \includegraphics[width=0.2\textwidth]{image1} &
-            \includegraphics[width=0.2\textwidth]{image2} \\
-            \includegraphics[width=0.2\textwidth]{image3} &
-            \includegraphics[width=0.2\textwidth]{image4} \\
-        \end{array}$
-    \end{center}
-    \caption{Camera calibration routine}
-    \label{fig:cameracalib}
+	\begin{center}
+		\includegraphics[width=0.5\textwidth]{SystemDiagram}
+	\end{center}
+    \caption{Full system diagram of implementation}
+	\label{fig:systemdiagram}
 \end{figure}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Orientation tracking
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \section{Orientation Tracking}
 
+\subsection{Mathematical Representation}
 The orientation of the interaction tool relative to the world coordinate frame can be represented in a number of ways. The two representations that will be important here are the attitude matrix and the attitude quaternion. First, the attitude of the orientation tool can be described by the attitude matrix $A$. The attitude matrix typically maps a vector in the reference frame to a vector in the the body frame \cite{Markley2007}. This mapping is given by the relation, 
 
 \[ \bf{b} = A \bf{r} \]
@@ -429,7 +413,7 @@ with
 
 \[ \Psi(\overline{q}) = \mat{q_4 \bf{I}_{3x3} - [\vec{q}\times] \\ -\vec{q}^T } \]
 
-\subsection{TRIAD Attitude Estimation}
+\subsection{Naive Measurement Model}
 
 The TRIAD estimation method finds the attitude matrix $A$ that maps three reference frame vectors $\vec{r}_k$ to their corresponding body frame vectors $\vec{b}_k$ for $k = 1, 2, 3$ \cite{Shuster2004}. Two observations of reference frame vectors provide sufficient information to compute a right-handed orthonormal triad of vectors in the reference frame. If $\vec{v}_1$ and $\vec{v}_2$ are reference frame vectors for the accelerometer and the magnetometer, respecitively, then 
 
@@ -456,7 +440,7 @@ Since $M_r$ is an orthogonal matrix, its inverse is equal to its transpose: $M_r
 
 $$ A = M_b M_r^{T} $$
 
-\subsection{Dynamic Model for Rotations}
+\subsection{Dynamic Measurement Model}
 
 The rate of change of the attitude can be written in the form of a general state space model: 
 
@@ -492,12 +476,111 @@ The inverse of the quaternion is found by negating the imaginary component of th
 
 \[ \overline{q}^{-1} = \mat{ -\vec{q} \\ q_4 } \]
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Position tracking
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Position Tracking}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Naive measurement model
+\subsection{Naive Measurement Model}
+
+The following is a model of a single frame from the camera. In this frame, shown in image Figure \ref{fig:computervis} the red circular object represents the rear of the interaction tool. The spherical objecti of the rear of the interaction tool is called the tracking target. The width of the target along the $x$ dimension of the image is $s_{u}$. 
+
+\medskip
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[width=0.5\textwidth]{computerVision}
+	\end{center}
+	\caption{Computer vision tracking model}
+	\label{fig:computervis}
+\end{figure}
+
+\medskip
+
+The midpoint of the target in the ideal undistorted image is $\pu = \mat{ x_u & y_u }^{T}$. The center of the undistorted image is $c_x$ in the x direction and $c_y$ in the y direction. The focal lengths in the x and y directions are $f_x$ and $f_y$, respectively. These parameters are found through the camera calibration routine, explained in detail below. The measurements of the center of the target and its width are related to the hidden state $\pspr = \mat{ x_s & y_s & z_s }^{T}$ in the following way: 
+
+\[
+    \y = h(\x)
+        = \mat{x_u \\ y_u \\ s_{u} }
+        = \mat{ \frac{f_x x_s}{z_s} + c_x \\ 
+             \frac{f_y y_s}{z_s} + c_y \\ 
+             \frac{s_c}{z_s \sqrt{\frac{1}{f_x^{2}} + \frac{1}{f_y^{2}}}}
+           }
+\]
+
+These relationships are found through using a simple pin-hole camera model \cite{Tsai1987}.
+
+
+\subsubsection{Camera Calibration}
+
+The measurement model requires knowledge of the intrinsic camera parameters, $f_x, f_y, c_x, c_y$, and the radial and tangential distortion factors. There are two steps to translating a point from camera coordinates to image coordinates \cite{Tsai1987}. First, the pin-hole camera model shows how to find the ideal image coordinates of an object, $(\mathbf{x_u}, \mathbf{y_u})$ based on the position of the object in camera coordinates, $\pspr = (x, y, z)$: 
+
+$$ \mathbf{x_u} = f_x \frac{x}{z} $$
+$$ \mathbf{y_u} = f_y \frac{y}{z} $$
+
+Second, the radial and tangential distortion relations show how the actual image coordinates, $(\mathbf{x_u}, \mathbf{y_u})$, relate to the image coordinates on the actual or distorted image plane, $(\mathbf{x_d}, \mathbf{y_d})$. The radial distortion correction equation is as follows: \\
+
+$$ \mathbf{x_u} = x_d (1 + k_1 r^2 + k_2 r^4 + k_3 r^6) $$
+$$ \mathbf{y_u} = y_d (1 + k_1 r^2 + k_2 r^4 + k_3 r^6) $$
+
+and the tangential distortion equation is given by, 
+
+$$ \mathbf{x_u} = x_d + (2 p_1 x y + p_2 (r^2 + 2x^2))$$
+$$ \mathbf{y_u} = y_d + (p_1 (r^2 + 2y^2) + 2p_2 x y)$$
+
+Thus, the five distortion parameters are summarized in a vector $D$: 
+
+$$D = \mat{ k_1 & k_2 & p_1 p_2 & k_3 }$$
+
+The calibration parameters are discovered by using an open source implementation provided by OpenCV. The camera collects a series of images that contain a checkerboard pattern. The calibration computes the transformation from the image coordinates of the checkerboard to its real world coordinates. The calibration images look like the ones in figure 1 below. 
+
+\begin{figure}[H]
+    \begin{center}$
+        \begin{array}{cc}
+            \includegraphics[width=0.2\textwidth]{image1} &
+            \includegraphics[width=0.2\textwidth]{image2} \\
+            \includegraphics[width=0.2\textwidth]{image3} &
+            \includegraphics[width=0.2\textwidth]{image4} \\
+        \end{array}$
+    \end{center}
+    \caption{Camera calibration routine}
+    \label{fig:cameracalib}
+\end{figure}
+
+\subsubsection{Object Tracking}
+
+The signal processing layer contains an object tracker to find the rear of the interaction tool in each frame. Since a robust estimate of the object size in each image is required, its edges must be estimated as exactly as possible. One simple way to estimate the edges of the spherical tracking target is to segment the tracking target from the background by using color. The color of the object is used determine which pixels belong to it and which to not. Additionally, the color-based object tracking must happen in real time. To meet the demands of real-time, color-based object tracking, the CamShift algorithm was chosen \cite{bradski1998}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Dynamic measurement model
+
+\subsection{Dynamic Measurement Model}
+
+Since the user's movement of the interaction tool is voluntary, no assumptions can be made about its overall trajectory. However, human-motion objeys minimum-jerk constraints \cite{flash1985}. Since the jerk of the tool's motion is small, it can be modelled as a white-noise process. The dynamical model for the tool's motion along the $x$ axis is estimated by the discrete time state-space model
+
+$$ \vec{x}_{k+1} = \mat{1 & \Delta t \\ 0 & 1} \mat{x \\ \xd} + \mat{0 \\ \Delta t} \xdd  + \mat{0 \\ 1} w_k $$
+
+where $w_k$ is the jerk. Additionally, the motion of the tool is assumed to be coordinate uncoupled, since the user is free to move the tool in any direction. Therefore this same model can be extended to motion along the $y$ and $z$ axes as well.
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Performance Analysis
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
 \section{Performance Analysis}
+
+\subsection{Orientation Error}
+
+\subsubsection{First Order Error Analysis}
+
+Given two random variables $X$ and $Y$, and the (potentially non-linear) relationship that $Y = f(X)$, how does the covariance of $Y$ change with the covariance of $X$? As a first-order approximation, the randomness of $Y$ can be approximated as a linear function of $X$: $Y - \mu_Y = T (X - \mu_X) $ \cite{haralick1996}. In the linearization of $f(X)$ about the mean of $X$, $\mu_X$, $T$ is the Jacobian matrix, $T = \frac{\partial Y}{\partial X}$. Now, given the linear relationship, $Y - \mu_Y = T (X - \mu_X) $, the covariance of $Y$ is related to the covariance of $X$ by 
+
+$$ \Sigma_Y = T \Sigma_X T^{T} $$
+
+This relationship is a general result about how covariances transform under linear operators and will be used extensively below.
 
 % Covariance equations
 % $$ \Pprpr = \Ppspr + \crossmat{\pspr} \Pacpr \crossmat{\pspr}^T $$
@@ -506,16 +589,20 @@ The inverse of the quaternion is found by negating the imaginary component of th
 % $$ \Ppfpr = \Ad ( \Ppf + \Ppd ) \Ad{^T} $$
 % $$ \Ppfpr = \Ppspr + \crossmat{\pspr} \Pacpr \crossmat{\pspr}^T + \Atpr \crossmat{\el} \Patpr \crossmat{\el}^T (\Atpr)^T + 2\Ad\Ppd\Ad{^T} $$
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Conclusion
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conclusion}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Future Work
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Future Work}
-
-
 
 
 \bibliographystyle{ieeetr}
 \bibliography{references}
 
 \end{flushleft}
-\end{multicols}
+% \end{multicols}
 \end{document} 
