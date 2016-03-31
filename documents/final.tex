@@ -30,7 +30,7 @@
 				\end{array} 
 		\right]}
 
-	\newcommand{\crossmat}[1]{\mat{#1{^X}}}
+	\newcommand{\crossmat}[1]{\mat{#1{^\times}}}
 
 	\newcommand{\pvec}[1]{\vec{#1}\mkern2mu\vphantom{#1}}
 
@@ -40,9 +40,11 @@
 
     \newcommand{\prpr}{\pvec{p}'_r} % position of the tool rear (display)
     \newcommand{\pr}{\pvec{p}_r} % position of the tool rear (inertial)
+    \newcommand{\pre}{\hat{\pvec{p}}_r}
 
     \newcommand{\pfpr}{\pvec{p}'_f}
     \newcommand{\pf}{\pvec{p}_f}
+    \newcommand{\pfe}{\hat{\pvec{p}}_f}
 
     \newcommand{\pc}{\pvec{p}_c}
     \newcommand{\pd}{\pvec{p}_d}
@@ -50,6 +52,7 @@
     \newcommand{\pu}{\pvec{p}_u}
 
     % Attitude macros
+    \newcommand{\A}{\mathbf{A}} % attitude of the display
     \newcommand{\Ad}{\mathbf{A}_d} % attitude of the display
     \newcommand{\Ac}{\mathbf{A}_c} % attitude of the camera
     \newcommand{\At}{\mathbf{A}_t} % attitude of the tool
@@ -61,33 +64,50 @@
 
     % Quaternion macros
 	\newcommand{\q}{\overline{\mathbf{q}}}
-	\newcommand{\dq}{\overline{\delta \vec{q}}}
 	\newcommand{\qc}{\q_c}
 	\newcommand{\qd}{\q_d}
 	\newcommand{\qt}{\q_t}
 
+    % Error quaternions
+	\newcommand{\dq}{\delta\q_t}
+	\newcommand{\dqw}{\delta q_4}
+    \newcommand{\dqvec}{\delta \vec{q}}
+
+    \newcommand{\dt}{\delta\theta}
+    \newcommand{\dtvec}{\delta\vec{\theta}}
+
 	% Covariance matrix macros
-    \newcommand{\cov}{\mathbf{P}}
-	\newcommand{\Pac}{\mathbf{P}_{ac}}
-	\newcommand{\Pad}{\mathbf{P}_{ad}}
-	\newcommand{\Pat}{\mathbf{P}_{at}}
+    \newcommand{\cov}{\mathbf{\Sigma}}
 
-	\newcommand{\Pacpr}{\mathbf{P}'_{ac}}
-	\newcommand{\Padpr}{\mathbf{P}'_{ad}}
-	\newcommand{\Patpr}{\mathbf{P}'_{at}}
+    % Quaternion error covariances
+	\newcommand{\Pqc}{\mathbf{\Sigma}_{qc}}
+	\newcommand{\Pqd}{\mathbf{\Sigma}_{qd}}
+	\newcommand{\Pqt}{\mathbf{\Sigma}_{qt}}
 
-	\newcommand{\Pps}{\mathbf{P}_{ps}}
-	\newcommand{\Ppr}{\mathbf{P}_{pr}}
-	\newcommand{\Ppf}{\mathbf{P}_{pf}}
-	\newcommand{\Ppc}{\mathbf{P}_{pc}}
-	\newcommand{\Ppd}{\mathbf{P}_{pd}}
+    % Angular error covariances
+	\newcommand{\Ptc}{\mathbf{\Sigma}_{\theta c}}
+	\newcommand{\Ptd}{\mathbf{\Sigma}_{\theta d}}
+	\newcommand{\Ptt}{\mathbf{\Sigma}_{\theta t}}
 
-	\newcommand{\Ppspr}{\mathbf{P}'_{ps}}
-	\newcommand{\Pprpr}{\mathbf{P}'_{pr}}
-	\newcommand{\Ppfpr}{\mathbf{P}'_{pf}}
+	\newcommand{\Pacpr}{\mathbf{\Sigma}'_{ac}}
+	\newcommand{\Padpr}{\mathbf{\Sigma}'_{ad}}
+	\newcommand{\Patpr}{\mathbf{\Sigma}'_{at}}
+
+	\newcommand{\Pps}{\mathbf{\Sigma}_{ps}}
+	\newcommand{\Ppr}{\mathbf{\Sigma}_{pr}}
+	\newcommand{\Ppf}{\mathbf{\Sigma}_{pf}}
+	\newcommand{\Ppc}{\mathbf{\Sigma}_{pc}}
+	\newcommand{\Ppd}{\mathbf{\Sigma}_{pd}}
+    \newcommand{\Ppl}{\mathbf{\Sigma}_{l}}
+
+	\newcommand{\Ppspr}{\mathbf{\Sigma}'_{ps}}
+	\newcommand{\Pprpr}{\mathbf{\Sigma}'_{pr}}
+	\newcommand{\Ppfpr}{\mathbf{\Sigma}'_{pf}}
 
 	% Tool length macro
-	\newcommand{\el}{\vec{l}}
+	\newcommand{\pl}{\vec{p}_l}
+    \newcommand{\ple}{\hat{\vec{p}}_l}
+    \newcommand{\plpr}{\pvec{p}'_l}
 
 	% Section header commands
     \renewcommand{\thesection}{\Roman{section}.} 
@@ -107,6 +127,9 @@
 
     \newcommand{\deg}{^{\circ} }
     \newcommand{\Hz}{\textrm{Hz}}
+
+    \newcommand{\deldq}{\frac{\partial \pl}{\partial \dqvec} }
+    \newcommand{\ddq}{\frac{\partial}{\partial \dqvec} }
 
 
 
@@ -185,9 +208,9 @@ $ \Ppd \equiv $ covariance of the position of the virtual reality display \\
 \medskip
 
 \textbf{Attitude error covariances in the inertial coordinate frame}: \\
-$ \Pac \equiv $ covariance of the tracking camera attitude quaternion error \\
-$ \Pad \equiv $ covariance of the display attitude quaternion error \\
-$ \Pat \equiv $ covariance of the interaction tool attitude quaternion error \\
+$ \Pqc \equiv $ covariance of the tracking camera attitude quaternion error \\
+$ \Pqd \equiv $ covariance of the display attitude quaternion error \\
+$ \Pqt \equiv $ covariance of the interaction tool attitude quaternion error \\
 
 \medskip
 
@@ -334,7 +357,7 @@ Not all of these three tracking targets are measured directly. The tracking targ
 
 The position of the front of the tool in world coordinates is given by $\pf$. This position is inferred through measurements of the position of the rear of the tool and the tool's orientation. The equation for the position of the front of the tool is 
 
-$$ \pf = \pr + \Atinv \el $$
+$$ \pf = \pr + \Atinv \pl $$
 
 where the position of the rear of the tool, $\pr$ is given by
 
@@ -348,7 +371,7 @@ $$ \pfpr = \Ad (\pf + \pd) $$
 
 The tool attitude in the coordinate system of the display is denoted by $\Atpr$ and it is found by composing the rotation from the tool's body coordinates to world coordinates with the display attitude matrix: 
 
-$$ \Atpr = \Ad \Atinv \el $$
+$$ \Atpr = \Ad \Atinv \pl $$
 
 This is the tool orientation visible to the user. 
 
@@ -387,7 +410,7 @@ The block diagram of the implmented tracking system is shown in Figure \ref{fig:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Orientation Tracking}
 
-\subsection{Mathematical Representation}
+\subsection{Mathematical Representation of Orientation}
 The orientation of the interaction tool relative to the world coordinate frame can be represented in a number of ways. The two representations that will be important here are the attitude matrix and the attitude quaternion. First, the attitude of the orientation tool can be described by the attitude matrix $A$. The attitude matrix typically maps a vector in the reference frame to a vector in the the body frame \cite{Markley2007}. This mapping is given by the relation, 
 
 \[ \bf{b} = A \bf{r} \]
@@ -480,17 +503,26 @@ The inverse of the quaternion is found by negating the imaginary component of th
 \[ \overline{q}^{-1} = \mat{ -\vec{q} \\ q_4 } \]
 
 % Extended Kalman Filter Initialization
-\subsection{Initialization}
+\subsubsection{Filter Initialization}
 
-\subsubsection{State and Covariance}
+The initial state of the orientation is estimated using the TRIAD approach. The rotation matrix output of the TRIAD approach is converted to a quaternion to initialize the dynamic model. In order to inialize the covaraince, an initial uncertainty in the orientation of 10 degrees is assumed. 
 
-The initial orientation is estimated using the TRIAD approach. The rotation matrix output of the TRIAD approach is converted to a quaternion to initialize the dynamic model. In order to inialize the covaraince, an initial uncertainty in the orientation of 10 degrees is assumed. 
-
-\subsubsection{Process and Measurement Noise}
+\medskip
 
 The Kalman filter assumes process noise and measurement noise in the dynamics. The process noise for the dynamic model of rotations assumes that the body is fixed at each time step, so the noise in the dynamics must come from noise on the gyroscope input. The root-mean squared noise density of gyroscope on the the Adafruit BNO055 given in the data sheet as $0.014 \frac{\frac{\deg}{s}}{\sqrt{\Hz}}$ \cite{bnO055datasheet}. To find the mean squared noise, this value is squared and multiplied by bandwidth of the signal, taken here to be the sample rate, $47$ Hz. This yields a value of approximately $(0.1)^2 \frac{\deg}{s}$. Converting to radians, the mean squared noise of the gyroscope is $2.8e-6 \frac{rad}{s}^2$. Thus, the process noise $Q$ is initialized as 
 
 $$ Q = \mat{2.8e-6 & 0 & 0 \\ 0 & 2.8e-6 & 0 \\ 0 & 0 & 2.8e-6} $$
+
+\medskip
+
+Similarly, the measurement noise is initialized with noise values for the accelerometer and magnetometer listed in the datasheet \cite{bnO055datasheet}. Again, squarinng the noise densities and multiplying by the bandwidths yields mean squared errors of $1.1e-6 g^2$ and $17 \mu T^2 $ for the accelerometer and the magnetometer, respectively. The six dimensional measurement noise matrix, $R$, is initialized as 
+
+$$ R = \mat{1.1e-6 & 0 & 0 & 0 & 0 & 0 \\
+            0 & 1.1e-6 & 0 & 0 & 0 & 0 \\
+            0 & 0 & 1.1e-6 & 0 & 0 & 0 \\
+            0 & 0 & 0 & 17 & 0 & 0 \\
+            0 & 0 & 0 & 0 & 17 & 0 \\
+            0 & 0 & 0 & 0 & 0 & 17} $$
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -588,22 +620,96 @@ where $w_k$ is the jerk. Additionally, the motion of the tool is assumed to be c
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Performance Analysis}
 
-\subsection{Orientation Error}
+\subsection{Estimation Error}
 
-\subsubsection{First Order Error Analysis}
+Given the tool model $ \pfe = \pre + \ple $, the overall error covariance $\Ppf$ is a function of the error due to the position estimation and the error to the orientation estimation. Since the estimation of $\pr$ and $\pl$ occur independently, it is reasonable to assume that the errors in the estimation of these vectors is not correlated. Thus, the covariances of the errors for these two vectors simply add to yield the covariance of the error for the tool front: 
 
-Given two random variables $X$ and $Y$, and the (potentially non-linear) relationship that $Y = f(X)$, how does the covariance of $Y$ change with the covariance of $X$? As a first-order approximation, the randomness of $Y$ can be approximated as a linear function of $X$: $Y - \mu_Y = T (X - \mu_X) $ \cite{haralick1996}. In the linearization of $f(X)$ about the mean of $X$, $\mu_X$, $T$ is the Jacobian matrix, $T = \frac{\partial Y}{\partial X}$. Now, given the linear relationship, $Y - \mu_Y = T (X - \mu_X) $, the covariance of $Y$ is related to the covariance of $X$ by 
+\begin{equation} \label{eq:Ppf}
+    \Ppf =  \Ppr + \Ppl
+\end{equation}
+
+\subsection{Covariance Transformations}
+
+Here are three properties of covariance transformations, useful for analysing the performance of the tracking system as a whole: 
+
+\medskip
+
+(1) Given two independent random variables $X$, $Y$, and their sum $Z = X + Y$ how does the covariance of $Z$ $\Sigma_Z$ relate to the covariances $\Sigma_X$ and $\Sigma_Y$ of $X$ and $Y$, respectively? In this case the covariances simply sum so that 
+
+$$ \Sigma_Z = \Sigma_X + \Sigma_Y $$
+
+\medskip
+
+(2) Given two random variables $X$ and $Y$ related by the linear operator $T$ so that $ Y = T X $ how does the covariance of $Y$ relate to the covariance of $X$?  If $\Sigma_X$ is the covariance of $X$ and $\Sigma_Y$ is the covariance of $Y$, then 
+
+$$ \Sigma_Y = T \Sigma_X T^T $$  
+
+\medskip
+
+(3) Given two random variables $X$ and $Y$, and the non-linear relationship that $Y = f(X)$, how does the covariance of $Y$ change with the covariance of $X$? As a first-order approximation, the randomness of $Y$ can be approximated as a linear function of $X$ \cite{haralick1996}: 
+
+\begin{equation} \label{eq:firstorderdev}
+    Y - \mu_Y = T (X - \mu_X)
+\end{equation}
+
+Now, given the linear relationship, $Y - \mu_Y = T (X - \mu_X) $, the covariance of $Y$ is related to the covariance of $X$ by 
 
 $$ \Sigma_Y = T \Sigma_X T^{T} $$
 
-This relationship is a general result about how covariances transform under linear operators and will be used extensively below.
+using property (2) of the covariance transformation under a linear operator.
+
+\subsection{Estimation Error for $\ple$: Finding position error due to orientation error}
+
+How do errors in the orientation estimation lead to errors the tool position estimation? In the tool model, the position of the front of the tool is estimated from three pieces of information: the position of the rear of the tool $\pr$, the orientation of the tool $\At$, and the tool length in body coordinates $\plpr$. This relationship is described by the equation 
+
+$$ \pf = \pr + \pl = \pr + \At^{T} \plpr $$ 
+
+There is no error in the measurement of $\plpr$; that is a well known parameter of the interaction tool. The error in $\pl$ comes from the estimation of the rotation matrix from body coordinates to world coordinates. 
+
+\medskip
+
+The attitude matrix $\At$ is parameterized by the quaternion $\qt$ estimated from the EKF so that $\pl = \At(\qt)^{T} \plpr$. This expression is helpful because it describes the tool span vector $\pl$ as a function of $\qt$. The relationship between $\pl$ and $\qt$ must be linearlized in order to understand how errors in the estimation of $\qt$ translate to errors in $\pl$. 
+
+\medskip
+
+Let the small deviations in the orientaiton be represented by the error quaternion $\dq$ so that $\pl = \A(\dq) \At(\qt)^{T} \plpr$, where $\A(\dq)$ is the attitude matrix parameterized by the orientation error. Then, the goal here is to linearize the relationship between $\pl$ and $\dq$, and to accomplish we find the matrix first-order derivative of $\pl$ with respect to the three dimensional representation of the error quaternion $\dqvec$: 
+
+$$ \deldq = \ddq \A(\dq) \At(\qt)^T \plpr $$
+
+Now simplify $\A(\dq)$ using the assumptions that $\dqw \approx 1$ and $|\dqvec| \approx 0$, both of which will be true for small errors:
+
+$$ \A(\dq) = (|\dqw|^2 - |\dqvec|) I_{3x3} + 2 \dqvec \dqvec^T - 2\dqw\crossmat{\dqvec}  = I_{3x3} - 2\crossmat{\dqvec} $$
+
+Pplugging in this expression for $\A(\dq)$: 
+
+$$ \deldq = \ddq (I_{3x3} - 2\crossmat{\dqvec}) \At(\qt)^T \plpr $$
+
+Note that $\At(\qt)^T \plpr$ is a constant vector -- in fact it is simply the estimate for $\pl$! 
+
+$$ \deldq = \ddq( I_{3x3} \pl - 2 \crossmat{\dqvec} \pl )  = -2 \ddq \crossmat{\dqvec} \pl $$
+
+The quantity $\crossmat{\dqvec} \pl$ is simply $\dqvec \times \pl = -\pl \times \dqvec$. Therefore, 
+
+$$ \deldq = -2 \ddq (-\pl \times \dqvec) = 2 \crossmat{\pl} \ddq \dqvec = 2 \crossmat{\pl} $$
+
+Now we can write deviations in $\pl$ as a linear function of the quaternion error or angular error ( $\dqvec = \frac{1}{2} \dtvec$ ): 
+
+$$ \delta\pl = 2 \crossmat{ \At(\qt)^T \plpr } \dqvec  =  \crossmat{ \At(\qt)^T \plpr } \dtvec $$
+
+This is written in the form of Equation \ref{eq:firstorderdev}. Thus, if $\Ptt$ is the covariance of the estimation of the tool's orientation, then the covariance $\Ppl$ of $\pl$ is
+
+\begin{equation} \label{eq:plcovariance}
+    \Ppl = \crossmat{ \At(\qt)^T \plpr } \Ptt \crossmat{ \At(\qt)^T \plpr }^T 
+        = \At(\qt)^T \crossmat{\plpr} \Ptt \crossmat{\plpr}^T \At(\qt)
+\end{equation}
+
 
 % Covariance equations
 % $$ \Pprpr = \Ppspr + \crossmat{\pspr} \Pacpr \crossmat{\pspr}^T $$
 % $$ \Ppr = \Acinv ( \Ppspr + \crossmat{\pspr} \Pacpr \crossmat{\pspr}^T ) (\Acinv)^T + \Ppc $$
-% $$ \Ppf = \Ppr + \Atinv \crossmat{\el} \Patpr \crossmat{\el}^T (\Atinv)^T $$
+% $$ \Ppf = \Ppr + \Atinv \crossmat{\pl} \Patpr \crossmat{\pl}^T (\Atinv)^T $$
 % $$ \Ppfpr = \Ad ( \Ppf + \Ppd ) \Ad{^T} $$
-% $$ \Ppfpr = \Ppspr + \crossmat{\pspr} \Pacpr \crossmat{\pspr}^T + \Atpr \crossmat{\el} \Patpr \crossmat{\el}^T (\Atpr)^T + 2\Ad\Ppd\Ad{^T} $$
+% $$ \Ppfpr = \Ppspr + \crossmat{\pspr} \Pacpr \crossmat{\pspr}^T + \Atpr \crossmat{\pl} \Patpr \crossmat{\pl}^T (\Atpr)^T + 2\Ad\Ppd\Ad{^T} $$
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Conclusion
