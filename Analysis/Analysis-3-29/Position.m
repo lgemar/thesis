@@ -3,10 +3,12 @@ AllTestNames = {'test1', 'clckalign1', 'horz1', 'horz2', 'horz3', ...
                 'fbcircle1', 'fbcircle2', 'vert1', 'vert2', 'vert3'}; 
 ViconTestNames = {'test1', 'clkalign1', 'alltests'}; 
 ViconTestName = ViconTestNames{3}; 
-UnityTestName = AllTestNames{3}; 
+UnityTestName = AllTestNames{8}; 
 
 % notes: 
-% horz2 (4) produces amazing graphs of position estimation
+% horz2 (4) produces amazing graphs of position estimation - horizontal
+% error
+% vert1 (13) vertical error analyais
 
 %% Clock alignment
 DataFolderPr = (['C:\Users\Lukas Gemar\thesis\Analysis\Analysis-3-29\', 'Data\']); 
@@ -209,7 +211,7 @@ end
 zu = [pu(:,1) pu(:,2) pu(:,3)]; 
 
 % Camera measurements
-dc = 45 ./ ( zu(:,3) * sqrt( 1/fx^2 + 1/fy^2 ) ); % small blue ball is x mm
+dc = 47 ./ ( zu(:,3) * sqrt( 1/fx^2 + 1/fy^2 ) ); % small blue ball is x mm
 xc = (dc / fx) .* ( pu(:,1) - cx ); 
 yc = (dc / fy) .* ( cy - pu(:,2) ); 
 
@@ -222,10 +224,14 @@ cTw = [-8; -75.4; 501];
 % World observations
 zw = (wRc * zc' + repmat(cTw,1,size(zc,1)))';  
 
-% naive error (delta position naive or dpn for short)
+% naive error analysis (delta position naive or dpn for short)
 j = find(tv > min(t), 1, 'first'); N = length(t); % index of start, number number of samples
-pw = pw(j:(j+N-1), :); 
-dpn = zw - pw; 
+tvpr = tv(tv > min(t) & tv < max(t)); 
+pwpr = pw(tv > min(t) & tv < max(t), :); 
+dpn = zw - pw(j:(j+N-1), :); 
+dpnbias = mean(dpn); 
+Ppn = cov(dpn); 
+[V,D] = eig(Ppn); 
 disp(['Bias Naive: ', num2str(mean(dpn))])
 disp(['Variance Naive: ', num2str([var(dpn(:,1)), var(dpn(:,2)), var(dpn(:,3))]) ]); 
 
@@ -235,7 +241,7 @@ disp(['Variance Naive: ', num2str([var(dpn(:,1)), var(dpn(:,2)), var(dpn(:,3))])
 figure; 
 
 subplot(1,3,1)
-plot( t, pw )
+plot( tvpr, pwpr )
 title('Vicon')
 legend('x','y','z')
 xlim([min(t) max(t)])
@@ -255,8 +261,8 @@ legend('x', 'y', 'z')
 % Reference vs estimate in the image plane
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 figure; 
-plot(t, pw(:,2:3), t, pr(:,2:3))
-title('Position estimates: horizontal maneuver')
+plot(tvpr, pwpr(:,2:3), t, zw(:,2:3))
+title('Maneuver in the image plane')
 ylabel('Position (mm)')
 xlabel('Application time (s)')
 h = legend('$y$', '$z$', '$\hat{y}$', '$\hat{z}$');
@@ -266,7 +272,47 @@ set(h,'Interpreter','latex')
 % Ellipsoid of errors for image plane motion
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 figure;
+scatter(dpn(:,2), dpn(:,3))
+title('Error for vertical maneuver')
+xlabel('Error in y (mm)')
+ylabel('Error in z (mm)')
+xlim([-100 100])
+ylim([-100 100])
 
+hold on
+
+drawArrow = @(x,y, varargin) quiver( x(1),y(1),x(2)-x(1),y(2)-y(1),0, varargin{:} ); 
+x1 = [dpnbias(2) (dpnbias(2) + sqrt(Ppn(2,2)))];
+y1 = [dpnbias(3) dpnbias(3)];
+drawArrow(x1,y1, 'linewidth',3,'color','r'); 
+x2 = [dpnbias(2) dpnbias(2)];
+y2 = [dpnbias(3) (dpnbias(3) + sqrt(Ppn(3,3)))];
+drawArrow(x2,y2, 'linewidth',3,'color','g')
+
+hold off
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Reference vs estimate for depth maneuver
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+figure; 
+plot(tvpr, pwpr(:,1), t, zw(:,1))
+title('Maneuver in the depth dimension')
+ylabel('Position (mm)')
+xlabel('Application time (s)')
+h = legend('$x$', '$\hat{x}$');
+set(h,'Interpreter','latex')
+xlim([min(t) min(t)+20]) % display 20 seconds (before outliers arise)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Error histogram for depth maneuver
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+figure;
+histogram(dpn(:,1), 100)
+title(['Distribution of errors for depth estimates ($\sigma_x = ', num2str(sqrt(Ppn(1,1)), '%.0f'), '$mm)'], 'Interpreter', 'Latex')
+xlabel('Error (mm)')
+ylabel('Number of samples')
+xlim([-200 200])
 
 %% Kalman Filter
 
@@ -283,10 +329,10 @@ aw = aw - repmat(mean(aw,1),N,1); % get rid of calibration errors
 aw = 1000*aw; 
 
 % Initalize Filter varianbles
-Sr = ((0.02)*[10 1 1]).^2; 
+Sr = ((0.01)*[10 1 1]).^2; 
 R = diag(Sr); 
 
-naccel = 0.5*(1000*150e-6); % convert to mm/s^2
+naccel = (1000*150e-6); % convert to mm/s^2
 Q2 = ((naccel^2) / dt)*[dt^4/4 dt^3/2; dt^3/2 dt^2/2]; Q = blkdiag(Q2, Q2, Q2); 
 
 % State transition and observation matrices
@@ -308,7 +354,7 @@ for i = 2:N
    
     % Prediction 
     Ppred = A * P * A' + Q; 
-    xpred = A * xest;% + G * aw(i-1,:)';  
+    xpred = A * xest + G * aw(i-1,:)';  
     
     % Update
 %     P = inv( inv(Ppred) + H' * R' * H ); 
@@ -325,13 +371,14 @@ end
 j = find(tv > min(t), 1, 'first'); % index of start
 N = length(t); % number of samples
 pws = pw(j:(j+N-1), :); 
-dpnk = pr - pws; 
-disp(['Bias Kalman: ', num2str(mean(dpnk))])
-disp(['Variance Kalman: ', num2str([var(dpnk(:,1)), var(dpnk(:,2)), var(dpnk(:,3))]) ]); 
-
-% Find the affect on latency
-latency = finddelay( pws(:,2) - repmat(mean(pws(:,2)), N,1), pr(:,2) - repmat(mean(pr(:,2)), N,1) ) 
-dpnkpr = pr(latency:end, :) - pws(1:(end-latency+1), :); % corrected error with latency subtracted
+dpk = pr - pws; 
+Ppk = cov(dpk); 
+disp(['Bias Kalman: ', num2str(mean(dpk))])
+disp(['Variance Kalman: ', num2str([var(dpk(:,1)), var(dpk(:,2)), var(dpk(:,3))]) ]); 
+% 
+% % Find the affect on latency
+% latency = finddelay( pws(:,2) - repmat(mean(pws(:,2)), N,1), pr(:,2) - repmat(mean(pr(:,2)), N,1) ) 
+% dpnkpr = pr(latency:end, :) - pws(1:(end-latency+1), :); % corrected error with latency subtracted
 
 
 figure; 
@@ -349,13 +396,24 @@ legend('x', 'y', 'z')
 xlim([min(t) max(t)])
 
 subplot(2,2,3)
-plot( t, dpnk )
+plot( t, dpk )
 title('Error')
 legend('x', 'y', 'z')
 ylim([-100 100])
+% 
+% subplot(2,2,4)
+% plot(t(1:(end-latency+1)), dpnkpr)
+% title('Corrected Error')
+% ylim([-100 100])
 
-subplot(2,2,4)
-plot(t(1:(end-latency+1)), dpnkpr)
-title('Corrected Error')
-ylim([-100 100])
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Error histogram for depth maneuver
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+figure;
+histogram(dpn(:,1), 100)
+title(['Distribution of errors for depth estimates ($\sigma_x = ', num2str(sqrt(Ppk(1,1)), '%.0f'), '$mm)'], 'Interpreter', 'Latex')
+xlabel('Error (mm)')
+ylabel('Number of samples')
+xlim([-200 200])
 

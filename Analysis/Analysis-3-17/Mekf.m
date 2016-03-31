@@ -1,10 +1,10 @@
-set(groot,'defaultAxesColorOrder',[1 0 0;0 1 0;0 0 1],...
-      'defaultAxesLineStyleOrder','-|--|:')
+% set(groot,'defaultAxesColorOrder',[1 0 0;0 1 0;0 0 1],...
+%       'defaultAxesLineStyleOrder','-|--|:')
 
 %% Test Data
 % Specify the test name and file location
 AllTestNames = {'yaw5-1', 'pitch5-1', 'roll5-1', 'roll1', 'pitch1', 'yaw1', 'no_manuever1', 'rollslow1', 'yawslow1', 'all2', 'yawstep2'}; 
-TestName = AllTestNames{3}; % specify the trial test name
+TestName = AllTestNames{1}; % specify the trial test name
 SensorFile = [TestName, '.csv']; % find the sensor data file
 
 DataFolder = (['C:\Users\Lukas Gemar\thesis\Analysis\Analysis-3-17\', 'Data\Sensor\']); 
@@ -33,7 +33,7 @@ dqt = zeros(N,4); % TRIAD quaternion error
 dqk = zeros(N,4); % Kalman quaternion error
 
 % Reference vectors
-th = deg2rad(180); % location of magnetic North, typical: th = deg2rad(160); 
+th = deg2rad(165); % location of magnetic North, typical: th = deg2rad(160); 
 gr = [0; 0; 9.81]; % gravity reference vector
 br = [cos(th) -sin(th) 0; sin(th) cos(th) 0; 0 0 1] * m(1,:)'; % b-field reference vector
 
@@ -49,6 +49,14 @@ dtzstr = '$\delta\vec{\theta}_z$';
 figure(1)
 
 subplot(2,2,1)
+plot(t,tr)
+title('Orientation Reference')
+xlabel('time (s)')
+s = sprintf('%c', char(176)); xlabel('time (s)'); 
+ylabel(s)
+legend('roll', 'pitch', 'yaw')
+
+subplot(2,2,2)
 plot(t,a)
 title('Accelerometer')
 ylim([-10 10])
@@ -56,7 +64,7 @@ xlabel('time (s)')
 ylabel('m/s^2')
 legend('X', 'Y', 'Z')
 
-subplot(2,2,2)
+subplot(2,2,3)
 plot(t,g)
 title('Gyroscope')
 xlabel('time (s)')
@@ -64,20 +72,14 @@ s = sprintf('%c/s', char(176)); xlabel('time (s)');
 ylabel(s)
 legend('X', 'Y', 'Z')
 
-subplot(2,2,3)
+subplot(2,2,4)
 plot(t,m)
 title('Magnetometer')
 xlabel('time (s)')
 ylabel('\mu T')
 legend('X', 'Y', 'Z')
 
-subplot(2,2,4)
-plot(t,tr)
-title('Orientation')
-xlabel('time (s)')
-s = sprintf('%c', char(176)); xlabel('time (s)'); 
-ylabel(s)
-legend('yaw', 'pitch', 'roll')
+
 
 %% TRIAD algorithm
 
@@ -121,11 +123,12 @@ ylim([-181 181])
 legend('Roll', 'Pitch', 'Yaw')
 
 % Error for x,y,z
-figure(3)
-subplot(2,2,1)
+figure; 
 plot( t, dtt)
 legend('\delta\theta_x', '\delta\theta_y', '\delta\theta_z')
-title(dtstr, 'Interpreter', 'Latex') 
+title(['TRIAD ', dtstr], 'Interpreter', 'Latex') 
+xlabel('Time (s)', 'Interpreter', 'Latex')
+ylabel('degrees ($^{\circ})$', 'Interpreter', 'Latex')
 dttrange = [-max(dtt(:))-10 max(dtt(:))+10];
 ylim(dttrange)
 
@@ -133,6 +136,8 @@ biasstr = ['$$ | E[\delta\vec{\theta}] | = ', num2str(biasdtt), ' $$'];
 text(0.05 * max(t),dttrange(2)-10,biasstr,'Interpreter','latex')
 varstr = ['$$ \textrm{tr}(\textrm{Var}(\delta\vec{\theta})) = ', num2str(vardtt), ' $$'];                                                
 text(0.05 * max(t),dttrange(2)-20,varstr,'Interpreter','latex')
+
+figure; 
 
 xyzstr = {'x', 'y', 'z'}; 
 rpystr = {'Roll', 'Pitch', 'Yaw'};
@@ -177,8 +182,14 @@ Sp = [deg2rad(10)^2 deg2rad(10)^2 deg2rad(15)^2]; Pe = diag(Sp);
 % These two work really well: 
 % Sq = 20*(1/3)*[2.8e-6 2.8e-6 12*2.8e-6]'; Q = diag(Sq); 
 % Sr = 0.001*(1/3)*[1.1e-6*ones(1,3) 17*[1,1,1]]'; R = diag(Sr); 
-Sq = [2.8e-6 2.8e-6 12*2.8e-6]'; Q = diag(Sq); 
-Sr = (1/3)*[200*1.1e-6*ones(1,3) 0.0008*17*[1,1,1]]'; R = diag(Sr); 
+
+% These two may work even better: 
+Sq = 20*(1/3)*[2.8e-6 2.8e-6 12*2.8e-6]'; Q = diag(Sq); 
+Sr = [(1)^2 * 1.1e-6*ones(1,3) (0.0008)^2*17*[1,1,1]]'; R = diag(Sr); 
+
+% % These two may work even better: 
+% Sq = [2.8e-6 2.8e-6 12*2.8e-6]'; Q = diag(Sq); 
+% Sr = [(1) * 1.1e-6*ones(1,3) (Sra(idx))*17*[1,1,1]]'; R = diag(Sr); 
 
 % Gyro gain and gyro gain reference
 pgain = zeros(N-1,3); 
@@ -242,6 +253,19 @@ for k = 2:N
     qek(k,:) = qflip( qe ); 
         
 end
+tek = fliplr(rad2deg( quat2eul(qek) )); 
+
+% Compute the quaternion error of estimates
+for i = 1:N
+    dqk(i,:) = qflip( qmultiply( qflip( qr(i,:) ), qinv( qflip( qek(i,:) ) ) ) ); 
+end
+dtk = rad2deg(2 * dqk(:,2:4)); 
+
+% Compute bias and variance of the error
+mudtt = mean(dtk,1); % bias - mean of the error
+Pdtt = cov(dtk,1); % compute covariance of error, rows are observations
+biasdtt = norm(mudtt);  
+vardtt = trace(Pdtt);  % target variance is 5^2 + 5^2 + 5^2, for a 5degree change in orientation is unnoticable
 
 figure(3)
 subplot(2,3,1)
@@ -262,12 +286,7 @@ ylim([-181 181])
 
 subplot(2,3,3)
 
-qerrorK = zeros(N,4); 
-for i = 1:N
-    qerrorK(i,:) = qflip( qmultiply( qflip( qr(i,:) ), qinv( qflip( qek(i,:) ) ) ) ); 
-end
-
-plot( t, rad2deg( quat2eul( qerrorK ) ) )
+plot( t, rad2deg( quat2eul( dqk ) ) )
 legend('yaw', 'pitch', 'roll')
 % plot( theta, qet )
 % legend('w','x','y','z')
@@ -288,80 +307,28 @@ subplot(2,3,6)
 plot(t, inngain)
 title('Innovation gain: $\delta \vec{\theta}{^{(+)}}_k$', 'Interpreter', 'Latex')
 ylabel('Rad')
+plot( t, rad2deg( quat2eul( qek ) ) )
 
-% Yaw estimate error
-xyzref = rad2deg( quat2eul( qr ) ); 
-xyzest = rad2deg( quat2eul( qek ) ); 
-xyzerror = rad2deg( quat2eul( qerrorK ) ); 
+% Error for x,y,z
+figure; 
+plot( t, dtk)
+legend('\delta\theta_x', '\delta\theta_y', '\delta\theta_z')
+title(['Extended Kalman Filter ', dtstr], 'Interpreter', 'Latex') 
+dttrange = [-max(dtt(:))-10 max(dtt(:))+10];
+ylim(dttrange)
 
-figure(5)
-
-subplot(1,3,1)
-plot( t, xyzref(:,3), 'r' )
-% plot( theta, qr )
-% legend('w','x','y','z')
-title('Reference: $\theta_X$', 'Interpreter', 'Latex')
-ylim([-181 181])
-
-subplot(1,3,2)
-plot( t, xyzest(:,3), 'r')
-% plot( theta, qet )
-% legend('w','x','y','z')
-title('Estimate: $\hat{\theta}_X$', 'Interpreter', 'Latex')
-ylim([-181 181])
-
-subplot(1,3,3)
-
-plot( t, xyzerror(:,3), 'r')
-% plot( theta, qet )
-% legend('w','x','y','z')
-title('Error: $\hat{\theta}_X -\theta_X$ ', 'Interpreter', 'Latex')
-ylim([-40 40])
-
-figure(6)
-subplot(1,3,1)
-plot( t, xyzref(:,3), 'g' )
-% plot( theta, qr )
-% legend('w','x','y','z')
-title('Reference: $\theta_Y$', 'Interpreter', 'Latex')
-ylim([-181 181])
-
-subplot(1,3,2)
-plot( t, xyzest(:,3), 'g')
-% plot( theta, qet )
-% legend('w','x','y','z')
-title('Estimate: $\hat{\theta}_Y$', 'Interpreter', 'Latex')
-ylim([-181 181])
-
-subplot(1,3,3)
-
-plot( t, xyzerror(:,3), 'g')
-% plot( theta, qet )
-% legend('w','x','y','z')
-title('Error: $\hat{\theta}_Y -\theta_Y$ ', 'Interpreter', 'Latex')
-ylim([-40 40])
-
-figure(7)
-subplot(1,3,1)
-plot( t, xyzref(:,1), 'b' )
-% plot( theta, qr )
-% legend('w','x','y','z')
-title('Reference: $\theta_Z$', 'Interpreter', 'Latex')
-ylim([-181 181])
-
-subplot(1,3,2)
-plot( t, xyzest(:,1), 'b')
-% plot( theta, qet )
-% legend('w','x','y','z')
-title('Estimate: $\hat{\theta}_Z$', 'Interpreter', 'Latex')
-ylim([-181 181])
-
-subplot(1,3,3)
-
-plot( t, xyzerror(:,1), 'b')
-% plot( theta, qet )
-% legend('w','x','y','z')
-title('Error: $\hat{\theta}_Z -\theta_Z$ ', 'Interpreter', 'Latex')
-ylim([-40 40])
+biasstr = ['$$ | E[\delta\vec{\theta}] | = ', num2str(biasdtt), ' $$'];
+text(0.05 * max(t),dttrange(2)-10,biasstr,'Interpreter','latex')
+varstr = ['$$ \textrm{tr}(\textrm{Var}(\delta\vec{\theta})) = ', num2str(vardtt), ' $$'];                                                
+text(0.05 * max(t),dttrange(2)-20,varstr,'Interpreter','latex')
 
 
+% plot(t, tek(:,3))
+% 
+% title('Measurement Noise Tuning', 'Interpreter', 'Latex')
+% ylim([-181 181])
+% xlim([4.5 6])
+% xlabel('Sensor time (s)', 'Interpreter', 'Latex')
+% ylabel('degrees $(^{\circ})$', 'Interpreter', 'Latex')
+% h = legend('$R^{\prime} = \frac{1}{2} R$', '$R^{\prime} = R$', '$R^{\prime} = 2 R$')
+% set(h,'Interpreter','latex')
