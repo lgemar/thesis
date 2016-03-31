@@ -1,7 +1,12 @@
-AllTestNames = {'test1', 'clckalign1', 'horz1', 'horz2', 'horz3', 'depth1', 'depth2', 'depth3'}; 
+AllTestNames = {'test1', 'clckalign1', 'horz1', 'horz2', 'horz3', ... 
+                'depth1', 'depth2', 'depth3', 'fbsquare1', 'fbsquare2', ...
+                'fbcircle1', 'fbcircle2', 'vert1', 'vert2', 'vert3'}; 
 ViconTestNames = {'test1', 'clkalign1', 'alltests'}; 
 ViconTestName = ViconTestNames{3}; 
-UnityTestName = AllTestNames{4}; 
+UnityTestName = AllTestNames{3}; 
+
+% notes: 
+% horz2 (4) produces amazing graphs of position estimation
 
 %% Clock alignment
 DataFolderPr = (['C:\Users\Lukas Gemar\thesis\Analysis\Analysis-3-29\', 'Data\']); 
@@ -136,9 +141,9 @@ Fv = 1/Tv;
 Fs = 1/Ts; 
 
 % Downsample the VICONdata
-tv = resample(tv,round(Fs),round(Fv)); 
-pw = resample(pw,round(Fs),round(Fv));
-qw = resample(qw,round(Fs),round(Fv));
+pw = resample(pw,round(Fs),round(Fv),1);
+tv = linspace(min(tv),max(tv),size(pw,1)); 
+qw = resample(qw,round(Fs),round(Fv),1);
 
 
 if 0
@@ -198,7 +203,7 @@ else
 end
 
 
-%% Undistorted image, camera measurements, world measurements
+% Undistorted image, camera measurements, world measurements
 
 % Undistorted image measurements
 zu = [pu(:,1) pu(:,2) pu(:,3)]; 
@@ -218,14 +223,19 @@ cTw = [-8; -75.4; 501];
 zw = (wRc * zc' + repmat(cTw,1,size(zc,1)))';  
 
 % naive error (delta position naive or dpn for short)
-j = find(tv > min(t), 1, 'first'); % index of start
-N = length(t); % number of samples
-dpn = zw - pw(j:(j+N-1), :); 
+j = find(tv > min(t), 1, 'first'); N = length(t); % index of start, number number of samples
+pw = pw(j:(j+N-1), :); 
+dpn = zw - pw; 
+disp(['Bias Naive: ', num2str(mean(dpn))])
+disp(['Variance Naive: ', num2str([var(dpn(:,1)), var(dpn(:,2)), var(dpn(:,3))]) ]); 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Reference vs estimate vs error in x,y,z
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 figure; 
 
 subplot(1,3,1)
-plot( tv, pw )
+plot( t, pw )
 title('Vicon')
 legend('x','y','z')
 xlim([min(t) max(t)])
@@ -240,3 +250,112 @@ subplot(1,3,3)
 plot( t, dpn )
 title('Error')
 legend('x', 'y', 'z')
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Reference vs estimate in the image plane
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+figure; 
+plot(t, pw(:,2:3), t, pr(:,2:3))
+title('Position estimates: horizontal maneuver')
+ylabel('Position (mm)')
+xlabel('Application time (s)')
+h = legend('$y$', '$z$', '$\hat{y}$', '$\hat{z}$');
+set(h,'Interpreter','latex')
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Ellipsoid of errors for image plane motion
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+figure;
+
+
+%% Kalman Filter
+
+dt = t(2) - t(1); % application time step
+
+% Transform the acceleration readings into world coordinates
+j = find(tv > min(t), 1, 'first'); % index of start
+N = length(t); % number of samples
+aw = zeros(N,3); 
+for i = 1:N
+    aw(i,:) = (AMat(qflip(qw((i+j-1),:)))' * a(i,:)' + [0;0;9.81])';
+end
+aw = aw - repmat(mean(aw,1),N,1); % get rid of calibration errors
+aw = 1000*aw; 
+
+% Initalize Filter varianbles
+Sr = ((0.02)*[10 1 1]).^2; 
+R = diag(Sr); 
+
+naccel = 0.5*(1000*150e-6); % convert to mm/s^2
+Q2 = ((naccel^2) / dt)*[dt^4/4 dt^3/2; dt^3/2 dt^2/2]; Q = blkdiag(Q2, Q2, Q2); 
+
+% State transition and observation matrices
+F2 = [1 dt; 0 1]; A = blkdiag(F2, F2, F2); 
+G2 = [dt^2/2; dt]; G = blkdiag(G2, G2, G2); 
+
+% Run Kalman Filter
+
+% Initialization
+pr = zeros(N,3); 
+
+xest = [zw(1,1) 0 zw(1,2) 0 zw(1,3) 0]'; % start at 0 velocity
+H2 = [1 0]; H = blkdiag(H2, H2, H2);
+
+Ppr = [100 100].^2; P = blkdiag(diag(Ppr), diag(Ppr), diag(Ppr));
+
+pr(1, :) = xest([1 3 5])'; % x,y,z components of the position
+for i = 2:N
+   
+    % Prediction 
+    Ppred = A * P * A' + Q; 
+    xpred = A * xest;% + G * aw(i-1,:)';  
+    
+    % Update
+%     P = inv( inv(Ppred) + H' * R' * H ); 
+%     K = P * H' * R';   
+    K = Ppred * H' / (H * Ppred * H' + R);
+    P = (eye(6,6) - K * H) * Ppred;
+    
+    xest = (xpred + K * ([zw(i,1); zw(i,2); zw(i,3)] - H * xpred)); 
+    pr(i, :) = xest([1 3 5])'; % x,y,z components of the position
+    
+end
+
+% naive error (delta position naive or dpn for short)
+j = find(tv > min(t), 1, 'first'); % index of start
+N = length(t); % number of samples
+pws = pw(j:(j+N-1), :); 
+dpnk = pr - pws; 
+disp(['Bias Kalman: ', num2str(mean(dpnk))])
+disp(['Variance Kalman: ', num2str([var(dpnk(:,1)), var(dpnk(:,2)), var(dpnk(:,3))]) ]); 
+
+% Find the affect on latency
+latency = finddelay( pws(:,2) - repmat(mean(pws(:,2)), N,1), pr(:,2) - repmat(mean(pr(:,2)), N,1) ) 
+dpnkpr = pr(latency:end, :) - pws(1:(end-latency+1), :); % corrected error with latency subtracted
+
+
+figure; 
+
+subplot(2,2,1)
+plot( t, pws )
+title('Vicon')
+legend('x','y','z')
+xlim([min(t) max(t)])
+
+subplot(2,2,2)
+plot( t, pr )
+title('Estimate')
+legend('x', 'y', 'z')
+xlim([min(t) max(t)])
+
+subplot(2,2,3)
+plot( t, dpnk )
+title('Error')
+legend('x', 'y', 'z')
+ylim([-100 100])
+
+subplot(2,2,4)
+plot(t(1:(end-latency+1)), dpnkpr)
+title('Corrected Error')
+ylim([-100 100])
+
