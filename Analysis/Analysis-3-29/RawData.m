@@ -44,10 +44,10 @@ lav = lag(I);
 dtva = (rV(-lav) - tA(1))
 
 % Align the time vectors relative to the clock in the application
-rVpr = rV - (dtva + min(tA)); % Transform vicon time to app time
-tApr = tA - min(tA); % Transform app time to 0
+rVpr = rV - (dtva); % Transform vicon time to app time
+tApr = tA ; % Transform app time to 0
 
-Plot = 0; 
+Plot = 1; 
 
 if(Plot == 1)
 
@@ -79,7 +79,7 @@ plot(tApr, yD)
 xlim([min(tApr) max(tApr)])
 title('Application')
 
-subplot(2,2,2)
+subplot(1,2,2)
 plot(rVpr, rzW)
 xlim([min(tApr) max(tApr)])
 title('Vicon')
