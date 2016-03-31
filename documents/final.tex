@@ -105,6 +105,9 @@
     \newcommand{\xd}{\dot{x}}
     \newcommand{\xdd}{\ddot{x}}
 
+    \newcommand{\deg}{^{\circ} }
+    \newcommand{\Hz}{\textrm{Hz}}
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -475,6 +478,19 @@ with the operation $A(\overline{q})$ finding the attitude matrix $A$ that corres
 The inverse of the quaternion is found by negating the imaginary component of the quaternion: 
 
 \[ \overline{q}^{-1} = \mat{ -\vec{q} \\ q_4 } \]
+
+% Extended Kalman Filter Initialization
+\subsection{Initialization}
+
+\subsubsection{State and Covariance}
+
+The initial orientation is estimated using the TRIAD approach. The rotation matrix output of the TRIAD approach is converted to a quaternion to initialize the dynamic model. In order to inialize the covaraince, an initial uncertainty in the orientation of 10 degrees is assumed. 
+
+\subsubsection{Process and Measurement Noise}
+
+The Kalman filter assumes process noise and measurement noise in the dynamics. The process noise for the dynamic model of rotations assumes that the body is fixed at each time step, so the noise in the dynamics must come from noise on the gyroscope input. The root-mean squared noise density of gyroscope on the the Adafruit BNO055 given in the data sheet as $0.014 \frac{\frac{\deg}{s}}{\sqrt{\Hz}}$ \cite{bnO055datasheet}. To find the mean squared noise, this value is squared and multiplied by bandwidth of the signal, taken here to be the sample rate, $47$ Hz. This yields a value of approximately $(0.1)^2 \frac{\deg}{s}$. Converting to radians, the mean squared noise of the gyroscope is $2.8e-6 \frac{rad}{s}^2$. Thus, the process noise $Q$ is initialized as 
+
+$$ Q = \mat{2.8e-6 & 0 & 0 \\ 0 & 2.8e-6 & 0 \\ 0 & 0 & 2.8e-6} $$
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
