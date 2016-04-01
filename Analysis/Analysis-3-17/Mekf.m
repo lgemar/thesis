@@ -4,7 +4,7 @@
 %% Test Data
 % Specify the test name and file location
 AllTestNames = {'yaw5-1', 'pitch5-1', 'roll5-1', 'roll1', 'pitch1', 'yaw1', 'no_manuever1', 'rollslow1', 'yawslow1', 'all2', 'yawstep2'}; 
-TestName = AllTestNames{1}; % specify the trial test name
+TestName = AllTestNames{2}; % specify the trial test name
 SensorFile = [TestName, '.csv']; % find the sensor data file
 
 DataFolder = (['C:\Users\Lukas Gemar\thesis\Analysis\Analysis-3-17\', 'Data\Sensor\']); 
@@ -33,19 +33,21 @@ dqt = zeros(N,4); % TRIAD quaternion error
 dqk = zeros(N,4); % Kalman quaternion error
 
 % Reference vectors
-th = deg2rad(165); % location of magnetic North, typical: th = deg2rad(160); 
+th = deg2rad(180); % location of magnetic North, typical: th = deg2rad(160); 
 gr = [0; 0; 9.81]; % gravity reference vector
 br = [cos(th) -sin(th) 0; sin(th) cos(th) 0; 0 0 1] * m(1,:)'; % b-field reference vector
 
 % Build strings of important notation
 tstr = 'Orientation Reference, $\vec{\theta}$'; 
 testr = 'Orientation Estimate, $\hat{\vec{\theta}}$';
-dtstr = 'Esimation Error, $\delta\vec{\theta}$'; 
+dtstr = 'Estimation Error, $\delta\vec{\theta}$'; 
 dtxstr = '$\delta\vec{\theta}_x$'; 
 dtystr = '$\delta\vec{\theta}_y$'; 
 dtzstr = '$\delta\vec{\theta}_z$'; 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Display the raw data
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 figure(1)
 
 subplot(2,2,1)
@@ -107,7 +109,9 @@ msme1 = trace(Pdtt);
 [Q, D] = eig(Pdtt); msme2 = trace(D); 
 msme3 = mean( sum( (dtt - repmat(mudtt,N,1)).^2, 2) ); 
 
-% Trace comparison
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Trace Comparison
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 figure(2)
 
 subplot(1,2,1)
@@ -122,13 +126,17 @@ title(testr, 'Interpreter', 'Latex')
 ylim([-181 181])
 legend('Roll', 'Pitch', 'Yaw')
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Error for x,y,z
-figure; 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+figure(3); 
 plot( t, dtt)
 legend('\delta\theta_x', '\delta\theta_y', '\delta\theta_z')
-title(['TRIAD ', dtstr], 'Interpreter', 'Latex') 
+title(['Pitch Maneuver ', dtstr], 'Interpreter', 'Latex') 
 xlabel('Time (s)', 'Interpreter', 'Latex')
 ylabel('degrees ($^{\circ})$', 'Interpreter', 'Latex')
+ylim(dttrange)
+xlim([min(t) max(t)])
 dttrange = [-max(dtt(:))-10 max(dtt(:))+10];
 ylim(dttrange)
 
@@ -137,36 +145,35 @@ text(0.05 * max(t),dttrange(2)-10,biasstr,'Interpreter','latex')
 varstr = ['$$ \textrm{tr}(\textrm{Var}(\delta\vec{\theta})) = ', num2str(vardtt), ' $$'];                                                
 text(0.05 * max(t),dttrange(2)-20,varstr,'Interpreter','latex')
 
-figure; 
 
-xyzstr = {'x', 'y', 'z'}; 
-rpystr = {'Roll', 'Pitch', 'Yaw'};
-colorstr = {'r', 'g', 'b'}
-
-for j = 1:3
-    subplot(2,2,j+1)
-    plot(t, dtt(:,j), colorstr{j})
-    title(['$ E[\delta\theta_', xyzstr{j}, '] = ', num2str(mudtt(j), '%.1f'), ...
-        '^{\circ} $ and ', '$ \textrm{Var}(\delta\theta_', xyzstr{j}, ')) = ('....
-        , num2str(sqrt(Pdtt(j,j)), '%.1f'), '^{\circ})^2 $'], 'Interpreter', 'Latex')
-    ylim([-181 181])
-    xlim([min(t) max(t)])
-end
-
-% Trace and error comparison maneuver by maneuver
-for j = 1:3
-    figure(4+j)
-    
-    subplot(1,2,1)
-    plot(t, tr(:,j), t, tet(:,j))
-    title(['Reference Trajectory, \theta_', xyzstr{j}, ...
-        'Versus Estimate, \hat{\theta_', xyzstr{j}, '}'])
-    legend('Reference', 'Estimate')
-    
-%     subplot(1,2,2)
-%     title(['Reference Trajectory, \delta\vec{\theta}', ...
-%     'Versus Estimate, \delta\hat{\vec{\theta}}'])
-end
+% xyzstr = {'x', 'y', 'z'}; 
+% rpystr = {'Roll', 'Pitch', 'Yaw'};
+% colorstr = {'r', 'g', 'b'}
+% 
+% for j = 1:3
+%     subplot(2,2,j+1)
+%     plot(t, dtt(:,j), colorstr{j})
+%     title(['$ E[\delta\theta_', xyzstr{j}, '] = ', num2str(mudtt(j), '%.1f'), ...
+%         '^{\circ} $ and ', '$ \textrm{Var}(\delta\theta_', xyzstr{j}, ')) = ('....
+%         , num2str(sqrt(Pdtt(j,j)), '%.1f'), '^{\circ})^2 $'], 'Interpreter', 'Latex')
+%     ylim([-181 181])
+%     xlim([min(t) max(t)])
+% end
+% 
+% % Trace and error comparison maneuver by maneuver
+% for j = 1:3
+%     figure(4+j)
+%     
+%     subplot(1,2,1)
+%     plot(t, tr(:,j), t, tet(:,j))
+%     title(['Reference Trajectory, \theta_', xyzstr{j}, ...
+%         'Versus Estimate, \hat{\theta_', xyzstr{j}, '}'])
+%     legend('Reference', 'Estimate')
+%     
+% %     subplot(1,2,2)
+% %     title(['Reference Trajectory, \delta\vec{\theta}', ...
+% %     'Versus Estimate, \delta\hat{\vec{\theta}}'])
+% end
 
 
 
@@ -184,12 +191,16 @@ Sp = [deg2rad(10)^2 deg2rad(10)^2 deg2rad(15)^2]; Pe = diag(Sp);
 % Sr = 0.001*(1/3)*[1.1e-6*ones(1,3) 17*[1,1,1]]'; R = diag(Sr); 
 
 % These two may work even better: 
-Sq = 20*(1/3)*[2.8e-6 2.8e-6 12*2.8e-6]'; Q = diag(Sq); 
-Sr = [(1)^2 * 1.1e-6*ones(1,3) (0.0008)^2*17*[1,1,1]]'; R = diag(Sr); 
+% Sq = 20*(1/3)*[2.8e-6 2.8e-6 12*2.8e-6]'; Q = diag(Sq); 
+% Sr = [(1)^2 * 1.1e-6*ones(1,3) (0.0008)^2*17*[1,1,1]]'; R = diag(Sr); 
 
 % % These two may work even better: 
 % Sq = [2.8e-6 2.8e-6 12*2.8e-6]'; Q = diag(Sq); 
 % Sr = [(1) * 1.1e-6*ones(1,3) (Sra(idx))*17*[1,1,1]]'; R = diag(Sr); 
+
+% Settiling on these
+Sq = [2.8e-6 2.8e-6 12*2.8e-6]'; Q = diag(Sq); 
+Sr = 200*(1/3)*[200*1.1e-6*ones(1,3) 0.0008*17*[1,1,1]]'; R = diag(Sr); 
 
 % Gyro gain and gyro gain reference
 pgain = zeros(N-1,3); 
@@ -267,7 +278,7 @@ Pdtt = cov(dtk,1); % compute covariance of error, rows are observations
 biasdtt = norm(mudtt);  
 vardtt = trace(Pdtt);  % target variance is 5^2 + 5^2 + 5^2, for a 5degree change in orientation is unnoticable
 
-figure(3)
+figure(4)
 subplot(2,3,1)
 plot( t, rad2deg( quat2eul( qr ) ) )
 legend('yaw', 'pitch', 'roll')
@@ -309,18 +320,25 @@ title('Innovation gain: $\delta \vec{\theta}{^{(+)}}_k$', 'Interpreter', 'Latex'
 ylabel('Rad')
 plot( t, rad2deg( quat2eul( qek ) ) )
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Error for x,y,z
-figure; 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+figure(5); 
 plot( t, dtk)
 legend('\delta\theta_x', '\delta\theta_y', '\delta\theta_z')
-title(['Extended Kalman Filter ', dtstr], 'Interpreter', 'Latex') 
+title(['Pitch Maneuver ', dtstr], 'Interpreter', 'Latex') 
 dttrange = [-max(dtt(:))-10 max(dtt(:))+10];
+xlabel('Time (s)', 'Interpreter', 'Latex')
+ylabel('degrees ($^{\circ})$', 'Interpreter', 'Latex')
 ylim(dttrange)
-
+xlim([min(t) max(t)])
 biasstr = ['$$ | E[\delta\vec{\theta}] | = ', num2str(biasdtt), ' $$'];
 text(0.05 * max(t),dttrange(2)-10,biasstr,'Interpreter','latex')
 varstr = ['$$ \textrm{tr}(\textrm{Var}(\delta\vec{\theta})) = ', num2str(vardtt), ' $$'];                                                
 text(0.05 * max(t),dttrange(2)-20,varstr,'Interpreter','latex')
+
+% Find the delay in the error signal
+latency = finddelay(tr, tek)
 
 
 % plot(t, tek(:,3))

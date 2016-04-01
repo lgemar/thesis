@@ -10,7 +10,7 @@
 \usepackage{lipsum}
 \sectionfont{\centering} % center just the titles
 
-\usepackage[a4paper,right=18mm,left=18mm,top=25mm,bottom=25mm]{geometry} % https://www.sharelatex.com/blog/2013/08/06/thesis-series-pt2.html
+\usepackage[a4paper,right=26mm,left=26mm,top=26mm,bottom=26mm]{geometry} % https://www.sharelatex.com/blog/2013/08/06/thesis-series-pt2.html
 \usepackage{pdfpages}
 
 \usepackage[english]{babel}
@@ -266,7 +266,7 @@ The usability requirements presented in Figure \ref{fig:usability} must be met f
 
 \begin{figure}[H]
 	\begin{center}
-		\includegraphics[width=0.5\textwidth]{Usability}
+		\includegraphics[width=0.8\textwidth]{Usability}
 	\end{center}
 	\caption{Usability design objectives}
 	\label{fig:usability}
@@ -278,7 +278,7 @@ The performance requirements presented in Figure \ref{fig:performance} must be m
 
 \begin{figure}[H]
 	\begin{center}
-		\includegraphics[width=0.5\textwidth]{Performance}
+		\includegraphics[width=0.8\textwidth]{Performance}
 	\end{center}
 	\caption{Performance design objectives}
 	\label{fig:performance}
@@ -296,7 +296,7 @@ In order to enable direct input with the interaction tool, the tool's tracking s
 
 \begin{figure}[H]
 	\begin{center}
-		\includegraphics[width=0.5\textwidth]{requirements}
+		\includegraphics[width=0.8\textwidth]{requirements}
 	\end{center}
 	\caption{Position and orientation tracking requirements}
 	\label{fig:requirements}
@@ -312,7 +312,7 @@ The world-referenced tracking geometry is shown in Figure \ref{fig:worldtopo}.
 
 \begin{figure}[H]
 	\begin{center}
-		\includegraphics[width=0.5\textwidth]{WorldTopo}
+		\includegraphics[width=0.8\textwidth]{WorldTopo}
 	\end{center}
 	\caption{Position tracking with a world-referenced geometry}
 	\label{fig:worldtopo}
@@ -324,7 +324,7 @@ The display-referenced tracking geometry is shown in Figure \ref{fig:displaytopo
 
 \begin{figure}[H]
 	\begin{center}
-		\includegraphics[width=0.5\textwidth]{DisplayTopo}
+		\includegraphics[width=0.8\textwidth]{DisplayTopo}
 	\end{center}
 	\caption{Position tracking with a display-referenced geometry}
 	\label{fig:displaytopo}
@@ -344,7 +344,7 @@ A combination between optical and inertial sensors was chosen to track the 3D In
 
 \begin{figure}[H]
 	\begin{center}
-		\includegraphics[width=0.5\textwidth]{TrackingTech}
+		\includegraphics[width=0.8\textwidth]{TrackingTech}
 	\end{center}
 	\caption{Comparison of five tracking technologies}
 	\label{fig:trackingtech}
@@ -358,7 +358,7 @@ The final system layout is shown in figure \ref{fig:finaldesign}.
 
 \begin{figure}[H]
 	\begin{center}
-		\includegraphics[width=0.5\textwidth]{FinalDesign}
+		\includegraphics[width=0.8\textwidth]{FinalDesign}
 	\end{center}
     \caption{Final tracking system design: a display-referenced tracking topology}
 	\label{fig:finaldesign}
@@ -401,7 +401,7 @@ The system's physical layout is shown in \ref{fig:systemlayout}. For simplicity,
 
 \begin{figure}[H]
 	\begin{center}
-		\includegraphics[width=0.5\textwidth]{SystemLayout}
+		\includegraphics[width=0.8\textwidth]{SystemLayout}
 	\end{center}
     \caption{Geometrically equivalent tracking system}
 	\label{fig:systemdiagram}
@@ -415,7 +415,7 @@ The block diagram of the implmented tracking system is shown in Figure \ref{fig:
 
 \begin{figure}[H]
 	\begin{center}
-		\includegraphics[width=0.5\textwidth]{SystemDiagram}
+		\includegraphics[width=0.8\textwidth]{SystemDiagram}
 	\end{center}
     \caption{Full system diagram of implementation}
 	\label{fig:systemdiagram}
@@ -541,6 +541,23 @@ $$ R = \mat{1.1e-6 & 0 & 0 & 0 & 0 & 0 \\
             0 & 0 & 0 & 0 & 17 & 0 \\
             0 & 0 & 0 & 0 & 0 & 17} $$
 
+\subsubsection{Filter Tuning}
+
+The Kalman filter assumes that the measurement noise and process noise are Gaussian. However, this assumption rarely holds, so the noise parameters of the filter must be tuned to achieve better performance of the filter. The measurement noise parameters is particularly important. Increasing the measurement noise parameter, represented by $R$ in the Kalman filter equations, decreases the Kalman gain. 
+
+\medskip
+
+Intuitvely, a larger value for the measurement noise means that the variability of the measurements is high, so the filter is less responsive to measurements and more responsive to the model. Conversely, if the measurement noise parameter descreases, the Kalman gain increases. The graph in figure \ref{fig:rtuning} shows how the Kalman filter responds to a step input in the roll for different values of $R$, the measurement gain. 
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[width=0.6\textwidth]{OrientationRTuning}
+	\end{center}
+	\caption{Tuning the measurement noise parameter of the Kalman filter}
+	\label{fig:computervis}
+\end{figure}
+
+Lower values of $R$ lead to a faster step response but more overshoot because the Kalman gain is high. Higher values of $R$ have a slower step response but less overshoot because the Kalman gain is lower. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Position tracking
@@ -550,7 +567,7 @@ $$ R = \mat{1.1e-6 & 0 & 0 & 0 & 0 & 0 \\
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Naive measurement model
-\subsection{Naive Measurement Model}
+\subsection{Measurement Model}
 
 The following is a model of a single frame from the camera. In this frame, shown in image Figure \ref{fig:computervis} the red circular object represents the rear of the interaction tool. The spherical objecti of the rear of the interaction tool is called the tracking target. The width of the target along the $x$ dimension of the image is $s_{u}$. 
 
@@ -558,7 +575,7 @@ The following is a model of a single frame from the camera. In this frame, shown
 
 \begin{figure}[H]
 	\begin{center}
-		\includegraphics[width=0.5\textwidth]{computerVision}
+		\includegraphics[width=0.8\textwidth]{computerVision}
 	\end{center}
 	\caption{Computer vision tracking model}
 	\label{fig:computervis}
@@ -619,6 +636,86 @@ The calibration parameters are discovered by using an open source implementation
 \subsubsection{Object Tracking}
 
 The signal processing layer contains an object tracker to find the rear of the interaction tool in each frame. Since a robust estimate of the object size in each image is required, its edges must be estimated as exactly as possible. One simple way to estimate the edges of the spherical tracking target is to segment the tracking target from the background by using color. The color of the object is used determine which pixels belong to it and which to not. Additionally, the color-based object tracking must happen in real time. To meet the demands of real-time, color-based object tracking, the CamShift algorithm was chosen \cite{bradski1998}.
+
+\subsubsection{Tool Maneuvers}
+
+The possible maneuvers of the interaction tool are classified into two categories: maneuvers in the image plane and those in the depth dimension. For a user of the 3D Interaction Tool, side-to-side or up-and-down movements of the interaction tool map to motions in the image plane of the tracking camera, while movements of the tool towards and away from their body map to motions in the depth dimension. More precisely, the maneuvers in the image plane are movements of the interaction tool that occur perpendicular to the viewing angle of the camera. 
+
+\medskip
+
+The convention established for the purposes of testing is that the image plane is the yz-plane of the coordinate system and the depth dimension maps to the negative x-dimension. Maneuvers in the x-dimension encompass the movements of the tool towards and away from the tracking camera. Figure \ref{fig:imageplane} compares the actual motion of the interaction tool to the estimates made by the tracking system.
+
+\begin{figure}[H]
+    \begin{center}$
+        \begin{array}{cc}
+            \includegraphics[width=0.5\textwidth]{ImagePlaneVertical} &
+            \includegraphics[width=0.5\textwidth]{ImagePlaneHorizontal} \\
+        \end{array}$
+    \end{center}
+    \caption{Vertical and horizontal motion in the image plane}
+    \label{fig:imageplane}
+\end{figure}
+
+In \ref{fig:imageplane}, the traces on the left correspond with vertical maneuvers of the tool and the traces on the right correspond to horizontal movements of the tool. In both graphs it is apparent that the tracking system is very accurate with low bias. The estimates of $\hat{y}$ and $\hat{z}$ map almost exactly to the true values.
+
+\medskip
+
+The second set of maneuvers are those in the depth dimension. Figure \ref{fig:depth} shows a trace of the actual depth $x$ and the estimated depth $\hat{x}$. 
+
+\begin{figure}[H]
+    \begin{center}$
+        \begin{array}{cc}
+            \includegraphics[width=0.8\textwidth]{DepthManeuver} &
+        \end{array}$
+    \end{center}
+    \caption{Motion of the interaction tool in the depth dimension}
+    \label{fig:depth}
+\end{figure}
+
+The natural conclusion from the traces in \ref{fig:depth} is that the depth tracking accuracy and precision depend on how far away the interaction tool is from the tracking camera.
+
+\subsubsection{Error Analysis of Motion in the Image Plane}
+
+The accuracy and precision of the tracking system depends on the direction of the tool maneuvers. This is evident from analyzing the covariance of the error in the $y$ and $z$ directions for vertical and horizontal maneuvers. Figure \ref{fig:yzerror} shows the error ellipse associated with motion in the image plane. On the left is the error ellispse associated with vertical motion and on the right is the error associated with horizontal motion. 
+
+\begin{figure}[H]
+    \begin{center}$
+        \begin{array}{cc}
+            \includegraphics[width=0.5\textwidth]{ErrorElipseVertical} &
+            \includegraphics[width=0.5\textwidth]{ErrorElipseHorizontal} \\
+        \end{array}$
+    \end{center}
+    \caption{Tool tracking errors in the yz-plane}
+    \label{fig:yzerror}
+\end{figure}
+
+In \ref{fig:yzerror} two arrows are placed with their origins at the mean of the yz-error distribution and their length corresponding to the square root of the variance along the direction they point. It is clear from the magnitudes of these arrows that their is a breakdown of precision of the tracking system along the direction of motion for the 3D Interaction Tool.
+
+\medskip
+
+What explains the higher variance along the direction of motion for the interaction tool? There are essentially two sources of errror for tracking the target relative to the camera. First, there is error that comes from the camera calibration routine in the form of error of intrinsic parameters of the camera -- errors in $fx$, $fy$, for example. Second, there is error that comes from finding the centroid of the object in each image frame. Broadly, we could classify the calibration errors as systemic and the image processing errors as dynamic. Since the variance of the tool tracking increases in the direction of motion of the object, it is not likely that this error comes from a systemic problem with the calibration routine. Therefore, we can attribute the descrease in precision to error in the image segmentation routine. 
+
+\medskip
+
+Why does motion along a particular direction increase the error in the image segmentation? When the object is moving, its boundaries become blurred along the direction of motion in each frame. These blurred edges increase the uncertainty about the location of the object along the direction of motion. Therefore, when the object is moving along a particular direction, the uncertainty of its location in the direction of motion increases, but quickly drops again when the motion of the object halts.
+
+\subsubsection{Error Analysis of Motion in the Depth Dimension}
+
+The distribution of errors is larger for depth-tracking than tracking in the image plane. This result is displayed graphically in Figure \ref{fig:deptherror}. 
+
+\begin{figure}[H]
+    \begin{center}$
+        \begin{array}{c}
+            \includegraphics[width=0.8\textwidth]{ErrorHistDepth} &
+        \end{array}$
+    \end{center}
+    \caption{Distribution of depth-tracking errors}
+    \label{fig:deptherror}
+\end{figure}
+
+While the bias of the tracking errors tends to zero, the variance is much larger than for the depth-tracking in the image plane.
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Dynamic measurement model
@@ -738,10 +835,10 @@ This is written in the form of Equation \ref{eq:firstorderdev}. Thus, if $\Ptt$ 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Future Work}
 
+% \end{multicols}
 
 \bibliographystyle{ieeetr}
 \bibliography{references}
 
 \end{flushleft}
-% \end{multicols}
 \end{document} 
