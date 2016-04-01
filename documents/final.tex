@@ -11,7 +11,7 @@
 \sectionfont{\centering} % center just the titles
 
 % margin adjustment
-\usepackage[a4paper,right=26mm,left=26mm,top=26mm,bottom=26mm]{geometry} % https://www.sharelatex.com/blog/2013/08/06/thesis-series-pt2.html
+\usepackage[a4paper,right=35mm,left=35mm,top=26mm,bottom=26mm]{geometry} % https://www.sharelatex.com/blog/2013/08/06/thesis-series-pt2.html
 
 % inserting title page
 \usepackage{pdfpages}
@@ -586,11 +586,11 @@ The error of the TRIAD estimation routine is 2-3x times the targets presented in
 
 \medskip
 
-Is there a way that we can use the data from the gyroscope to improve the orientation estimation? In fact there is! But it requires that we related the gyroscope measurements to the dynamics of rotation. This is not a simple problem for three reasons. First, rotations are non-linear and therefore the dynamics are non-linear. Second, any 3-dimensional parameterization of the rotations for purposes of writing down a non-linear model contains a singularity and we must use a higher dimensional parameterization of the rotation \cite{stuelpnagel1964}.  Singularities in the three-dimensional representation of rotations are not problematic for small rotations. However, they are problematic for the 3D Interaction Tool because the user of the interaction tool is free to move the device into any orientation. This means that the tool can be held in any orientation, and the changes in the orientation are potentially extremely large. Thus, singularities are inevitable.  
+Is there a way that we can use the data from the gyroscope to improve the orientation estimation? In fact there is! But it requires that we relate the gyroscope measurements to the dynamics of rotation. This is not a simple problem for three reasons. First, rotations are non-linear and therefore the dynamics are non-linear. Second, any 3-dimensional parameterization of the rotations for purposes of writing down a non-linear model contains a singularity and we must use a higher dimensional parameterization of the rotation \cite{stuelpnagel1964}.  Singularities in the three-dimensional representation of rotations are not problematic for small rotations. However, they are problematic for the 3D Interaction Tool because the user of the interaction tool is free to move the device into any orientation. This means that the changes in the orientation are potentially extremely large. Thus, singularities are inevitable.  
 
 \medskip
 
-The final challenge with writing down the dynamics of the rotation is that while a higher dimensional representation of the rotation is required to prevent singularities -- in our case we choose a four-dimensional representation -- the angular error occurs in two dimensions. Therefore, linearizing the error in the rotation around any point involves reducing the dimensionality of the state representation of the rotation around that point. All of this and more is discussed in the following sections, but first there are some mathematical preliminaries about the particular representation of orientation chosen here: the quaternion. 
+The final challenge with writing down the dynamics of the rotation is that while a higher dimensional representation of the rotation is required to prevent singularities -- in our case we choose a four-dimensional representation -- the angular error occurs in three dimensions. Therefore, linearizing the error in the rotation around any point involves reducing the dimensionality of the state representation of the rotation around that point. All of this and more is discussed in the following sections, but first there are some mathematical preliminaries about the particular representation of orientation chosen here: the quaternion. 
 
 \subsection{Mathematical Representation of Orientation}
 
@@ -1188,7 +1188,7 @@ There are two angles to approaching the future of The 3D Interaction Tool: one a
 
 \medskip
 
-As shown in Figure \ref{fig: overallerror}, the biggest area for technical improvement -- that is improvement of the tracking apparatus -- is decreasing the position estimation error. The first technical proposal is to make the estimation more robust to tool movements by improving the image segmentation process. Modifying the image segmentation algorithm itself could accomplish this. One way to improve the image segmentation would be to map the accelerometer measurements into predicted movements in the image plane to reduce the uncertainty of the tool's position when it moves from side-to-side or up and down. The second way to improve the image segmentation process is to improve the geometry of the problem. Using a camera with a higher resolution or faster frame-rate could reduce the blurring that leads to uncertainty of position with motion. 
+As shown in Figure \ref{fig:overallerror}, the biggest area for technical improvement -- that is improvement of the tracking apparatus -- is decreasing the position estimation error. The first technical proposal is to make the estimation more robust to tool movements by improving the image segmentation process. Modifying the image segmentation algorithm itself could accomplish this. One way to improve the image segmentation would be to map the accelerometer measurements into predicted movements in the image plane to reduce the uncertainty of the tool's position when it moves from side-to-side or up and down. The second way to improve the image segmentation process is to improve the geometry of the problem. Using a camera with a higher resolution or faster frame-rate could reduce the blurring that leads to uncertainty of position with motion. 
 
 \medskip
 
