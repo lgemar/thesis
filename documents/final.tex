@@ -988,6 +988,20 @@ Using this dynamic model for integrating the position estimates from the camera 
     \label{fig:kalmanposition}
 \end{figure}
 
+The comparison of these estimation errors to those of the simpler measurement model is shown in Figure \ref{fig:positionerrorcomp}.
+
+\begin{figure}[H]
+    \begin{center}$
+        \begin{array}{c}
+            \includegraphics[width=0.8\textwidth]{PositionFilterComparison}
+        \end{array}$
+    \end{center}
+    \caption{Comparison of position estimators}
+    \label{fig:positionerrorcomp}
+\end{figure}
+
+Notice that the filtered estimates are not any better (and in some cases worse) that the naive estimates. This could be for a couple reasons. The first is that the accelerometer measurements are too noisy to provide data that is more reliable than the position measurements from the image frames. It turns out that the sample rate of the accelerometer is 47Hz while the sample rate of the images is 60Hz. This means that the measurements from the images are potentially more responses to changes in the tool's acceleration than the accelerometer itself. Second, the accelerometer is subject to errors in the orientation when its measurements are converted from body coordinates to world coordinates. It could be that too much error is occured in this rotation to make them useful in improving the state prediction. 
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Performance Analysis
@@ -1007,7 +1021,7 @@ The latency calculation goes as follows. We differentiate the VICON reference po
 \begin{figure}[H]
     \begin{center}$
         \begin{array}{cc}
-            \includegraphics[width=0.5\textwidth]{AutoCorr}
+            \includegraphics[width=1\textwidth]{AutoCorr}
         \end{array}$
     \end{center}
     \caption{Autocorrelations for latency calculation}
@@ -1137,7 +1151,7 @@ This chart illuminates the following result: the position tracking errors domina
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conclusion}
 
-Revisiting the design objectives in \ref{fig:performance}, the table in Figure \ref{fig:summary1} captures the progress made on the performance of the tracking system. In green are those specifications that were achieved, and in orange are the specifications towards with progress was made. 
+Revisiting the design objectives in \ref{fig:performance}, the table in Figure \ref{fig:summary1} captures the progress made on the performance of the tracking system. In green are those specifications that were achieved, and in orange are the specifications towards which progress was made. 
 
 \begin{figure}[H]
     \begin{center}
@@ -1153,7 +1167,7 @@ The specifications for the latency and orientation error were achieved so that t
     \begin{center}
 		\includegraphics[width=1\textwidth]{UsabilityRevisited}
     \end{center}
-    \caption{Performance design goals, revisited}
+    \caption{Usability design goals, revisited}
     \label{fig:summary2}
 \end{figure}
 
@@ -1169,6 +1183,18 @@ The tracking volume objective can be met by increasing the field of view of the 
 %% Future Work
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Future Work}
+
+There are two angles to approaching the future of The 3D Interaction Tool: one approach is technical and the other approach is focused on the end-user of the tool.
+
+As shown in Figure \ref{overallerror}, the biggest area for technical improving -- that is improvement of the tracking apparatus -- is decreasing the position estimation error. The first technical proposal is to make the estimation more robust to tool movements by improving the image segmentation process. Modifying the image segmentation algorithm itself could accomplish this. One way to improve the image segmentation would be to map the accelerometer measurements into predicted movements in the image plane to reduce the uncertainty of the tool's position when it moves from side-to-side or up and down. The second way to improve the image segmentation process is to improve the geometry of the problem. Using a camera with a higher resolution or faster framerate could reduce the blurring that leads to uncertainty of position with motion. 
+
+The second proposal to improving the position estimates is to improve the depth tracking by adding a more recognizable feature to the back of the interaction tool. While color was an acceptable target for the purposes of this report, something like a QR code could be tracked more robustly. This approach may also have the advantage of providing another state measurement to also decrease the uncertainty of the orientation estimation algorithm. 
+
+Finally, future work on the 3D Interaction Tool would also include a usability study to assess how the performance parameters affect the end-user. A study that assesses how well a user is able to perform simple object manipulation tasks would go a long way to improving the design of the device.
+
+\section{Acknowledgements}
+
+I would like to thank my advisers Avi and Professor Gajos for their support and advice throughout the completion of this report. I would also like to thank Professor Rob Wood for allowing me to use the VICON motion tracking system in his lab to collect ground-truth measurements about the position and orientation of the interaction tool.
 
 % \end{multicols}
 
