@@ -259,17 +259,17 @@ As much as \$25 billion could be spent on virtual reality (VR) and augmented rea
 
 \medskip
 
-With the advent of virtual reality applications the following question must be answered: which of these input paradigms -- indirect or direct -- will prove most useful for interacting with virtual reality applications? While indirect input devices have achieved widespread popularity for two-dimensional displays, the direct input paradigm for VR applications embraces the immersion of a user in a VR experience by enabling intuitive interactions for them. Direct input devices allow users to reach out and interact with the objects of their virtual space, just as they would with objects in their physical space. 
+With the advent of virtual reality applications the following question must be answered: which of these input paradigms -- indirect or direct -- will prove most useful for interacting with virtual reality applications? While indirect input devices have achieved widespread popularity for two-dimensional displays, the direct input paradigm for VR applications embraces the immersion of a user in a VR experience. Direct input devices allow users to reach out and interact with the objects of their virtual space, just as they would with objects in their physical space. 
 
 \subsection{Design Approach}
 
-The 3D Interaction Tool is a novel, low-cost 3D input device that is compatible with a broad range of VR displays. In particular, the the 3D Interaction Tool is well-suited for VR applications that use a mobile-phone for the virtual reality display, such as for those applications that run on the Google Cardboard or other low cost solutions. This versatility of the 3D Interaction Tool comes from the simple requirement that the VR display must have a front-facing camera attached. This makes the tracking system compatible with any smartphone. The purpose of the 3D Interaction Tool is to demonstrate the functionality of this versatile tracking system.
+The 3D Interaction Tool is a novel, low-cost 3D input device. In particular, the tool is well-suited for VR applications that use a mobile-phone for the virtual reality display, such as for those applications that run on the Google Cardboard or other low cost solutions. This versatility of the 3D Interaction Tool comes from the simple requirement that the VR display have a front-facing camera attached. This makes the tracking system compatible with any smartphone. The purpose of the 3D Interaction Tool is to demonstrate the functionality of this versatile tracking system. While the tool itself is designed for use with a tracking system on a VR display, the scope of this report is to evaluate the tool's performance in a more controlled environment. The simplifying assumptions necessary to do this are specified below. 
 
 \section{Background}
 
 \subsection{Commercial Solutions}
 
-Recent market trends suggest that direct input devices are on the rise for consumers. Two of these direct input devices, the "Oculus Touch" controller and the HTC Valve controller, are achieving widespread publicity surrounding the commercial realease of virtual reality headsets \cite{ValveControllers} \cite{OculusTouch1} \cite{OculusTouch2}. These two controllers are shown in Figure \ref{fig:vrcontrollers}, with the Oculus Touch depicted on the left and the HTC Controllers depicted on the right. While originally scheduled for release alongside the Oculus VR headset at the end of March 2016, the Oculus Touch controller will be available in the second half of 2016 \cite{OculusTouchDelay}. Meanwhile the Valve controllers have been reviewed in preparation for the release of the HTC Vive headset at the beginning of April, 2016, and their utility has been demonstrated with a three-dimensional sketching program by Google called TiltBrush \cite{TiltBruth}. These input devices track both their position and orientation, making them degree-of-freedom (6DOF) controllers. While the 6DOF controllers are reported to work well with their respective headsets, the headsets are expensive -- both retail for more than \$600 -- and the controllers are not useful with other VR displays. Thus, two of the drawbacks of these commercial VR controllers are their cost and their compatibility with other VR displays. 
+Recent market trends suggest that direct input devices are on the rise for consumers. Two of these direct input devices, the Oculus Touch controller and the HTC Valve controller are achieving widespread publicity surrounding the commercial release of virtual reality headsets \cite{ValveControllers} \cite{OculusTouch1} \cite{OculusTouch2}. These two controllers are shown in Figure \ref{fig:vrcontrollers}, with the Oculus Touch depicted on the left and the HTC Controllers depicted on the right. While originally scheduled for release alongside the Oculus VR headset at the end of March 2016, the Oculus Touch controller will be available in the second half of 2016 \cite{OculusTouchDelay}. Meanwhile the Valve controllers have been reviewed in preparation for the release of the HTC Vive headset at the beginning of April, 2016, and their utility has been demonstrated with a three-dimensional sketching program by Google called TiltBrush \cite{TiltBruth}. These input devices track both their position and orientation, making them degree-of-freedom (6DOF) controllers. While the 6DOF controllers are reported to work well with their respective headsets, the headsets are expensive -- both retail for more than \$600 -- and the controllers are not useful with other VR displays. Thus, two of the drawbacks of these commercial VR controllers are their cost and their compatibility requirements. 
 
 \begin{figure}[H]
     \begin{center}$
@@ -286,27 +286,27 @@ Recent market trends suggest that direct input devices are on the rise for consu
 
 \subsection{3D Interaction Techniques and their Applications}
 
-Three-dimensional interaction techniques can be separated into several categories. First, there are interactions that manipulate objects. These interactions accomplish tasks such as rotating, translating, or scaling three dimensional objects. Second, there are interactions that manipulate 3D viewpoint, allowing the user to adjust their field of view. Lastly, there are interactions that control an application. Application control interactions include navigating menus or widgets associated with the application logic. The first set of tasks, those that manipulate objects, have largely been the focus of three-dimensional input device design \cite{hand1997}. 
+Three-dimensional interaction techniques can be separated into several categories. First, there are interactions that manipulate objects. These interactions accomplish tasks such as rotating, translating, or scaling three dimensional objects. Second, there are interactions that manipulate 3D viewpoint, allowing the user to adjust their field of view. Lastly, there are interactions that control an application. Application control interactions include navigating menus or widgets associated with the application logic. The first set of tasks, those that manipulate objects, have largely been the focus of three-dimensional input device design \cite{hand1997}, and the 3D Interaction Tool is designed the object manipulation tasks in mind.
 
 \medskip
 
-Object manipulation tasks are required in artistic and design applications. Several projects have demonstrated the usefulness of 3D input techniques to perform these application-specific manipulation tasks. For example, the HoloSketch projected demonstrated the usefulness of a 3D wand for object creation and manipulation for drawing and animating three dimensional objects in a virtual reality environement \cite{deering1995}. The HoloSketch wand also enabled a user to create free-hand drawings in three-space. 
+Object manipulation tasks are required in artistic and design applications. Several projects have demonstrated the usefulness of 3D input techniques to perform these tasks. For example, the HoloSketch project demonstrated a 3D wand for object creation and manipulation. In HoloSketch the wand could be used for drawing and animating three dimensional objects in a virtual reality environement (VE) \cite{deering1995}. The HoloSketch wand also enabled a user to create free-hand drawings in three-space. 
 
 \medskip
 
-Along similar lines, the CavePainting allowed a user to use not one but many such input devices -- such as paint brushes and paint buckets -- to create artistic works in a virtual reality environment \cite{keefe2001}. The props provided users with a very tactile experience of virtual object manipulation, and the tracking system, known as the Cave, was able to track these objects while the user walked around in the virtual environment. Both of these solutions investigated the 3D input device interface for the process of artistic creation. 
+The CavePainting research also allowed a user to manipulate objects using an input device -- and not just one but many such input devices, such as paint brushes and paint buckets. These physical props were used to create artistic works in VE \cite{keefe2001}. The props gave users a very tactile experience of virtual object manipulation, and the tracking system, known as the Cave, was able to track these objects while the user walked around in the virtual environment. Both of these solutions investigated the 3D input device interface for the process of artistic creation. 
 
 \medskip
 
-In addition to artistic applications, 3D interface design has been explored for its potential use for CAD applications. For example, the 6D hands project enabled a user to interact with objects in a 3D modelling environment to more quickly and efficiently perform object manipulation tasks \cite{wang2011}. 
+In addition to artistic applications, 3D interface design has been explored for its potential use for CAD applications. For example, the 6D hands project enabled a user to interact with objects in a 3D modelling environment to more quickly and efficiently perform object manipulation tasks \cite{wang2011}.
 
 \subsection{Tracking Systems for 3D Input Devices}
 
-The methods of tracking objects in virtual environments are numerous \cite{rolland2001}. These tracking methods are a subset of six degree of freedom tracking approaches, and none of these tracking systems are without drawbacks, leading researchers to develop tracking systems that are well-suited to the needs of their application \cite{ribo2001}. The main categories of 6DoF trackers for virtual environments are mechanical, inertial, acoustic, magnetic, and optical \cite{welch2002}. 
+The methods of tracking objects in virtual environments are numerous \cite{rolland2001}. These tracking methods are a subset of six degree of freedom tracking approaches, and none of these tracking systems are without drawbacks, leading researchers to develop tracking systems that are well-suited to the needs of their particular application \cite{ribo2001}. The main categories of 6DOF trackers for virtual environments are mechanical, inertial, acoustic, magnetic, and optical \cite{welch2002}.
 
 \section{Design Goals}
 
-There are two broad approaches to 3D input device design. First, there are approaches focused on designing the user-interface for the device for a particular application. This aproach attempts to answer the question: will this device be usable? Second, there are approaches that explore the functionality of the device for a number of different types of applications, asking the question: will this device be high performance? The design approach presented here pays attention to the question of device usability in the overall system design, while the performance objectives are the targets of the following investigation. 
+There are two broad approaches to 3D input device design. First, there are approaches focused on designing the user-interface for the device. This user-interface would be suitable for a particular application. In short, this approach attempts to answer the question: will this device be usable? Second, there are approaches that explore the functionality of the device for a number of different types of applications, asking the question: will this device be high performance? This report seeks to answer this second question for a three-dimensional input device tracked with a particular configuration of a 6DOF tracking system. 
 
 \subsection{Usability}
 
@@ -325,28 +325,19 @@ The first of these criteria is portability. The user should be able to use the i
 
 \medskip
 
-The second usability design objective is a natural form factor for the device. The natural form factor serves the ends of making the device easy to learn, preventing fatigue, and providing user's will a large degree of control over the manipulation of the device. 
+The second usability design objective is a natural form factor for the device. The natural form factor serves the ends of making the device easy to learn, preventing fatigue, and providing user's with a large degree of control over the manipulation of the device. 
 
 \medskip
 
-Third, the tracking volume -- the range over which the position of the device is measured -- should not constrain the interactions that are possible with the device. Since the interaction tool should be usable with a number of different applications, no assumptions should be made about what sized tracking volume these applications will require. A reasonable assumption is that the user will not use the device to directly interact with objects outside of the reach of their arms, so the tracking volume should cover the reach of an average user. This tracking volume is on the order of magnitude of a meter.
+Third, the tracking volume -- the spatial range over which the position of the device is tracked -- should not constrain the interactions that are possible with the device. Since the interaction tool should be usable with a number of different applications, no assumptions should be made about what size tracking volume these applications will require. A reasonable assumption is that the user will not use the device to directly interact with objects outside of the reach of their arms, so the tracking volume should cover the reach of an average user. This tracking volume is on the order of magnitude of a meter.
 
 \medskip
 
-Finally, as mentioned before the 3D Interaction Tool should be compatible with low-cost virtual reality displays; thus, the tool itself must be low cost. 
+Finally, as mentioned before the 3D Interaction Tool should be compatible with low-cost virtual reality displays. Therefore, the tool itself must be low cost. 
 
 \subsection{Performance}
 
 The performance requirements presented in Figure \ref{fig:performance} must be met for the tool to succeed as a \textit{direct} input device for VR software applications.
-
-\medskip
-
-The tracking system must be accurate in its position and orientation estimation to produce a high fidelity reconstruction of device movement in the user's virtual reality application. For the device to truly be a direct input device, the accuracy of the mapping between physical and virtual worlds should be as low as $1$mm, as is required for the physical and virtual registration to be imperceptible \cite{ribo2001}. In virtual reality, as opposed to augmented reality, the accuracy constraint can be relaxed somewhat. The input device will be usable as long as movements are precise and repeatable, as is the case with indirect input devices. Thus position error of about $5$\% along each axis is acceptable, leading to an accuracy target of $5$cm. For orientation, device usability studies have shown that physical and virtual orientation differences of $5\degtwo$ are imperceptible to a user \cite{hinckley1997}. Therefore, the target for orientation estimation is an accuracy better than $5\degtwo$. 
-
-\medskip
-
-To quantify the accuracy, the root-mean-squared error model is used. The root-mean-squared error (RMSE) is the square root of the variance between the estimated values and the position or orientation reference. This error model is useful because it can be decomposed into bias and variance components: the RMSE:wq
-
 
 \begin{figure}[H]
 	\begin{center}
@@ -355,6 +346,17 @@ To quantify the accuracy, the root-mean-squared error model is used. The root-me
 	\caption{Performance design objectives}
 	\label{fig:performance}
 \end{figure}
+
+The tracking system must be accurate in its position and orientation estimation to produce a high fidelity reconstruction of device movement in the user's virtual reality application. For the device to truly be a direct input device, the accuracy of the mapping between physical and virtual worlds should be as low as $1$mm, as is required for the physical and virtual registration to be imperceptible \cite{ribo2001}. In virtual reality, as opposed to augmented reality, the accuracy constraint can be relaxed somewhat. The input device will be usable as long as movements are precise and repeatable, as is the case with indirect input devices. Thus position error of about $5$\% along each axis of the trackign volume is acceptable, leading to an accuracy target of $5$cm. For orientation, device usability studies have shown that physical and virtual orientation differences of $5\degtwo$ are imperceptible to a user \cite{hinckley1997}. Therefore, the target for orientation estimation is an accuracy better than $5\degtwo$. 
+
+\medskip
+
+To quantify the accuracy, the root-mean-squared error model is used. The root-mean-squared error (RMSE) is the square root of the variance between the estimated values and the position or orientation reference. This error model is useful because it can be decomposed into bias and variance components.
+
+\medskip
+
+Requirements for low latency and high robustness fill out the design specifications. The latency should be as low as possible since the discrepency between virtual motion and physical motion has been known to induce simulator sickness in virtual environments \cite{kolasinski1995}. Best practices place the maximum latency that is comfortable for a user at 60ms \cite{oculusbest}. As far as robustness, the tracking of the device should be robust to tool occlusions and tool velocities. This will ensure that the user has control of the device in the virtual environment at all times, no matter how the tool is configured or moved in the physical environment.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Tracking system design
@@ -368,7 +370,7 @@ In order to enable direct input with the interaction tool, the tool's tracking s
 
 \begin{figure}[H]
 	\begin{center}
-		\includegraphics[width=0.8\textwidth]{requirements}
+		\includegraphics[width=1\textwidth]{requirements}
 	\end{center}
 	\caption{Position and orientation tracking requirements}
 	\label{fig:requirements}
@@ -384,7 +386,7 @@ The world-referenced tracking geometry is shown in Figure \ref{fig:worldtopo}.
 
 \begin{figure}[H]
 	\begin{center}
-		\includegraphics[width=0.8\textwidth]{WorldTopo}
+		\includegraphics[width=1\textwidth]{WorldTopo}
 	\end{center}
 	\caption{Position tracking with a world-referenced geometry}
 	\label{fig:worldtopo}
@@ -396,19 +398,23 @@ The display-referenced tracking geometry is shown in Figure \ref{fig:displaytopo
 
 \begin{figure}[H]
 	\begin{center}
-		\includegraphics[width=0.8\textwidth]{DisplayTopo}
+		\includegraphics[width=1\textwidth]{DisplayTopo}
 	\end{center}
 	\caption{Position tracking with a display-referenced geometry}
 	\label{fig:displaytopo}
 \end{figure}
 
-\subsubsection{Geometry Selection: Comparing portability and tracking volume}
+\subsubsection{Evaluating Tracking Geometries: Comparing portability and tracking volume}
 
-Tracking geometries 1 and 2 have advantages and disadvantages when evaluated using the usability design objectives. Relative to the usability criteria, the two geometries differ greatly in their portability and tracking volume. 
+Tracking geometries 1 and 2 have advantages and disadvantages when evaluated according to the usability design objectives. Relative to the usability criteria, the two geometries differ greatly in their portability and tracking volume. 
 
 \medskip
 
-The world-referenced tracking geometry requires a fixed coordinate system in the user's physical environment, decreasing portability by increasing the configuration overhead for using the direct input device. However, once this coordinate system is established, the user can provide direct input to a VR application over a very large tracking volume, up to the size of the room in which the tracking system is located. The display-referenced geometry, on the other hand, has the advantage of enabling a user to provide direct input to a VR application without pre-calibrating the physical environment in which they are using the VR display. The tradoff is that the tracking volume is small. Since the origin of the world coordinate system in the display-referenced geometry is located beneath the user's head, the user must remain seated while using a direct input device with a display-referenced tracking geometry.
+The world-referenced tracking geometry requires a fixed coordinate system in the user's physical environment, decreasing portability by increasing the configuration overhead for using the direct input device. However, once this coordinate system is established, the user can provide direct input to a VR application over a very large tracking volume, up to the size of the room in which the tracking system is located. The display-referenced geometry, on the other hand, has the advantage of enabling a user to provide direct input to a VR application without pre-calibrating the physical environment in which they are using the VR display. The trade-off is that the tracking volume is small. Since the origin of the world coordinate system in the display-referenced geometry is located beneath the user's head, the user must remain seated while using a direct input device with a display-referenced tracking geometry.
+
+\medskip
+
+As discussed previously, \textit{portability} is preferred to \textit{mobility} in order to make the input device compatible with low-cost VR displays that are also highly portable.
 
 \subsection{Technology}
 
@@ -422,11 +428,15 @@ A combination between optical and inertial sensors was chosen to track the 3D In
 	\label{fig:trackingtech}
 \end{figure}
 
+Magnetic and mechanical sensors were quickly eliminated as tracking options due to the high cost of the former and the limited tracking volume of the latter. Acoustic sensors were considered but rejected due to suboptimal sensor geometries \cite{rolland2001}. These geometries were incompatible with the slender design of the interaction tool.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Final Design
 \subsection{Final Design}
 
-The final system layout is shown in figure \ref{fig:finaldesign}.
+\subsubsection{System Overview}
+
+The final system layout is shown in figure \ref{fig:finaldesign}. The genius of this design is that it is completely robust to tool occlusions, provided that the user is holding the interaction tool as they would a pen or stylus. In this geometry the back of the interaction tool, which is the tracking target of the camera, is always in view. Moreover, this design achieves a large tracking volume because it only requires that the viewpoint of the user be directed in the general direction of the interaction tool for the tracking camera to find the tool in its field of view. This is possible because the display and the tracking camera are collocated. 
 
 \begin{figure}[H]
 	\begin{center}
@@ -435,6 +445,8 @@ The final system layout is shown in figure \ref{fig:finaldesign}.
     \caption{Final tracking system design: a display-referenced tracking topology}
 	\label{fig:finaldesign}
 \end{figure}
+
+However, one of the downsides of this tracking design is that the position of the front of the tool $\pf$, the position of interest, is largely occluded from the field of the camera and must be inferred from the measurements of the position of the rear of the tool and the orientation of the tool. Since both error in the tracking of the tool rear $\pr$ and the tracking of the orientation of the tool $\At$ (and the span vector $\pl$) will lead to error in the estimation of the position of the end of the tool, both of these measurements must be made with as little bias and variance as possible.
 
 %% Inferring the tool position
 \subsubsection{Tracking measurements}
@@ -446,13 +458,13 @@ Not all of these three tracking targets are measured directly. The tracking targ
 
 The position of the front of the tool in world coordinates is given by $\pf$. This position is inferred through measurements of the position of the rear of the tool and the tool's orientation. The equation for the position of the front of the tool is 
 
-$$ \pf = \pr + \Atinv \pl $$
+$$ \pf = \pr + \pl = \pr + \Atinv \plpr $$
 
 where the position of the rear of the tool, $\pr$ is given by
 
 $$ \pr = \Acinv \prpr - \pc $$
 
-The attitude matrix, $\Atinv$, is the rotation from the body coordinates of the tool to the world coordinate system.
+and $\pl$ is the span vector that relates the rear of the tool to the front of the tool -- it is essentially the length of the tool rotated from the body coordinate system of the tool to world coordinates. The attitude matrix given by, $\Atinv$, is the rotation from the body coordinates of the tool to the world coordinate system.
 
 In order to render the tool on the display for the user, the position of the tool must be known to the VR application in the coordinate system of the VR display. The position of the front of the tool in display coordinates is $\pfpr$ and it is found by multiplying the tool's position in the world coordinate system by the attitude of the display. Additionally, the position of the display must be added to the tool position before multiplying by the display attitude matrix:
 
@@ -469,21 +481,29 @@ This is the tool orientation visible to the user.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Implementation}
 
-The system's physical layout is shown in \ref{fig:systemlayout}. For simplicity, the tracking camera is assumed to be fixed. The model for this system is geometrically equivalent to the one presented in Figure \ref{fig:finaldesign}. The webcam of the computer is used as the tracking camera. The inertial measurement unit, the Adafruit BNO055, is attached to the breadboard. A colored foam sphere is attached to the rear of the interaction tool to serve as the tracking target.
+The system's physical layout is shown in \ref{fig:systemlayout}. For simplicity, the tracking camera is assumed to be fixed. The model for this system is geometrically equivalent to the one presented in Figure \ref{fig:finaldesign}. The webcam of the computer is used as the tracking camera. The inertial measurement unit, the Adafruit BNO055, is attached to the breadboard. The Adafruit sensor was chosen because it has built-in calibration routines for its three sensors: an accelerometer, a gyroscope, and a magnetometer. Since all of these sensors have bias that must be subtracted off, the calibration routines of the BNO055 are of great help to the prototyping process. 
+
+\medskip 
+
+A colored foam sphere is attached to the rear of the interaction tool to serve as the tracking target for the camera.
 
 \begin{figure}[H]
 	\begin{center}
 		\includegraphics[width=0.8\textwidth]{SystemLayout}
 	\end{center}
     \caption{Geometrically equivalent tracking system}
-	\label{fig:systemdiagram}
+	\label{fig:systemlayout}
 \end{figure}
 
 The virtual reality application runs on the computer shown in Figure \ref{fig:systemlayout}. While this virtual reality application is not immersive, it creates a virtual 3D environment displayed to the user on the computer screen, where they can interact with virtual objects. Thus, this geometry is sufficient to prove the usefulness of the 3D Interaction Tool for virtual reality applications.
 
+\medskip
+
 The spherical tracking target is chosen because its size in each image does not depend on its orientation. Additionally, if the angle subtended by the tracking target in the field of view is small, then the midpoint of the tracking target in world coordinates is on the same plane as the vanishing points on the edges of the target.
 
-The block diagram of the implmented tracking system is shown in Figure \ref{fig:systemdiagram}.
+\medskip
+
+The block diagram of the implemented tracking system is shown in Figure \ref{fig:systemdiagram}.
 
 \begin{figure}[H]
 	\begin{center}
@@ -493,21 +513,18 @@ The block diagram of the implmented tracking system is shown in Figure \ref{fig:
 	\label{fig:systemdiagram}
 \end{figure}
 
+The files referenced with the extension 'cs' are included with the code repository of this report at \url{https://github.com/lgemar/thesis}. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Orientation tracking
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Orientation Tracking}
 
-The orientation of the interaction tool must be estimated to find the span vector, $\pl = \pf - \pr = \At \plpr$. The naive approach for estimating the orientation of the tool is to start with two known vectors in the reference coordinate system -- the gravity vector and the earth's magnetic field vector are good candidates. Then we can find the attitude matrix directly by sensing these two reference vectors in the body coordinates of the device and finding the rotation matrix that maps them back to the reference coordinate frame. While this method is computationally and conceptually simple, the estimation is very sensitive to noise from both the accelerometer and the magnetometer that sense the gravity and magnetic field vectors, respectively. We would like some way of filtering these estimates in real-time.
+The orientation of the interaction tool must be estimated to find the span vector, $\pl = \pf - \pr = \At \plpr$. The naive approach for estimating the orientation of the tool is to start with two known vectors in the reference coordinate system -- the gravity vector and the earth's magnetic field vector are good candidates. Then we can find the attitude matrix directly by sensing these two reference vectors in the body coordinates of the device and finding the rotation matrix that maps them back to the reference coordinate frame. While this method is computationally and conceptually simple, the estimation is very sensitive to noise from both the accelerometer and the magnetometer that sense the gravity and magnetic field vectors, respectively. We would like some way of filtering these estimates in real-time. Before investigating a real-time orientation tracking filter, the results of the TRIAD measurement model are presented for comparison.
 
 \subsection{Naive Measurement Model: TRIAD}
 
-The TRIAD estimation method finds the attitude matrix $A$ that maps three reference frame vectors $\vec{r}_k$ to their corresponding body frame vectors $\vec{b}_k$ for $k = 1, 2, 3$ \cite{Shuster2004}. Two observations of reference frame vectors provide sufficient information to compute a right-handed orthonormal triad of vectors in the reference frame. If $\vec{v}_1$ and $\vec{v}_2$ are reference frame vectors for the accelerometer and the magnetometer, respecitively, then 
-
-$$ \vec{v}_1 = \mat{ 0 \\ 0 \\ 9.81 } \tab \textrm{and} \tab \vec{v}_2 = \mat{ 0.3 & \\ -1 & \\ 0 } $$ 
-
-so that the gravity vector points down and the magnetometer vector points in the direction of magnetic North in Boston, relative to the world reference frame. The orthonormal vector triad representing the reference frame is given by, 
+The TRIAD estimation method finds the attitude matrix $A$ that maps three reference frame vectors $\vec{r}_k$ to their corresponding body frame vectors $\vec{b}_k$ for $k = 1, 2, 3$ \cite{Shuster2004}. Two observations of reference frame vectors provide sufficient information to compute a right-handed orthonormal triad of vectors in the reference frame. If $\vec{v}_1$ and $\vec{v}_2$ are reference frame vectors for the accelerometer and the magnetometer, respectively so that the gravity vector points down and the magnetometer vector points in the direction of magnetic North in Boston, relative to the world reference frame. The orthonormal vector triad representing the reference frame is given by, 
 
 $$ 	\vec{r}_1 = \frac{\vec{v}_1}{\| \vec{v}_1 \|}, \tab \vec{r}_2 = \frac{\vec{v}_1 \times \vec{v}_2}{\| \vec{v}_1 \times \vec{v}_2 \|}, \tab \vec{r}_3 = \vec{r}_1 \times \vec{r}_2 $$
 
@@ -546,23 +563,32 @@ The error associated with the estimation of roll, pitch, and yaw is shown in \re
 	\begin{center}
 		\includegraphics[width=1\textwidth]{PitchManeuverTriad}
 	\end{center}
-    \caption{Pitch error TRIAD estimation}
-	\label{fig:pitchmaneuvertriad}
+    \caption{Pitch error for TRIAD estimation}
+	\label{fig:pitcherrortriad}
 \end{figure}
 
-The bias of the measurements is just $4.3 \degtwo$ but the variance is more than $125 \degtwo$, corresponding to a root-mean-squared error of $11.2\degtwo$. If a user notices an angular change of $5\degtwo$, a deviation of more than $10\degtwo$ is likely to give them a headache. Similar results are obtained when analyzing maneuevers in the roll and yaw dimensions of the rotation. These errors and root-mean-squared errors are summarized in the table of Figure \ref{fig:triaderrorsummary}.
+The bias of the measurements is just $4.3 \degtwo$ but the variance is more than $125 \degtwo$, corresponding to a root-mean-squared error of $11.2\degtwo$. If a user notices an angular change of $5\degtwo$, a deviation of more than $10\degtwo$ is likely to give them a headache. Similar results are obtained when analyzing maneuvers in the roll and yaw dimensions of the rotation. These errors and root-mean-squared errors are summarized in the table of Figure \ref{fig:triaderrorsummary}.
 
 \begin{figure}[H]
     \begin{center}$
         \begin{array}{cc}
-            \includegraphics[width=0.5\textwidth]{TriadBias} \\
-            \includegraphics[width=0.5\textwidth]{TriadVariance}
+            \includegraphics[width=0.7\textwidth]{TriadBias} \\
+            \includegraphics[width=0.7\textwidth]{TriadVariance}
         \end{array}$
     \end{center}
     \caption{TRIAD orientation tracking errors}
     \label{fig:triaderrorsummary}
 \end{figure}
 
+Notice that the yaw maneuver suffers from the greatest root-mean-squared error (RMSE). The yaw maneuver is particularly difficult to track due to the unreliability of the magnetometer sensor and this will be a theme throughout the remainder of the error analysis. 
+
+\subsection{Improving the Orientation Estimation}
+
+The error of the TRIAD estimation routine is 2-3x times the targets presented in \ref{fig:performance}. Therefore, we would like to find a way to decrease the variance of the orientation estimation without increasing the latency of the system. To do this we need a real-time estimator. Any optimal real-time estimator for this system should incorporate all the information we know about the system. Note that the TRIAD method used only the accelerometer and magnetometer information from the inertial sensor and neglected the data from the gyroscope. 
+
+Is there a way that we can use the data from the gyroscope to improve the orientation estimation? In fact there is! But it requires that we related the gyroscope measurements to the dynamics of rotation. This is not a simple problem for three reasons. First, rotations are non-linear and therefore the dynamics are non-linear. Second, any 3-dimensional parameterization of the rotations for purposes of writing down a non-linear model contains a singularity and we must use a higher dimensional parameterization of the rotation \cite{stuelpnagel1964}.
+
+Singularities in the three-dimensional representation of rotations are not problematic for small rotations. However, they are problematic for the 3D Interaction Tool because the user of the interaction tool is free to move the device into any orientation. This means that the tool can be held in any orientation, and the changes in the orientation are potentially extremely large. 
 
 \subsection{Mathematical Representation of Orientation}
 
