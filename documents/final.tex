@@ -64,6 +64,9 @@
 
     % Quaternion macros
 	\newcommand{\q}{\overline{\mathbf{q}}}
+    \newcommand{\qk}{\overline{\mathbf{q}}_k}
+    \newcommand{\qkp}{\overline{\mathbf{q}}_k^{-}}
+    \newcommand{\qke}{\overline{\mathbf{q}}_k^{-}}
 	\newcommand{\qc}{\q_c}
 	\newcommand{\qd}{\q_d}
 	\newcommand{\qt}{\q_t}
@@ -104,6 +107,9 @@
 	\newcommand{\Pprpr}{\mathbf{\Sigma}'_{pr}}
 	\newcommand{\Ppfpr}{\mathbf{\Sigma}'_{pf}}
 
+    % predicted covariance
+    \newcommand{\Ppp}{\mathbf{P}_{k}^{-}}
+
 	% Tool length macro
 	\newcommand{\pl}{\vec{p}_l}
     \newcommand{\ple}{\hat{\vec{p}}_l}
@@ -125,7 +131,10 @@
     \newcommand{\xd}{\dot{x}}
     \newcommand{\xdd}{\ddot{x}}
 
-    \newcommand{\deg}{^{\circ} }
+    % Gyro input
+    \newcommand{\gyro}{\vec{\omega}}
+
+    % \newcommand{\deg}{^{\circ} }
     \newcommand{\Hz}{\textrm{Hz}}
 
     \newcommand{\deldq}{\frac{\partial \pl}{\partial \dqvec} }
@@ -427,7 +436,73 @@ The block diagram of the implmented tracking system is shown in Figure \ref{fig:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Orientation Tracking}
 
+The orientation of the interaction tool must be estimated to find the span vector, $\pl = \pf - \pr = \At \plpr$. The naive approach for estimating the orientation of the tool is to start with two known vectors in the reference coordinate system -- the gravity vector and the earth's magnetic field vector are good candidates. Then we can find the attitude matrix directly by sensing these two reference vectors in the body coordinates of the device and finding the rotation matrix that maps them back to the reference coordinate frame. While this method is computationally and conceptually simple, the estimation is very sensitive to noise from both the accelerometer and the magnetometer that sense the gravity and magnetic field vectors, respectively. We would like some way of filtering these estimates in real-time.
+
+\subsection{Naive Measurement Model: TRIAD}
+
+The TRIAD estimation method finds the attitude matrix $A$ that maps three reference frame vectors $\vec{r}_k$ to their corresponding body frame vectors $\vec{b}_k$ for $k = 1, 2, 3$ \cite{Shuster2004}. Two observations of reference frame vectors provide sufficient information to compute a right-handed orthonormal triad of vectors in the reference frame. If $\vec{v}_1$ and $\vec{v}_2$ are reference frame vectors for the accelerometer and the magnetometer, respecitively, then 
+
+$$ \vec{v}_1 = \mat{ 0 \\ 0 \\ 9.81 } \tab \textrm{and} \tab \vec{v}_2 = \mat{ 0.3 & \\ -1 & \\ 0 } $$ 
+
+so that the gravity vector points down and the magnetometer vector points in the direction of magnetic North in Boston, relative to the world reference frame. The orthonormal vector triad representing the reference frame is given by, 
+
+$$ 	\vec{r}_1 = \frac{\vec{v}_1}{\| \vec{v}_1 \|}, \tab \vec{r}_2 = \frac{\vec{v}_1 \times \vec{v}_2}{\| \vec{v}_1 \times \vec{v}_2 \|}, \tab \vec{r}_3 = \vec{r}_1 \times \vec{r}_2 $$
+
+Let $\vec{w}_1$ be the measurement of the normalized unit vector from the accelerometer and $\vec{w}_2$ be the measurement of the normalized unit vector from the magnetometer, then the orthonormal vector triads for the reference vectors are given by, 
+
+$$ \vec{b}_1 = \frac{\vec{w}_1}{\| \vec{w}_1 \|}, \tab \vec{b}_2 = \frac{\vec{w}_1 \times \vec{w}_2}{\| \vec{w}_1 \times \vec{w}_2 \|}, \tab \vec{b}_3 = \vec{w}_1 \times \vec{w}_2 $$
+
+If there was no noise in the system, then it would be the case that $\vec{b}_k = A \vec{r}_k$ for $k=1,2,3$. An equivalent way of writing this in matrix form is the following: 
+
+$$ M_b = A M_r $$ 
+
+where 
+
+$$ M_b = \mat{ \vec{b}_1 & \vec{b}_2 & \vec{b}_3 } $$
+$$ M_r = \mat{ \vec{r}_1 & \vec{r}_2 & \vec{r}_3 } $$
+
+Since $M_r$ is an orthogonal matrix, its inverse is equal to its transpose: $M_r^{-1} = M_r^{T}$. Thus, the solution for the attitude matrix is, 
+
+$$ A = M_b M_r^{T} $$
+
+\subsubsection{Error Analysis of TRIAD Measurements}
+
+There are three independent maneuvers that are possible with the interaction tool: roll maneuvers, pitch maneuvers, and yaw maneuevers. The error analysis focuses on the pitch maneuver but similar results are obtained for a rotation of the interaction tool in any dimension. Using the TRIAD algorithm, the roll, pitch, and yaw angles are estimated, and these are seen side-by-side with the absolute orientation reference in Figure \ref{fig:pitchmaneuver}. 
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[width=1\textwidth]{PitchManeuver}
+	\end{center}
+    \caption{Pitch maneuver reference versus estimates}
+	\label{fig:pitchmaneuver}
+\end{figure}
+
+The error associated with the estimation of roll, pitch, and yaw is shown in \ref{fig:pitcherrortriad}.
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[width=1\textwidth]{PitchManeuverTriad}
+	\end{center}
+    \caption{Pitch error TRIAD estimation}
+	\label{fig:pitchmaneuvertriad}
+\end{figure}
+
+The bias of the measurements is just $4.3 \deg$ but the variance is more than $125 \deg$, corresponding to a root-mean-squared error of $11.2\deg$. If a user notices an angular change of $5\deg$, a deviation of more than $10\deg$ is likely to give them a headache. Similar results are obtained when analyzing maneuevers in the roll and yaw dimensions of the rotation. These errors and root-mean-squared errors are summarized in the table of Figure \ref{fig:triaderrorsummary}.
+
+\begin{figure}[H]
+    \begin{center}$
+        \begin{array}{cc}
+            \includegraphics[width=0.5\textwidth]{TriadBias} \\
+            \includegraphics[width=0.5\textwidth]{TriadVariance}
+        \end{array}$
+    \end{center}
+    \caption{TRIAD orientation tracking errors}
+    \label{fig:triaderrorsummary}
+\end{figure}
+
+
 \subsection{Mathematical Representation of Orientation}
+
 The orientation of the interaction tool relative to the world coordinate frame can be represented in a number of ways. The two representations that will be important here are the attitude matrix and the attitude quaternion. First, the attitude of the orientation tool can be described by the attitude matrix $A$. The attitude matrix typically maps a vector in the reference frame to a vector in the the body frame \cite{Markley2007}. This mapping is given by the relation, 
 
 \[ \bf{b} = A \bf{r} \]
@@ -456,32 +531,6 @@ with
 
 \[ \Psi(\overline{q}) = \mat{q_4 \bf{I}_{3x3} - [\vec{q}\times] \\ -\vec{q}^T } \]
 
-\subsection{Naive Measurement Model}
-
-The TRIAD estimation method finds the attitude matrix $A$ that maps three reference frame vectors $\vec{r}_k$ to their corresponding body frame vectors $\vec{b}_k$ for $k = 1, 2, 3$ \cite{Shuster2004}. Two observations of reference frame vectors provide sufficient information to compute a right-handed orthonormal triad of vectors in the reference frame. If $\vec{v}_1$ and $\vec{v}_2$ are reference frame vectors for the accelerometer and the magnetometer, respecitively, then 
-
-$$ \vec{v}_1 = \mat{ 0 \\ 0 \\ 9.81 } \tab \textrm{and} \tab \vec{v}_2 = \mat{ 0.3 & \\ -1 & \\ 0 } $$ 
-
-so that the gravity vector points down and the magnetometer vector points in the direction of magnetic North in Boston, relative to the world reference frame. The orthonormal vector triad representing the reference frame is given by, 
-
-$$ 	\vec{r}_1 = \frac{\vec{v}_1}{\| \vec{v}_1 \|}, \tab \vec{r}_2 = \frac{\vec{v}_1 \times \vec{v}_2}{\| \vec{v}_1 \times \vec{v}_2 \|}, \tab \vec{r}_3 = \vec{r}_1 \times \vec{r}_2 $$
-
-Let $\vec{w}_1$ be the measurement of the normalized unit vector from the accelerometer and $\vec{w}_2$ be the measurement of the normalized unit vector from the magnetometer, then the orthonormal vector triads for the reference vectors are given by, 
-
-$$ \vec{b}_1 = \frac{\vec{w}_1}{\| \vec{w}_1 \|}, \tab \vec{b}_2 = \frac{\vec{w}_1 \times \vec{w}_2}{\| \vec{w}_1 \times \vec{w}_2 \|}, \tab \vec{b}_3 = \vec{w}_1 \times \vec{w}_2 $$
-
-If there was no noise in the system, then it would be the case that $\vec{b}_k = A \vec{r}_k$ for $k=1,2,3$. An equivalent way of writing this in matrix form is the following: 
-
-$$ M_b = A M_r $$ 
-
-where 
-
-$$ M_b = \mat{ \vec{b}_1 & \vec{b}_2 & \vec{b}_3 } $$
-$$ M_r = \mat{ \vec{r}_1 & \vec{r}_2 & \vec{r}_3 } $$
-
-Since $M_r$ is an orthogonal matrix, its inverse is equal to its transpose: $M_r^{-1} = M_r^{T}$. Thus, the solution for the attitude matrix is, 
-
-$$ A = M_b M_r^{T} $$
 
 \subsection{Dynamic Measurement Model}
 
@@ -519,6 +568,63 @@ The inverse of the quaternion is found by negating the imaginary component of th
 
 \[ \overline{q}^{-1} = \mat{ -\vec{q} \\ q_4 } \]
 
+\subsubsection{Filter Design}
+
+How does the orientation of the interaction tool change from one time step to another? To discretize the dynamic model of rotations, we must know how the orientation of the tool will change between time steps. The change in orientation of the hand-held tool over time must be dependent on the dynamics of wrist movement. The peak velocity for human wrist movements is on the order of $10^2 \frac{\deg}{s}$ for fast and accurate wrist rotations \cite{hoffman1986}. We can assume that users of the interaction tool will pursue accurate movements from one orientation to another and not move the tool wildly. Therefore, the change in the orientation of the tool betweeen time steps for maximum angular velocity movements will be on the order of $2 \deg$, given a sample rate of $50$ Hz. This rotation is so small as to be imperceptible to most users \cite{hinckley1997}. Given these assumptions, we can assume that the orientation of the tool is more or less fixed between samples and we can treat changes to the orientation as solely due to small deviations -- essentially noise. 
+
+\medskip
+
+The small deviations in the angular velociy between samples can be approximated by integrating the angular velocity over the time step. The integrated angular velocity can be treated as a small deviation to the quaternion at time step $k$:  
+
+$$ \dq = \mat{\frac{1}{2} \gyro \Delta t \\ 1} $$  
+
+Thus, given this small deviation we can predict the orientation at time step $k$ given the orientation at step $k-1$: 
+
+$$ \qkp = \dq \otimes \q_{k-1} = \mat{\Xi(\q_{k-1}) & \q_{k-1}} \dq = \q_{k-1} + \Xi(\qk) (\frac{1}{2} \gyro \Delta t) $$
+
+Now this is our discrete-time dynamic model! The state transition matrix $F = I_{3x3}$ and the input matrix $G$ is parameterized by $\qk$ so that $G = \Xi(\qk)$. 
+
+\medskip
+
+In order to be able to integrate this orientation prediction with our measurements, we must also approximate the evolution of the covariance between time steps. Here the assumption that the orientation is fixed comes in handy for the covariance of the estimation does not change if the body is in a fixed configuration. However, the input from the gyroscope adds uncertainty. Let $Q$ be the process noise in the gyroscope input, then the predicted covariance at time $k$ given the covariance at step $k-1$ is 
+
+$$ \Ppp = \mathbf{P}_{k-1} + Q $$
+
+How do these predicted quantities relate to our measurements? Ultimately we want to be able to compute the innovation, the difference between the predicted measurements and the actual measurements. Once we multiply the innovation by the Kalman gain, we will know how to filter our prediction to produce a better estimate of the orientation. So how do we predict what will be measured? 
+
+\medskip 
+
+We expect that the measured gravity vector and magnetic field vector will simply be the gravity reference vector rotated into the current body coordinates of the interaction tool. Similarly, the expected measurement for the magnetic field vector depends on the tool's current orientation. Thus, we estimate that what we will measure is 
+
+$$ \hat{z}_k = \mat{A(\qk)\vec{g} \\ A(\qk) \vec{b}} $$
+
+Now we can compute the innovation $\mu$ as the difference between what we predicted we would measure and what we actually measure: 
+
+$$ \mu = z_k - \hat{z}_k $$
+
+Multiplying the innovation by the gain of the filter, $K$, we compute the update residual
+
+$$ \dq^{+} = K \mu $$
+
+This update residual is given as an error in the rotation of the interaction tool. Therefore instead of adding it to the predicted quaternion directly, we compose the two, as we do for rotations 
+
+$$ \qk^{+} = \dq^{+} \otimes \qkp $$
+
+This is the estimated orientation for time step $k$. 
+
+\medskip
+
+There is some subtlety to finding the filter gain $K$. The Kalman filter equations for the extended Kalman Filter give $K$ as 
+
+$$ K = P^{-} H_k (H_k P^{-} H_k^{T} + R)^{-1} $$
+
+but this requires that we know both the measurement noise, $R$, and the measurement sensitivity matrix $H_k$. While the measurement noise is initialized with reasonable values based on the expected noise of the sensors, the measurement sensitivity matrix changes on each time step because the errors in the measurements depend on the current orientation. It turns out that if $\hat{z}_k = h(\qk)$ then the measurement sensitivity is 
+
+$$ H_k = \frac{\partial h}{\partial \dq} = \mat{2 A(\qk) \vec{g}^{\times} \\ 2 A(\qk) \vec{b}^{\times} } $$ 
+
+where $\vec{g}^{\times}$ is the cross product matrix. This measurement sensitivity matrix is the linearization of the rotation around the current orientation. This result will be derived in the later section on the overall performance analysis of the tracking system.
+
+
 % Extended Kalman Filter Initialization
 \subsubsection{Filter Initialization}
 
@@ -526,17 +632,17 @@ The initial state of the orientation is estimated using the TRIAD approach. The 
 
 \medskip
 
-The Kalman filter assumes process noise and measurement noise in the dynamics. The process noise for the dynamic model of rotations assumes that the body is fixed at each time step, so the noise in the dynamics must come from noise on the gyroscope input. The root-mean squared noise density of gyroscope on the the Adafruit BNO055 given in the data sheet as $0.014 \frac{\frac{\deg}{s}}{\sqrt{\Hz}}$ \cite{bnO055datasheet}. To find the mean squared noise, this value is squared and multiplied by bandwidth of the signal, taken here to be the sample rate, $47$ Hz. This yields a value of approximately $(0.1)^2 \frac{\deg}{s}$. Converting to radians, the mean squared noise of the gyroscope is $2.8e-6 \frac{rad}{s}^2$. Thus, the process noise $Q$ is initialized as 
+The Kalman filter assumes process noise and measurement noise in the dynamics. The process noise for the dynamic model of rotations assumes that the body is fixed at each time step, so the noise in the dynamics must come from noise on the gyroscope input. The root-mean squared noise density of gyroscope on the the Adafruit BNO055 given in the data sheet as $0.014 \frac{\frac{\deg}{s}}{\sqrt{\Hz}}$ \cite{bnO055datasheet}. To find the mean squared noise, this value is squared and multiplied by bandwidth of the signal, taken here to be the sample rate, $47$ Hz. This yields a value of approximately $(0.1)^2 \frac{\deg}{s}$. Converting to radians, the mean squared noise of the gyroscope is $2.8\mathrm{e}{e-6} \frac{rad}{s}^2$. Thus, the process noise $Q$ is initialized as 
 
-$$ Q = \mat{2.8e-6 & 0 & 0 \\ 0 & 2.8e-6 & 0 \\ 0 & 0 & 2.8e-6} $$
+$$ Q = \mat{2.8\mathrm{e}{e-6} & 0 & 0 \\ 0 & 2.8\mathrm{e}{e-6} & 0 \\ 0 & 0 & 2.8\mathrm{e}{e-6}} $$
 
 \medskip
 
-Similarly, the measurement noise is initialized with noise values for the accelerometer and magnetometer listed in the datasheet \cite{bnO055datasheet}. Again, squarinng the noise densities and multiplying by the bandwidths yields mean squared errors of $1.1e-6 g^2$ and $17 \mu T^2 $ for the accelerometer and the magnetometer, respectively. The six dimensional measurement noise matrix, $R$, is initialized as 
+Similarly, the measurement noise is initialized with noise values for the accelerometer and magnetometer listed in the datasheet \cite{bnO055datasheet}. Again, squarinng the noise densities and multiplying by the bandwidths yields mean squared errors of $1.1\mathrm{e}{e-6} g^2$ and $17 \mu T^2 $ for the accelerometer and the magnetometer, respectively. The six dimensional measurement noise matrix, $R$, is initialized as 
 
-$$ R = \mat{1.1e-6 & 0 & 0 & 0 & 0 & 0 \\
-            0 & 1.1e-6 & 0 & 0 & 0 & 0 \\
-            0 & 0 & 1.1e-6 & 0 & 0 & 0 \\
+$$ R = \mat{1.1\mathrm{e}{e-6} & 0 & 0 & 0 & 0 & 0 \\
+            0 & 1.1\mathrm{e}{e-6} & 0 & 0 & 0 & 0 \\
+            0 & 0 & 1.1\mathrm{e}{e-6} & 0 & 0 & 0 \\
             0 & 0 & 0 & 17 & 0 & 0 \\
             0 & 0 & 0 & 0 & 17 & 0 \\
             0 & 0 & 0 & 0 & 0 & 17} $$
@@ -558,6 +664,33 @@ Intuitvely, a larger value for the measurement noise means that the variability 
 \end{figure}
 
 Lower values of $R$ lead to a faster step response but more overshoot because the Kalman gain is high. Higher values of $R$ have a slower step response but less overshoot because the Kalman gain is lower. 
+
+\subsubsection{Filter Performance}
+
+The performance of the extended Kalman Filter model for the orientation is summarized in the charts in \ref{fig:kalmanerrorsummary}.
+
+\begin{figure}[H]
+    \begin{center}$
+        \begin{array}{cc}
+            \includegraphics[width=0.5\textwidth]{KalmanBias} \\
+            \includegraphics[width=0.5\textwidth]{KalmanVariance}
+        \end{array}$
+    \end{center}
+    \caption{Kalman filter orientation tracking errors}
+    \label{fig:kalmanerrorsummary}
+\end{figure}
+
+The comparison in the precision of these results to the TRIAD estimation algorithm is shown in \ref{fig:filtercomparison1}. 
+
+\begin{figure}[H]
+    \begin{center}$
+        \begin{array}{cc}
+            \includegraphics[width=0.5\textwidth]{FilterComparison}
+        \end{array}$
+    \end{center}
+    \caption{Kalman filter and TRIAD root-mean-squared error comparison}
+    \label{fig:kalmanerrorsummary}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Position tracking
@@ -706,7 +839,7 @@ The distribution of errors is larger for depth-tracking than tracking in the ima
 \begin{figure}[H]
     \begin{center}$
         \begin{array}{c}
-            \includegraphics[width=0.8\textwidth]{ErrorHistDepth} &
+            \includegraphics[width=0.8\textwidth]{ErrorHistDepth}
         \end{array}$
     \end{center}
     \caption{Distribution of depth-tracking errors}

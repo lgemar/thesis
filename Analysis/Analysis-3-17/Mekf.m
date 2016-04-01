@@ -33,7 +33,8 @@ dqt = zeros(N,4); % TRIAD quaternion error
 dqk = zeros(N,4); % Kalman quaternion error
 
 % Reference vectors
-th = deg2rad(180); % location of magnetic North, typical: th = deg2rad(160); 
+th = deg2rad(178); % location of magnetic North, typical: th = deg2rad(160); 
+% th = deg2rad(162); % location of magnetic North, typical: th = deg2rad(160); 
 gr = [0; 0; 9.81]; % gravity reference vector
 br = [cos(th) -sin(th) 0; sin(th) cos(th) 0; 0 0 1] * m(1,:)'; % b-field reference vector
 
@@ -99,8 +100,8 @@ end
 dtt = rad2deg(2 * dqt(:,2:4)); 
 
 % Compute bias and variance of the error
-mudtt = mean(dtt,1); % bias - mean of the error
-Pdtt = cov(dtt,1); % compute covariance of error, rows are observations
+mudtt = mean(dtt,1) % bias - mean of the error
+Pdtt = cov(dtt,1) % compute covariance of error, rows are observations
 biasdtt = norm(mudtt);  
 vardtt = trace(Pdtt);  % target variance is 5^2 + 5^2 + 5^2, for a 5degree change in orientation is unnoticable
 
@@ -135,6 +136,7 @@ legend('\delta\theta_x', '\delta\theta_y', '\delta\theta_z')
 title(['Pitch Maneuver ', dtstr], 'Interpreter', 'Latex') 
 xlabel('Time (s)', 'Interpreter', 'Latex')
 ylabel('degrees ($^{\circ})$', 'Interpreter', 'Latex')
+dttrange = [-max(dtt(:))-10 max(dtt(:))+10];
 ylim(dttrange)
 xlim([min(t) max(t)])
 dttrange = [-max(dtt(:))-10 max(dtt(:))+10];
@@ -199,8 +201,12 @@ Sp = [deg2rad(10)^2 deg2rad(10)^2 deg2rad(15)^2]; Pe = diag(Sp);
 % Sr = [(1) * 1.1e-6*ones(1,3) (Sra(idx))*17*[1,1,1]]'; R = diag(Sr); 
 
 % Settiling on these
+% Sq = [2.8e-6 2.8e-6 12*2.8e-6]'; Q = diag(Sq); 
+% Sr = 200*(1/3)*[200*1.1e-6*ones(1,3) 0.0008*17*[1,1,1]]'; R = diag(Sr); 
+
+% Test pair
 Sq = [2.8e-6 2.8e-6 12*2.8e-6]'; Q = diag(Sq); 
-Sr = 200*(1/3)*[200*1.1e-6*ones(1,3) 0.0008*17*[1,1,1]]'; R = diag(Sr); 
+Sr = [1.1e-6*ones(1,3) 0.001*17*[1,1,1]]'; R = diag(Sr);
 
 % Gyro gain and gyro gain reference
 pgain = zeros(N-1,3); 
@@ -273,10 +279,10 @@ end
 dtk = rad2deg(2 * dqk(:,2:4)); 
 
 % Compute bias and variance of the error
-mudtt = mean(dtk,1); % bias - mean of the error
-Pdtt = cov(dtk,1); % compute covariance of error, rows are observations
-biasdtt = norm(mudtt);  
-vardtt = trace(Pdtt);  % target variance is 5^2 + 5^2 + 5^2, for a 5degree change in orientation is unnoticable
+mudtk = mean(dtk,1) % bias - mean of the error
+Pdtk = cov(dtk,1) % compute covariance of error, rows are observations
+biasdtk = norm(mudtk);  
+vardtk = trace(Pdtk)  % target variance is 5^2 + 5^2 + 5^2, for a 5degree change in orientation is unnoticable
 
 figure(4)
 subplot(2,3,1)
@@ -332,9 +338,9 @@ xlabel('Time (s)', 'Interpreter', 'Latex')
 ylabel('degrees ($^{\circ})$', 'Interpreter', 'Latex')
 ylim(dttrange)
 xlim([min(t) max(t)])
-biasstr = ['$$ | E[\delta\vec{\theta}] | = ', num2str(biasdtt), ' $$'];
+biasstr = ['$$ | E[\delta\vec{\theta}] | = ', num2str(biasdtk), ' $$'];
 text(0.05 * max(t),dttrange(2)-10,biasstr,'Interpreter','latex')
-varstr = ['$$ \textrm{tr}(\textrm{Var}(\delta\vec{\theta})) = ', num2str(vardtt), ' $$'];                                                
+varstr = ['$$ \textrm{tr}(\textrm{Var}(\delta\vec{\theta})) = ', num2str(vardtk), ' $$'];                                                
 text(0.05 * max(t),dttrange(2)-20,varstr,'Interpreter','latex')
 
 % Find the delay in the error signal
