@@ -244,29 +244,57 @@ As much as \$25 billion could be spent on virtual reality (VR) and augmented rea
 
 With the advent of virtual reality applications the following question must be answered: which of these input paradigms -- indirect or direct -- will prove most useful for interacting with virtual reality applications? While indirect input devices have achieved widespread popularity for two-dimensional displays, the direct input paradigm for VR applications embraces the immersiveness of VR experiences by enabling intuitive interactions for users. Direct input devices allow users to reach out and interact with the objects of their virtual space, just as they would with objects in their physical space. 
 
+\subsection{Design Approach}
 
-\subsection{Background}
+The 3D Interaction Tool is a novel, low-cost 3D input device that is compatible with a broad range of VR displays. In particular, the the 3D Interaction Tool is well-suited for VR applications that use a mobile-phone for the virtual reality display, such as for those applications that run on the Google Cardboard or other low cost solutions. This versatility of the 3D Interaction Tool comes from the simple requirement that the VR display must have a front-facing camera attached. This makes the tracking system compatible with any smartphone. The purpose of the 3D Interaction Tool is to demonstrate the functionality of this versatile tracking system.
 
-\subsubsection{Commercial Solutions}
+\section{Background}
 
-Recent market trends suggest that direct input devices are on the rise for consumers. Two of these direct input devices, the "Oculus Touch" controller and the HTC Valve controller, are achieving widespread publicity surrounding the commercial realease of virtual reality headsets \cite{ValveControllers} \cite{OculusTouch1} \cite{OculusTouch2}. While originally scheduled for release alongside the Oculus VR headset at the end of March 2016, the Oculus Touch controller will be available in the second half of 2016 \cite{OculusTouchDelay}. Meanwhile the Valve controllers have been reviewed in preparation for the release of the HTC Vive headset at the beginning of April, 2016, and their utility has been demonstrated with a three-dimensional sketching program by Google called TiltBrush \cite{TiltBruth}. These input devices track both their position and orientation, making them degree-of-freedom (6DOF) controllers. While the 6DOF controllers are reported to work well with their respective headsets, the headsets are expensive -- both retail for more than \$600.
+\subsection{Commercial Solutions}
 
-\subsubsection{3D Interaction Techniques}
+Recent market trends suggest that direct input devices are on the rise for consumers. Two of these direct input devices, the "Oculus Touch" controller and the HTC Valve controller, are achieving widespread publicity surrounding the commercial realease of virtual reality headsets \cite{ValveControllers} \cite{OculusTouch1} \cite{OculusTouch2}. These two controllers are shown in Figure \ref{fig:vrcontrollers}, with the Oculus Touch depicted on the left and the HTC Controllers depicted on the right. While originally scheduled for release alongside the Oculus VR headset at the end of March 2016, the Oculus Touch controller will be available in the second half of 2016 \cite{OculusTouchDelay}. Meanwhile the Valve controllers have been reviewed in preparation for the release of the HTC Vive headset at the beginning of April, 2016, and their utility has been demonstrated with a three-dimensional sketching program by Google called TiltBrush \cite{TiltBruth}. These input devices track both their position and orientation, making them degree-of-freedom (6DOF) controllers. While the 6DOF controllers are reported to work well with their respective headsets, the headsets are expensive -- both retail for more than \$600 -- and the controllers are not useful with other VR displays. Thus, two of the drawbacks of these commercial VR controllers are their cost and their compatibility with other VR displays. 
+
+\begin{figure}[H]
+    \begin{center}$
+        \begin{array}{cc}
+            \includegraphics[width=0.5\textwidth]{OculusTouch} &  
+            \includegraphics[width=0.5\textwidth]{HtcController}
+        \end{array}$
+    \end{center}
+    \caption{Commercial VR input devices}
+    \label{fig:vrcontrollers}
+\end{figure}
+
+
+
+\subsection{3D Interaction Techniques and their Applications}
 
 Three-dimensional interaction techniques can be separated into several categories. First, there are interactions that manipulate objects. These interactions accomplish tasks such as rotating, translating, or scaling three dimensional objects. Second, there are interactions that manipulate 3D viewpoint, allowing the user to adjust their field of view. Lastly, there are interactions that control an application. Application control interactions include navigating menus or widgets associated with the application logic. The first set of tasks, those that manipulate objects, have largely been the focus of three-dimensional input device design \cite{hand1997}. 
 
-\subsubsection{Tracking System Design}
+\medskip
+
+Object manipulation tasks are required in artistic and design applications. Several projects have demonstrated the usefulness of 3D input techniques to perform these application-specific manipulation tasks. For example, the HoloSketch projected demonstrated the usefulness of a 3D wand for object creation and manipulation for drawing and animating three dimensional objects in a virtual reality environement \cite{deering1995}. The HoloSketch wand also enabled a user to create free-hand drawings in three-space. 
+
+\medskip
+
+Along similar lines, the CavePainting allowed a user to use not one but many such input devices -- such as paint brushes and paint buckets -- to create artistic works in a virtual reality environment \cite{keefe2001}. The props provided users with a very tactile experience of virtual object manipulation, and the tracking system, known as the Cave, was able to track these objects while the user walked around in the virtual environment. Both of these solutions investigated the 3D input device interface for the process of artistic creation. 
+
+\medskip
+
+In addition to artistic applications, 3D interface design has been explored for its potential use for CAD applications. For example, the 6D hands project enabled a user to interact with objects in a 3D modelling environment to more quickly and efficiently perform object manipulation tasks \cite{wang2011}. 
+
+\subsection{Tracking Systems for 3D Input Devices}
+
+The methods of tracking objects in virtual environments are numerous \cite{rolland2001}. These tracking methods are a subset of six degree of freedom tracking approaches, and none of these tracking systems are without drawbacks, leading researchers to develop tracking systems that are well-suited to the needs of their application \cite{ribo2001}. The main categories of 6DoF trackers for virtual environments are mechanical, inertial, acoustic, magnetic, and optical \cite{welch2002}. 
+
+\section{Design Goals}
+
+There are two broad approaches to 3D input device design. First, there are approaches focused on designing the user-interface for the device for a particular application. This aproach attempts to answer the question: will this device be usable? Second, there are approaches that explore the functionality of the device for a number of different types of applications, asking the question: will this device be high performance? The design approach presented here pays attention to the question of device usability in the overall system design, while the performance objectives are the targets of the following investigation. 
+
+\subsection{Usability}
 
 
-
-\subsection{Design Objectives}
-
-There are two broad classes of objectives in 3D input device design: usability and performance. 
-
-\subsubsection{Usability}
-
-
-The usability requirements presented in Figure \ref{fig:usability} must be met for the tool to succeed as an \textit{input} device for VR software applications.
+The usability requirements presented in Figure \ref{fig:usability} must be met for the tool to succeed as an \textit{input} device for VR software applications. 
 
 \begin{figure}[H]
 	\begin{center}
@@ -276,9 +304,32 @@ The usability requirements presented in Figure \ref{fig:usability} must be met f
 	\label{fig:usability}
 \end{figure}
 
-\subsubsection{Performance}
+The first of these criteria is portability. The user should be able to use the input device wherever they are using a virtual reality display, without having to precalibrate their environment. Note that this portability objective is different from a \textit{mobility} objective. Mobility would allow unrestricted movement of the device. The reason portability is chosen as a design requirement rather than mobility is that low-cost virtual reality displays such as Google Cardboard are extremely portable and not very mobile. When a smartphone is used as a virtual reality display, it is not aware of its position in its environment. This is true of other low-cost virtual reality displays as well, such as the Samsung GearVR \cite{gearvr}. Thus, the device is chosen to be as portable as the displays with which it would be used. 
+
+\medskip
+
+The second usability design objective is a natural form factor for the device. The natural form factor serves the ends of making the device easy to learn, preventing fatigue, and providing user's will a large degree of control over the manipulation of the device. 
+
+\medskip
+
+Third, the tracking volume -- the range over which the position of the device is measured -- should not constrain the interactions that are possible with the device. Since the interaction tool should be usable with a number of different applications, no assumptions should be made about what sized tracking volume these applications will require. A reasonable assumption is that the user will not use the device to directly interact with objects outside of the reach of their arms, so the tracking volume should cover the reach of an average user. This tracking volume is on the order of magnitude of a meter.
+
+\medskip
+
+Finally, as mentioned before the 3D Interaction Tool should be compatible with low-cost virtual reality displays; thus, the tool itself must be low cost. 
+
+\subsection{Performance}
 
 The performance requirements presented in Figure \ref{fig:performance} must be met for the tool to succeed as a \textit{direct} input device for VR software applications.
+
+\medskip
+
+The tracking system must be accurate in its position and orientation estimation to produce a high fidelity reconstruction of device movement in the user's virtual reality application. For the device to truly be a direct input device, the accuracy of the mapping between physical and virtual worlds should be as low as $1$mm, as is required for the physical and virtual registration to be imperceptible \cite{ribo2001}. In virtual reality, as opposed to augmented reality, the accuracy constraint can be relaxed somewhat. The input device will be usable as long as movements are precise and repeatable, as is the case with indirect input devices. Thus position error of about $5$\% along each axis is acceptable, leading to an accuracy target of $5$cm. For orientation, device usability studies have shown that physical and virtual orientation differences of $5\degtwo$ are imperceptible to a user \cite{hinckley1997}. Therefore, the target for orientation estimation is an accuracy better than $5\degtwo$. 
+
+\medskip
+
+To quantify the accuracy, the root-mean-squared error model is used. The root-mean-squared error (RMSE) is the square root of the variance between the estimated values and the position or orientation reference. This error model is useful because it can be decomposed into bias and variance components: the RMSE:wq
+
 
 \begin{figure}[H]
 	\begin{center}
@@ -292,10 +343,10 @@ The performance requirements presented in Figure \ref{fig:performance} must be m
 %% Tracking system design
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Design}
+\section{Design Approach}
+
 
 \subsection{Requirements}
-
 In order to enable direct input with the interaction tool, the tool's tracking system must estimate both the position and orientation of the interaction tool. Additionally, rendering a virtual representation of the tool requires measuring its position and orientation relative to the virtual reality display orientation, given by the attitude matrix $\Ad$. To track the tool's absolute trajectory, its position is determined relative to the world -- that is, relative to a non-accelerating, inertial coordinate system in the user's physical environment. The position and orientation of the tool in the world coordinates of the inertial frame are $\pf$ and $\At$, respectively. The position of the tool in the coordinate frame of the virtual reality display is denoted by a 'prime' sign: the tip or front of the tool in display coordinates is $\pfpr$. Thus, there are four tracking targets: $\pf$, $\At$, $\pfpr$, and $\Ad$; these are shown in Figure \ref{fig:requirements}. 
 
 \begin{figure}[H]

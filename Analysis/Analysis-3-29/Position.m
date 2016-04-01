@@ -3,12 +3,13 @@ AllTestNames = {'test1', 'clckalign1', 'horz1', 'horz2', 'horz3', ...
                 'fbcircle1', 'fbcircle2', 'vert1', 'vert2', 'vert3'}; 
 ViconTestNames = {'test1', 'clkalign1', 'alltests'}; 
 ViconTestName = ViconTestNames{3}; 
-UnityTestName = AllTestNames{8}; 
+UnityTestName = AllTestNames{6}; 
 
 % notes: 
 % horz2 (4) produces amazing graphs of position estimation - horizontal
 % error
 % vert1 (13) vertical error analyais
+% i believe depth1 is used for depth error analysis
 
 %% Clock alignment
 DataFolderPr = (['C:\Users\Lukas Gemar\thesis\Analysis\Analysis-3-29\', 'Data\']); 
@@ -211,7 +212,7 @@ end
 zu = [pu(:,1) pu(:,2) pu(:,3)]; 
 
 % Camera measurements
-dc = 47 ./ ( zu(:,3) * sqrt( 1/fx^2 + 1/fy^2 ) ); % small blue ball is x mm
+dc = 49 ./ ( zu(:,3) * sqrt( 1/fx^2 + 1/fy^2 ) ); % small blue ball is x mm
 xc = (dc / fx) .* ( pu(:,1) - cx ); 
 yc = (dc / fy) .* ( cy - pu(:,2) ); 
 
@@ -229,8 +230,8 @@ j = find(tv > min(t), 1, 'first'); N = length(t); % index of start, number numbe
 tvpr = tv(tv > min(t) & tv < max(t)); 
 pwpr = pw(tv > min(t) & tv < max(t), :); 
 dpn = zw - pw(j:(j+N-1), :); 
-dpnbias = mean(dpn); 
-Ppn = cov(dpn); 
+dpnbias = mean(dpn)
+Ppn = cov(dpn)
 [V,D] = eig(Ppn); 
 disp(['Bias Naive: ', num2str(mean(dpn))])
 disp(['Variance Naive: ', num2str([var(dpn(:,1)), var(dpn(:,2)), var(dpn(:,3))]) ]); 
@@ -372,7 +373,8 @@ j = find(tv > min(t), 1, 'first'); % index of start
 N = length(t); % number of samples
 pws = pw(j:(j+N-1), :); 
 dpk = pr - pws; 
-Ppk = cov(dpk); 
+biasdpk = mean(dpk)
+Ppk = cov(dpk) 
 disp(['Bias Kalman: ', num2str(mean(dpk))])
 disp(['Variance Kalman: ', num2str([var(dpk(:,1)), var(dpk(:,2)), var(dpk(:,3))]) ]); 
 % 
