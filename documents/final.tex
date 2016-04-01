@@ -10,7 +10,10 @@
 \usepackage{lipsum}
 \sectionfont{\centering} % center just the titles
 
+% margin adjustment
 \usepackage[a4paper,right=26mm,left=26mm,top=26mm,bottom=26mm]{geometry} % https://www.sharelatex.com/blog/2013/08/06/thesis-series-pt2.html
+
+% inserting title page
 \usepackage{pdfpages}
 
 \usepackage[english]{babel}
@@ -134,7 +137,7 @@
     % Gyro input
     \newcommand{\gyro}{\vec{\omega}}
 
-    % \newcommand{\deg}{^{\circ} }
+    \newcommand{\degtwo}{^{\circ} }
     \newcommand{\Hz}{\textrm{Hz}}
 
     \newcommand{\deldq}{\frac{\partial \pl}{\partial \dqvec} }
@@ -143,30 +146,22 @@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% TITLE PAGE
+%% TITLE PAGE and contents
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
-% https://en.wikibooks.org/wiki/LaTeX/Title_Creation
-% \begin{titlepage}
-
-	\title{The 3D Interaction Tool: A Pointing Device for Virtual Reality Applications}
-	\author{Lukas Gemar}
-	\date{March 26, 2016}
-	\maketitle
-
-% \end{titlepage}
+\includepdf{title}
+\tableofcontents
+\listoffigures
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Abstract
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{abstract}
+\section{Abstract}
 The 3D Interaction Tool is a hand-held device that enables a user to interact with virtual reality applications. Since both the position and orientation of the tool are tracked, user input with the tool accomplishes tasks such as selecting, translating, and rotating three-dimensional objects, or free-hand drawing in space. The tool¿s position is tracked by a software application that filters observations from a camera attached to the virtual reality display, and the orientation is found by means of observations from an inertial measurement unit attached to the tool itself. Simple computer-aided design and drawing applications demonstrate the capabilities of the 3D Interaction Tool. 
-\end{abstract}
 
-% \begin{multicols}{2}
 \begin{flushleft}
 
 \section{Nomenclature}
@@ -487,7 +482,7 @@ The error associated with the estimation of roll, pitch, and yaw is shown in \re
 	\label{fig:pitchmaneuvertriad}
 \end{figure}
 
-The bias of the measurements is just $4.3 \deg$ but the variance is more than $125 \deg$, corresponding to a root-mean-squared error of $11.2\deg$. If a user notices an angular change of $5\deg$, a deviation of more than $10\deg$ is likely to give them a headache. Similar results are obtained when analyzing maneuevers in the roll and yaw dimensions of the rotation. These errors and root-mean-squared errors are summarized in the table of Figure \ref{fig:triaderrorsummary}.
+The bias of the measurements is just $4.3 \degtwo$ but the variance is more than $125 \degtwo$, corresponding to a root-mean-squared error of $11.2\degtwo$. If a user notices an angular change of $5\degtwo$, a deviation of more than $10\degtwo$ is likely to give them a headache. Similar results are obtained when analyzing maneuevers in the roll and yaw dimensions of the rotation. These errors and root-mean-squared errors are summarized in the table of Figure \ref{fig:triaderrorsummary}.
 
 \begin{figure}[H]
     \begin{center}$
@@ -570,7 +565,7 @@ The inverse of the quaternion is found by negating the imaginary component of th
 
 \subsubsection{Filter Design}
 
-How does the orientation of the interaction tool change from one time step to another? To discretize the dynamic model of rotations, we must know how the orientation of the tool will change between time steps. The change in orientation of the hand-held tool over time must be dependent on the dynamics of wrist movement. The peak velocity for human wrist movements is on the order of $10^2 \frac{\deg}{s}$ for fast and accurate wrist rotations \cite{hoffman1986}. We can assume that users of the interaction tool will pursue accurate movements from one orientation to another and not move the tool wildly. Therefore, the change in the orientation of the tool betweeen time steps for maximum angular velocity movements will be on the order of $2 \deg$, given a sample rate of $50$ Hz. This rotation is so small as to be imperceptible to most users \cite{hinckley1997}. Given these assumptions, we can assume that the orientation of the tool is more or less fixed between samples and we can treat changes to the orientation as solely due to small deviations -- essentially noise. 
+How does the orientation of the interaction tool change from one time step to another? To discretize the dynamic model of rotations, we must know how the orientation of the tool will change between time steps. The change in orientation of the hand-held tool over time must be dependent on the dynamics of wrist movement. The peak velocity for human wrist movements is on the order of $10^2 \frac{\degtwo}{s}$ for fast and accurate wrist rotations \cite{hoffman1986}. We can assume that users of the interaction tool will pursue accurate movements from one orientation to another and not move the tool wildly. Therefore, the change in the orientation of the tool betweeen time steps for maximum angular velocity movements will be on the order of $2 \degtwo$, given a sample rate of $50$ Hz. This rotation is so small as to be imperceptible to most users \cite{hinckley1997}. Given these assumptions, we can assume that the orientation of the tool is more or less fixed between samples and we can treat changes to the orientation as solely due to small deviations -- essentially noise. 
 
 \medskip
 
@@ -632,7 +627,7 @@ The initial state of the orientation is estimated using the TRIAD approach. The 
 
 \medskip
 
-The Kalman filter assumes process noise and measurement noise in the dynamics. The process noise for the dynamic model of rotations assumes that the body is fixed at each time step, so the noise in the dynamics must come from noise on the gyroscope input. The root-mean squared noise density of gyroscope on the the Adafruit BNO055 given in the data sheet as $0.014 \frac{\frac{\deg}{s}}{\sqrt{\Hz}}$ \cite{bnO055datasheet}. To find the mean squared noise, this value is squared and multiplied by bandwidth of the signal, taken here to be the sample rate, $47$ Hz. This yields a value of approximately $(0.1)^2 \frac{\deg}{s}$. Converting to radians, the mean squared noise of the gyroscope is $2.8\mathrm{e}{e-6} \frac{rad}{s}^2$. Thus, the process noise $Q$ is initialized as 
+The Kalman filter assumes process noise and measurement noise in the dynamics. The process noise for the dynamic model of rotations assumes that the body is fixed at each time step, so the noise in the dynamics must come from noise on the gyroscope input. The root-mean squared noise density of gyroscope on the the Adafruit BNO055 given in the data sheet as $0.014 \frac{\frac{\degtwo}{s}}{\sqrt{\Hz}}$ \cite{bnO055datasheet}. To find the mean squared noise, this value is squared and multiplied by bandwidth of the signal, taken here to be the sample rate, $47$ Hz. This yields a value of approximately $(0.1)^2 \frac{\degtwo}{s}$. Converting to radians, the mean squared noise of the gyroscope is $2.8\mathrm{e}{e-6} \frac{rad}{s}^2$. Thus, the process noise $Q$ is initialized as 
 
 $$ Q = \mat{2.8\mathrm{e}{e-6} & 0 & 0 \\ 0 & 2.8\mathrm{e}{e-6} & 0 \\ 0 & 0 & 2.8\mathrm{e}{e-6}} $$
 
