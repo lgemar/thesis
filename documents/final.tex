@@ -36,9 +36,10 @@
 	\newcommand{\crossmat}[1]{\mat{#1{^\times}}}
 
 	\newcommand{\pvec}[1]{\vec{#1}\mkern2mu\vphantom{#1}}
+    \newcommand{\mse}{\textrm{MSE}}
 
     % Position vector macros
-    \newcommand{\pspr}{\pvec{p}'_s} % position of the tool sphere (display)
+    \newcommand{\prpr}{\pvec{p}'_s} % position of the tool sphere (display)
     \newcommand{\ps}{\pvec{p}_s} % position of the tool rear (inertial)
 
     \newcommand{\prpr}{\pvec{p}'_r} % position of the tool rear (display)
@@ -106,7 +107,7 @@
 	\newcommand{\Ppd}{\mathbf{\Sigma}_{pd}}
     \newcommand{\Ppl}{\mathbf{\Sigma}_{l}}
 
-	\newcommand{\Ppspr}{\mathbf{\Sigma}'_{ps}}
+	\newcommand{\Pprpr}{\mathbf{\Sigma}'_{ps}}
 	\newcommand{\Pprpr}{\mathbf{\Sigma}'_{pr}}
 	\newcommand{\Ppfpr}{\mathbf{\Sigma}'_{pf}}
 
@@ -143,6 +144,8 @@
     \newcommand{\deldq}{\frac{\partial \pl}{\partial \dqvec} }
     \newcommand{\ddq}{\frac{\partial}{\partial \dqvec} }
 
+    \newcommand{\tr}{\textrm{tr}}
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -160,7 +163,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Abstract}
-The 3D Interaction Tool is a hand-held device that enables a user to interact with virtual reality applications. Since both the position and orientation of the tool are tracked, user input with the tool accomplishes tasks such as selecting, translating, and rotating three-dimensional objects, or free-hand drawing in space. The tool¿s position is tracked by a software application that filters observations from a camera attached to the virtual reality display, and the orientation is found by means of observations from an inertial measurement unit attached to the tool itself. Simple computer-aided design and drawing applications demonstrate the capabilities of the 3D Interaction Tool. 
+The 3D Interaction Tool is a hand-held device that enables a user to interact with virtual reality applications. Since both the position and orientation of the tool are tracked, user input with the tool accomplishes tasks such as selecting, translating, and rotating three-dimensional objects, or free-hand drawing in space. The tool¿s position is tracked by a software application that filters observations from a camera attached to the virtual reality display, and the orientation is found by means of observations from an inertial measurement unit attached to the tool itself. Simple computer-aided design and drawing applications are possible with the capabilities of the 3D Interaction Tool. 
 
 \begin{flushleft}
 
@@ -168,9 +171,9 @@ The 3D Interaction Tool is a hand-held device that enables a user to interact wi
 
 % Position vector definitions
 \textbf{Position vectors definitions in the inertial coordinate frame}: \\
-$ \ps \equiv $ position of the spherical tracking target on tool rear \\
 $ \pr \equiv $ position of the tool rear \\
 $ \pf \equiv $ position of the tool front \\
+$ \pl \equiv $ span vector that connects in the rear of the tool to the front of the tool \\
 $ \pc \equiv $ position of the tracking camera \\
 $ \pd \equiv $ position of the virtual reality display \\
 
@@ -178,9 +181,9 @@ $ \pd \equiv $ position of the virtual reality display \\
 
 % Rotated position vector definitions
 \textbf{Rotated position vectors}: \\
-$ \pspr \equiv $ position of the spherical tracking target on tool rear, camera coordinates \\
 $ \prpr \equiv $ position of the tool rear in display coordinates \\
 $ \pfpr \equiv $ position of the tool front in display coordinates \\
+$ \plpr \equiv $ span vector in the body coordinate system of the interaction tool \\
 
 \medskip
 
@@ -194,41 +197,55 @@ $ \Atpr \equiv $ attitude of the interaction tool in display coordinates \\
 \medskip
 
 % Quaternion definitions
+% $ \qd \equiv $ attitude of the virtual reality display \\
 \textbf{Body-referenced quaternion representations of attitude}: \\
 $ \qc \equiv $ attitude of the tracking camera \\
-$ \qd \equiv $ attitude of the virtual reality display \\
 $ \qt \equiv $ attitude of the interaction tool \\
 
 \medskip
 
 % Covariance definitions
 \textbf{Position error covariances in inertial coordinate frame}: \\
-$ \Pps \equiv $ covariance of spherical tracking target position \\
 $ \Ppr \equiv $ covariance of the position of the rear of the interaction tool\\
 $ \Ppf \equiv $ covariance of the position of the front of the interaction tool\\
-$ \Ppc \equiv $ covariance of the position of the tracking camera \\
-$ \Ppd \equiv $ covariance of the position of the virtual reality display \\
+% $ \Ppc \equiv $ covariance of the position of the tracking camera \\
+% $ \Ppd \equiv $ covariance of the position of the virtual reality display \\
 
 \medskip
 
-\textbf{Attitude error covariances in the inertial coordinate frame}: \\
-$ \Pqc \equiv $ covariance of the tracking camera attitude quaternion error \\
-$ \Pqd \equiv $ covariance of the display attitude quaternion error \\
-$ \Pqt \equiv $ covariance of the interaction tool attitude quaternion error \\
+% \textbf{Attitude error covariances in the inertial coordinate frame}: \\
+% $ \Pqc \equiv $ covariance of the tracking camera attitude quaternion error \\
+% $ \Pqd \equiv $ covariance of the display attitude quaternion error \\
+% $ \Pqt \equiv $ covariance of the interaction tool attitude quaternion error \\
 
 \medskip
 
 \textbf{Position error covariances in rotated body coordinates}: \\
-$ \Ppspr \equiv $ covariance of the sphereical tracking target position \\
-$ \Pprpr \equiv $ covariance of the position of the rear of the interaction tool \\
-$ \Ppfpr \equiv $ covariance of the position of the front of the interaction tool \\
+% $ \Pprpr \equiv $ covariance of the sphereical tracking target position \\
+$ \Pprpr \equiv $ covariance of the position of the rear of the interaction tool in rotated coordinates\\
+$ \Ppfpr \equiv $ covariance of the position of the front of the interaction tool in rotated coordinates\\
 
 \medskip
 
-\textbf{Attitude error covariances in the rotated body coordinates}: \\
-$ \Pacpr \equiv $ covariance of the tracking camera attitude angular error \\
-$ \Padpr \equiv $ covariance of the display attitude angular error \\
-$ \Patpr \equiv $ covariance of the interaction tool attitude angular error \\
+\textbf{General}: \\
+$\q \equiv $ quaternion  \\
+$A(\q) \equiv $ rotation matrix from the world coordinate frame to the orientation specified by \q \\
+$\dq \equiv $ small orientation errors in the quaternion \\
+$\dt \equiv $ small orientation errors \\
+
+\medskip
+
+\textbf{Kalman Filter}
+$Q \equiv $ process noise matrix of the Kalman filter
+$R \equiv $ measurement noise matrix of the Kalman filter
+$K \equiv $ Kalman gain
+$H \equiv $ measurement sensitivity matrix
+$\mu \equiv $ innovation
+% $ \Pprpr \equiv $ covariance of the sphereical tracking target position \\
+% \textbf{Attitude error covariances in the rotated body coordinates}: \\
+% $ \Pacpr \equiv $ covariance of the tracking camera attitude angular error \\
+% $ \Padpr \equiv $ covariance of the display attitude angular error \\
+% $ \Patpr \equiv $ covariance of the interaction tool attitude angular error \\
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% INTRODUCTION
@@ -238,11 +255,11 @@ $ \Patpr \equiv $ covariance of the interaction tool attitude angular error \\
 
 \subsection{Motivation}
 
-As much as \$25 billion could be spent on virtual reality (VR) and augmented reality (AR) software applications by 2025 \cite{Bloomberg-01-13}. There are two primary modes of user-input that are possible for these applications: indirect and direct. Indirect input devices translate the user's physical movements into the motion of a virtual cursor by means of a fixed transformation. Common examples of indirect input devices are a mouse or joystick. Direct input devices also translate physical to virtual movements, but this transformation is one-to-one. For example, a touch screen is a direct input device because the physical location of the user's press is colocated with the virtual click. 
+As much as \$25 billion could be spent on virtual reality (VR) and augmented reality (AR) software applications by 2025 \cite{Bloomberg-01-13}. There are two primary modes of user-input that are possible for these applications: indirect and direct. Indirect input devices translate the user's physical movements into the motion of a virtual cursor by means of a fixed transformation. Common examples of indirect input devices are a mouse or joystick. Direct input devices also translate physical to virtual movements, but this transformation is one-to-one. For example, a touch screen is a direct input device because the physical location of the user's press is collocated with the virtual click. 
 
 \medskip
 
-With the advent of virtual reality applications the following question must be answered: which of these input paradigms -- indirect or direct -- will prove most useful for interacting with virtual reality applications? While indirect input devices have achieved widespread popularity for two-dimensional displays, the direct input paradigm for VR applications embraces the immersiveness of VR experiences by enabling intuitive interactions for users. Direct input devices allow users to reach out and interact with the objects of their virtual space, just as they would with objects in their physical space. 
+With the advent of virtual reality applications the following question must be answered: which of these input paradigms -- indirect or direct -- will prove most useful for interacting with virtual reality applications? While indirect input devices have achieved widespread popularity for two-dimensional displays, the direct input paradigm for VR applications embraces the immersion of a user in a VR experience by enabling intuitive interactions for them. Direct input devices allow users to reach out and interact with the objects of their virtual space, just as they would with objects in their physical space. 
 
 \subsection{Design Approach}
 
@@ -422,7 +439,7 @@ The final system layout is shown in figure \ref{fig:finaldesign}.
 %% Inferring the tool position
 \subsubsection{Tracking measurements}
 
-Not all of these three tracking targets are measured directly. The tracking targets are inferred from the measurements of the position of the rear of the interaction tool relative to the camera, the attitude of the camera, and the attitude of the tool. The position of the tool relative to the camera is denoted by $\pspr$, the attitude of the camera relative to the inertial coordinate system by $\Ac$ and the attitude of the tool relative to the inertial coordinate system by $\At$. The vector $\pspr$ is measured by finding the .
+Not all of these three tracking targets are measured directly. The tracking targets are inferred from the measurements of the position of the rear of the interaction tool relative to the camera, the attitude of the camera, and the attitude of the tool. The position of the tool relative to the camera is denoted by $\prpr$, the attitude of the camera relative to the inertial coordinate system by $\Ac$ and the attitude of the tool relative to the inertial coordinate system by $\At$. The vector $\pspr$ is measured by finding the .
 
 %% Inferring the tool position
 \subsubsection{Inferring the tool position}
@@ -433,7 +450,7 @@ $$ \pf = \pr + \Atinv \pl $$
 
 where the position of the rear of the tool, $\pr$ is given by
 
-$$ \pr = \Acinv \pspr - \pc $$
+$$ \pr = \Acinv \prpr - \pc $$
 
 The attitude matrix, $\Atinv$, is the rotation from the body coordinates of the tool to the world coordinate system.
 
@@ -762,7 +779,7 @@ The following is a model of a single frame from the camera. In this frame, shown
 
 \medskip
 
-The midpoint of the target in the ideal undistorted image is $\pu = \mat{ x_u & y_u }^{T}$. The center of the undistorted image is $c_x$ in the x direction and $c_y$ in the y direction. The focal lengths in the x and y directions are $f_x$ and $f_y$, respectively. These parameters are found through the camera calibration routine, explained in detail below. The measurements of the center of the target and its width are related to the hidden state $\pspr = \mat{ x_s & y_s & z_s }^{T}$ in the following way: 
+The midpoint of the target in the ideal undistorted image is $\pu = \mat{ x_u & y_u }^{T}$. The center of the undistorted image is $c_x$ in the x direction and $c_y$ in the y direction. The focal lengths in the x and y directions are $f_x$ and $f_y$, respectively. These parameters are found through the camera calibration routine, explained in detail below. The measurements of the center of the target and its width are related to the hidden state $\prpr = \mat{ x_s & y_s & z_s }^{T}$ in the following way: 
 
 \[
     \y = h(\x)
@@ -778,7 +795,7 @@ These relationships are found through using a simple pin-hole camera model \cite
 
 \subsubsection{Camera Calibration}
 
-The measurement model requires knowledge of the intrinsic camera parameters, $f_x, f_y, c_x, c_y$, and the radial and tangential distortion factors. There are two steps to translating a point from camera coordinates to image coordinates \cite{Tsai1987}. First, the pin-hole camera model shows how to find the ideal image coordinates of an object, $(\mathbf{x_u}, \mathbf{y_u})$ based on the position of the object in camera coordinates, $\pspr = (x, y, z)$: 
+The measurement model requires knowledge of the intrinsic camera parameters, $f_x, f_y, c_x, c_y$, and the radial and tangential distortion factors. There are two steps to translating a point from camera coordinates to image coordinates \cite{Tsai1987}. First, the pin-hole camera model shows how to find the ideal image coordinates of an object, $(\mathbf{x_u}, \mathbf{y_u})$ based on the position of the object in camera coordinates, $\prpr = (x, y, z)$: 
 
 $$ \mathbf{x_u} = f_x \frac{x}{z} $$
 $$ \mathbf{y_u} = f_y \frac{y}{z} $$
@@ -913,6 +930,29 @@ where $w_k$ is the jerk. Additionally, the motion of the tool is assumed to be c
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Performance Analysis}
 
+This section summarizes the performance of the tracking system implementation according to the performance design goals.
+
+\subsection{Robustness}
+
+No quantitative metrics were made for the robustness of the tracking system. In order to make the object tracking system workable, so that the CamShift algorithm could find the position of the tool rear in each frame, a Kalman filter was implemented to predict the next location of the bounding box of the interaction tool, following the method of \cite{camshiftkalman}.
+
+\subsection{Latency Calculation}
+
+The latency calculation goes as follows. We differentiate the VICON reference position signal to find a reference acceleration signal. Second, we compute the time shift $\Delta s$ between the the acceleration readings from the accelerometer and those from the VICON tracking system. Third, we calculate the time shift $\Delta e$ between the position estimates of the filter and the VICON reference clock. Finally, we find the latency, $\Delta t$ by taking the difference between the times of the sensor measurements and the position estimates. The autocorrelation graphs are shown in Figure \ref{fig:autocorr}
+
+\begin{figure}[H]
+    \begin{center}$
+        \begin{array}{cc}
+            \includegraphics[width=0.5\textwidth]{AutoCorr}
+        \end{array}$
+    \end{center}
+    \caption{Autocorrelations for latency calculation}
+    \label{fig:autocorr}
+\end{figure}
+
+The result of the latency calculation shows an overall latency of $22$ms, including latency in the system itself. This latency corresponds to the frame update rate of the camera.
+
+
 \subsection{Estimation Error}
 
 Given the tool model $ \pfe = \pre + \ple $, the overall error covariance $\Ppf$ is a function of the error due to the position estimation and the error to the orientation estimation. Since the estimation of $\pr$ and $\pl$ occur independently, it is reasonable to assume that the errors in the estimation of these vectors is not correlated. Thus, the covariances of the errors for these two vectors simply add to yield the covariance of the error for the tool front: 
@@ -996,18 +1036,70 @@ This is written in the form of Equation \ref{eq:firstorderdev}. Thus, if $\Ptt$ 
         = \At(\qt)^T \crossmat{\plpr} \Ptt \crossmat{\plpr}^T \At(\qt)
 \end{equation}
 
+\subsection{Overall performance} 
+
+The trace of the covariance matrices are invariant to linear transformations, thus we can derive the expression that 
+
+$$ \tr(\Ppf) = \tr(\Ppr) + \tr(\Ppl) = \tr(\Pprpr) + l^2 \tr(\Ptt) $$
+
+Equivalently, 
+
+$$ \mse(\pf) = \mse(\prpr) + l^2 \mse(\hat{\vec{\theta})}) $$
+
+Thus the overall error of the estimation of the position of the front of the tool in world coordinates depends on the position estimation error and the square of the length of the tool times the orientation estimation error. Using the error estimates derived in the sections on position and orientation tracking, this result is summarized in Figure \ref{fig:overallerror}
+
+\begin{figure}[H]
+    \begin{center}$
+        \begin{array}{cc}
+            \includegraphics[width=0.5\textwidth]{OverallPerformance}
+        \end{array}$
+    \end{center}
+    \caption{Overall tracking error given position and orientation tracking errors}
+    \label{fig:overallerror}
+\end{figure}
+
+This chart illuminates the following result: the position tracking errors dominate, with root-mean-squared error of only $1$cm coming from the errors in the orientation tracking.
+
 
 % Covariance equations
-% $$ \Pprpr = \Ppspr + \crossmat{\pspr} \Pacpr \crossmat{\pspr}^T $$
-% $$ \Ppr = \Acinv ( \Ppspr + \crossmat{\pspr} \Pacpr \crossmat{\pspr}^T ) (\Acinv)^T + \Ppc $$
+% $$ \Pprpr = \Pprpr + \crossmat{\pspr} \Pacpr \crossmat{\pspr}^T $$
+% $$ \Ppr = \Acinv ( \Pprpr + \crossmat{\pspr} \Pacpr \crossmat{\pspr}^T ) (\Acinv)^T + \Ppc $$
 % $$ \Ppf = \Ppr + \Atinv \crossmat{\pl} \Patpr \crossmat{\pl}^T (\Atinv)^T $$
 % $$ \Ppfpr = \Ad ( \Ppf + \Ppd ) \Ad{^T} $$
-% $$ \Ppfpr = \Ppspr + \crossmat{\pspr} \Pacpr \crossmat{\pspr}^T + \Atpr \crossmat{\pl} \Patpr \crossmat{\pl}^T (\Atpr)^T + 2\Ad\Ppd\Ad{^T} $$
+% $$ \Ppfpr = \Pprpr + \crossmat{\pspr} \Pacpr \crossmat{\pspr}^T + \Atpr \crossmat{\pl} \Patpr \crossmat{\pl}^T (\Atpr)^T + 2\Ad\Ppd\Ad{^T} $$
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Conclusion
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conclusion}
+
+Revisiting the design objectives in \ref{fig:performance}, the table in Figure \ref{fig:summary1} captures the progress made on the performance of the tracking system. In green are those specifications that were achieved, and in orange are the specifications towards with progress was made. 
+
+\begin{figure}[H]
+    \begin{center}
+		\includegraphics[width=1\textwidth]{PerformanceRevisited}
+    \end{center}
+    \caption{Performance design goals, revisited}
+    \label{fig:summary1}
+\end{figure}
+
+The specifications for the latency and orientation error were achieved so that the lag of the system is not noticable and the estimation errors are imperceptible to the user. The root-mean-squared error for the position estimates was about twice that which was specified. These position errors were largely due to errors in the depth dimension of the tracking camera and errors due to tool velocity. 
+
+\begin{figure}[H]
+    \begin{center}
+		\includegraphics[width=1\textwidth]{UsabilityRevisited}
+    \end{center}
+    \caption{Performance design goals, revisited}
+    \label{fig:summary2}
+\end{figure}
+
+Figure \ref{fig:summary2} revisits the design objectives in \ref{fig:usability}. Portability and form factor requirements were met. The cost specification is easy to meet in future prototypes. The sensors used for the intial prototype were particularly expensive because they came with on-board filtering that was useful for prototyping. However, now that the tracking algorithms are implemented, lower-part costs could be purchased for any future prototypes. 
+
+\medskip
+
+The tracking volume objective can be met by increasing the field of view of the camera. Some experiments were done in this configuration, but they introduce a large bias into the position estimates due to errors in the calibration of the distortion parameters associated with widening the field of view of the lens. 
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Future Work
