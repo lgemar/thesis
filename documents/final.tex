@@ -39,7 +39,6 @@
     \newcommand{\mse}{\textrm{MSE}}
 
     % Position vector macros
-    \newcommand{\prpr}{\pvec{p}'_s} % position of the tool sphere (display)
     \newcommand{\ps}{\pvec{p}_s} % position of the tool rear (inertial)
 
     \newcommand{\prpr}{\pvec{p}'_r} % position of the tool rear (display)
@@ -107,7 +106,6 @@
 	\newcommand{\Ppd}{\mathbf{\Sigma}_{pd}}
     \newcommand{\Ppl}{\mathbf{\Sigma}_{l}}
 
-	\newcommand{\Pprpr}{\mathbf{\Sigma}'_{ps}}
 	\newcommand{\Pprpr}{\mathbf{\Sigma}'_{pr}}
 	\newcommand{\Ppfpr}{\mathbf{\Sigma}'_{pf}}
 
@@ -229,7 +227,7 @@ $ \Ppfpr \equiv $ covariance of the position of the front of the interaction too
 
 \textbf{General}: \\
 $\q \equiv $ quaternion  \\
-$A(\q) \equiv $ rotation matrix from the world coordinate frame to the orientation specified by \q \\
+$A(\q) \equiv $ rotation matrix from the world coordinate frame to the orientation specified by $\q$ \\
 $\dq \equiv $ small orientation errors in the quaternion \\
 $\dt \equiv $ small orientation errors \\
 
@@ -451,7 +449,7 @@ However, one of the downsides of this tracking design is that the position of th
 %% Inferring the tool position
 \subsubsection{Tracking measurements}
 
-Not all of these three tracking targets are measured directly. The tracking targets are inferred from the measurements of the position of the rear of the interaction tool relative to the camera, the attitude of the camera, and the attitude of the tool. The position of the tool relative to the camera is denoted by $\prpr$, the attitude of the camera relative to the inertial coordinate system by $\Ac$ and the attitude of the tool relative to the inertial coordinate system by $\At$. The vector $\pspr$ is measured by finding the .
+Not all of these three tracking targets are measured directly. The tracking targets are inferred from the measurements of the position of the rear of the interaction tool relative to the camera, the attitude of the camera, and the attitude of the tool. The position of the tool relative to the camera is denoted by $\prpr$, the attitude of the camera relative to the inertial coordinate system by $\Ac$ and the attitude of the tool relative to the inertial coordinate system by $\At$. The vector $\prpr$ is measured by finding the position of the tracking target in the camera field of view and measuring its size to determine its depth. Using its depth and its position in the field of view, its three-dimensional position relative to the camera can be estimated. This model will be presented in more detail in a later section of the report.
 
 %% Inferring the tool position
 \subsubsection{Inferring the tool position}
