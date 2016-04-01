@@ -288,7 +288,7 @@ Three-dimensional interaction techniques can be separated into several categorie
 
 \medskip
 
-Object manipulation tasks are required in artistic and design applications. Several projects have demonstrated the usefulness of 3D input techniques to perform these tasks. For example, the HoloSketch project demonstrated a 3D wand for object creation and manipulation. In HoloSketch the wand could be used for drawing and animating three dimensional objects in a virtual reality environement (VE) \cite{deering1995}. The HoloSketch wand also enabled a user to create free-hand drawings in three-space. 
+Object manipulation tasks are required in artistic and design applications. Several projects have demonstrated the usefulness of 3D input techniques to perform these tasks. For example, the HoloSketch project demonstrated a 3D wand for object creation and manipulation. In HoloSketch the wand could be used for drawing and animating three dimensional objects in a virtual reality environment (VE) \cite{deering1995}. The HoloSketch wand also enabled a user to create free-hand drawings in three-space. 
 
 \medskip
 
@@ -319,7 +319,7 @@ The usability requirements presented in Figure \ref{fig:usability} must be met f
 	\label{fig:usability}
 \end{figure}
 
-The first of these criteria is portability. The user should be able to use the input device wherever they are using a virtual reality display, without having to precalibrate their environment. Note that this portability objective is different from a \textit{mobility} objective. Mobility would allow unrestricted movement of the device. The reason portability is chosen as a design requirement rather than mobility is that low-cost virtual reality displays such as Google Cardboard are extremely portable and not very mobile. When a smartphone is used as a virtual reality display, it is not aware of its position in its environment. This is true of other low-cost virtual reality displays as well, such as the Samsung GearVR \cite{gearvr}. Thus, the device is chosen to be as portable as the displays with which it would be used. 
+The first of these criteria is portability. The user should be able to use the input device wherever they are using a virtual reality display, without having to pre-calibrate their environment. Note that this portability objective is different from a \textit{mobility} objective. Mobility would allow unrestricted movement of the device. The reason portability is chosen as a design requirement rather than mobility is that low-cost virtual reality displays such as Google Cardboard are extremely portable and not very mobile. When a smartphone is used as a virtual reality display, it is not aware of its position in its environment. This is true of other low-cost virtual reality displays as well, such as the Samsung GearVR \cite{gearvr}. Thus, the device is chosen to be as portable as the displays with which it would be used. 
 
 \medskip
 
@@ -345,7 +345,7 @@ The performance requirements presented in Figure \ref{fig:performance} must be m
 	\label{fig:performance}
 \end{figure}
 
-The tracking system must be accurate in its position and orientation estimation to produce a high fidelity reconstruction of device movement in the user's virtual reality application. For the device to truly be a direct input device, the accuracy of the mapping between physical and virtual worlds should be as low as $1$mm, as is required for the physical and virtual registration to be imperceptible \cite{ribo2001}. In virtual reality, as opposed to augmented reality, the accuracy constraint can be relaxed somewhat. The input device will be usable as long as movements are precise and repeatable, as is the case with indirect input devices. Thus position error of about $5$\% along each axis of the trackign volume is acceptable, leading to an accuracy target of $5$cm. For orientation, device usability studies have shown that physical and virtual orientation differences of $5\degtwo$ are imperceptible to a user \cite{hinckley1997}. Therefore, the target for orientation estimation is an accuracy better than $5\degtwo$. 
+The tracking system must be accurate in its position and orientation estimation to produce a high fidelity reconstruction of device movement in the user's virtual reality application. For the device to truly be a direct input device, the accuracy of the mapping between physical and virtual worlds should be as low as $1$mm, as is required for the physical and virtual registration to be imperceptible \cite{ribo2001}. In virtual reality, as opposed to augmented reality, the accuracy constraint can be relaxed somewhat. The input device will be usable as long as movements are precise and repeatable, as is the case with indirect input devices. Thus position error of about $5$\% along each axis of the tracking volume is acceptable, leading to an accuracy target of $5$cm. For orientation, device usability studies have shown that physical and virtual orientation differences of $5\degtwo$ are imperceptible to a user \cite{hinckley1997}. Therefore, the target for orientation estimation is an accuracy better than $5\degtwo$. 
 
 \medskip
 
@@ -353,7 +353,7 @@ To quantify the accuracy, the root-mean-squared error model is used. The root-me
 
 \medskip
 
-Requirements for low latency and high robustness fill out the design specifications. The latency should be as low as possible since the discrepency between virtual motion and physical motion has been known to induce simulator sickness in virtual environments \cite{kolasinski1995}. Best practices place the maximum latency that is comfortable for a user at 60ms \cite{oculusbest}. As far as robustness, the tracking of the device should be robust to tool occlusions and tool velocities. This will ensure that the user has control of the device in the virtual environment at all times, no matter how the tool is configured or moved in the physical environment.
+Requirements for low latency and high robustness fill out the design specifications. The latency should be as low as possible since the discrepancy between virtual motion and physical motion has been known to induce simulator sickness in virtual environments \cite{kolasinski1995}. Best practices place the maximum latency that is comfortable for a user at 60ms \cite{oculusbest}. As far as robustness, the tracking of the device should be robust to tool occlusions and tool velocities. This will ensure that the user has control of the device in the virtual environment at all times, no matter how the tool is configured or moved in the physical environment.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -905,7 +905,7 @@ The natural conclusion from the traces in \ref{fig:depth} is that the depth trac
 
 \subsubsection{Motion in the Image Plane}
 
-The precision of the tracking system depends on the direction of the tool maneuvers. This is evident from analyzing the covariance of the error in the $y$ and $z$ directions for vertical and horizontal maneuvers. Figure \ref{fig:yzerror} shows the error ellipse associated with motion in the image plane. On the left is the error ellispse associated with vertical motion and on the right is the error associated with horizontal motion. 
+The precision of the tracking system depends on the direction of the tool maneuvers. This is evident from analyzing the covariance of the error in the $y$ and $z$ directions for vertical and horizontal maneuvers. Figure \ref{fig:yzerror} shows the error ellipse associated with motion in the image plane. On the left is the error ellipse associated with vertical motion and on the right is the error associated with horizontal motion. 
 
 \begin{figure}[H]
     \begin{center}$
@@ -922,7 +922,7 @@ In \ref{fig:yzerror} two arrows are placed with their origins at the mean of the
 
 \medskip
 
-What explains the higher variance along the direction of motion for the interaction tool? There are essentially two sources of errror for tracking the target relative to the camera. First, there is error that comes from the camera calibration routine in the form of error of intrinsic parameters of the camera -- errors in $fx$, $fy$, for example. Second, there is error that comes from finding the centroid of the object in each image frame. Broadly, we could classify the calibration errors as systemic and the image processing errors as dynamic. Since the variance of the tool tracking increases in the direction of motion of the object, it is not likely that this error comes from a systemic problem with the calibration routine. Therefore, we can attribute the descrease in precision to error in the image segmentation routine. 
+What explains the higher variance along the direction of motion for the interaction tool? There are essentially two sources of error for tracking the target relative to the camera. First, there is error that comes from the camera calibration routine in the form of error of intrinsic parameters of the camera -- errors in $fx$, $fy$, for example. Second, there is error that comes from finding the centroid of the object in each image frame. Broadly, we could classify the calibration errors as systemic and the image processing errors as dynamic. Since the variance of the tool tracking increases in the direction of motion of the object, it is not likely that this error comes from a systemic problem with the calibration routine. Therefore, we can attribute the decrease in precision to error in the image segmentation routine. 
 
 \medskip
 
@@ -1000,7 +1000,7 @@ The comparison of these estimation errors to those of the simpler measurement mo
     \label{fig:positionerrorcomp}
 \end{figure}
 
-Notice that the filtered estimates are not any better (and in some cases worse) that the naive estimates. This could be for a couple reasons. The first is that the accelerometer measurements are too noisy to provide data that is more reliable than the position measurements from the image frames. It turns out that the sample rate of the accelerometer is 47Hz while the sample rate of the images is 60Hz. This means that the measurements from the images are potentially more responses to changes in the tool's acceleration than the accelerometer itself. Second, the accelerometer is subject to errors in the orientation when its measurements are converted from body coordinates to world coordinates. It could be that too much error is occured in this rotation to make them useful in improving the state prediction. 
+Notice that the filtered estimates are not any better (and in some cases worse) that the naive estimates. This could be for a couple reasons. The first is that the accelerometer measurements are too noisy to provide data that is more reliable than the position measurements from the image frames. It turns out that the sample rate of the accelerometer is 47Hz while the sample rate of the images is 60Hz. This means that the measurements from the images are potentially more responses to changes in the tool's acceleration than the accelerometer itself. Second, the accelerometer is subject to errors in the orientation when its measurements are converted from body coordinates to world coordinates. It could be that too much error is occurred in this rotation to make them useful in improving the state prediction. 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1016,7 +1016,7 @@ No quantitative metrics were made for the robustness of the tracking system. In 
 
 \subsection{Latency Calculation}
 
-The latency calculation goes as follows. We differentiate the VICON reference position signal to find a reference acceleration signal. Second, we compute the time shift $\Delta s$ between the the acceleration readings from the accelerometer and those from the VICON tracking system. Third, we calculate the time shift $\Delta e$ between the position estimates of the filter and the VICON reference clock. Finally, we find the latency, $\Delta t$ by taking the difference between the times of the sensor measurements and the position estimates. The autocorrelation graphs are shown in Figure \ref{fig:autocorr}
+The latency calculation goes as follows. We differentiate the VICON reference position signal to find a reference acceleration signal. Second, we compute the time shift $\Delta s$ between the acceleration readings from the accelerometer and those from the VICON tracking system. Third, we calculate the time shift $\Delta e$ between the position estimates of the filter and the VICON reference clock. Finally, we find the latency, $\Delta t$ by taking the difference between the times of the sensor measurements and the position estimates. The autocorrelation graphs are shown in Figure \ref{fig:autocorr}
 
 \begin{figure}[H]
     \begin{center}$
@@ -1079,11 +1079,11 @@ There is no error in the measurement of $\plpr$; that is a well known parameter 
 
 \medskip
 
-The attitude matrix $\At$ is parameterized by the quaternion $\qt$ estimated from the EKF so that $\pl = \At(\qt)^{T} \plpr$. This expression is helpful because it describes the tool span vector $\pl$ as a function of $\qt$. The relationship between $\pl$ and $\qt$ must be linearlized in order to understand how errors in the estimation of $\qt$ translate to errors in $\pl$. 
+The attitude matrix $\At$ is parameterized by the quaternion $\qt$ estimated from the EKF so that $\pl = \At(\qt)^{T} \plpr$. This expression is helpful because it describes the tool span vector $\pl$ as a function of $\qt$. The relationship between $\pl$ and $\qt$ must be linearized in order to understand how errors in the estimation of $\qt$ translate to errors in $\pl$. 
 
 \medskip
 
-Let the small deviations in the orientaiton be represented by the error quaternion $\dq$ so that $\pl = \A(\dq) \At(\qt)^{T} \plpr$, where $\A(\dq)$ is the attitude matrix parameterized by the orientation error. Then, the goal here is to linearize the relationship between $\pl$ and $\dq$, and to accomplish we find the matrix first-order derivative of $\pl$ with respect to the three dimensional representation of the error quaternion $\dqvec$: 
+Let the small deviations in the orientation be represented by the error quaternion $\dq$ so that $\pl = \A(\dq) \At(\qt)^{T} \plpr$, where $\A(\dq)$ is the attitude matrix parameterized by the orientation error. Then, the goal here is to linearize the relationship between $\pl$ and $\dq$, and to accomplish we find the matrix first-order derivative of $\pl$ with respect to the three dimensional representation of the error quaternion $\dqvec$: 
 
 $$ \deldq = \ddq \A(\dq) \At(\qt)^T \plpr $$
 
@@ -1091,7 +1091,7 @@ Now simplify $\A(\dq)$ using the assumptions that $\dqw \approx 1$ and $|\dqvec|
 
 $$ \A(\dq) = (|\dqw|^2 - |\dqvec|) I_{3x3} + 2 \dqvec \dqvec^T - 2\dqw\crossmat{\dqvec}  = I_{3x3} - 2\crossmat{\dqvec} $$
 
-Pplugging in this expression for $\A(\dq)$: 
+Plugging in this expression for $\A(\dq)$: 
 
 $$ \deldq = \ddq (I_{3x3} - 2\crossmat{\dqvec}) \At(\qt)^T \plpr $$
 
@@ -1161,7 +1161,7 @@ Revisiting the design objectives in \ref{fig:performance}, the table in Figure \
     \label{fig:summary1}
 \end{figure}
 
-The specifications for the latency and orientation error were achieved so that the lag of the system is not noticable and the estimation errors are imperceptible to the user. The root-mean-squared error for the position estimates was about twice that which was specified. These position errors were largely due to errors in the depth dimension of the tracking camera and errors due to tool velocity. 
+The specifications for the latency and orientation error were achieved so that the lag of the system is not noticeable and the estimation errors are imperceptible to the user. The root-mean-squared error for the position estimates was about twice that which was specified. These position errors were largely due to errors in the depth dimension of the tracking camera and errors due to tool velocity. 
 
 \begin{figure}[H]
     \begin{center}
@@ -1171,7 +1171,7 @@ The specifications for the latency and orientation error were achieved so that t
     \label{fig:summary2}
 \end{figure}
 
-Figure \ref{fig:summary2} revisits the design objectives in \ref{fig:usability}. Portability and form factor requirements were met. The cost specification is easy to meet in future prototypes. The sensors used for the intial prototype were particularly expensive because they came with on-board filtering that was useful for prototyping. However, now that the tracking algorithms are implemented, lower-part costs could be purchased for any future prototypes. 
+Figure \ref{fig:summary2} revisits the design objectives in \ref{fig:usability}. Portability and form factor requirements were met. The cost specification is easy to meet in future prototypes. The sensors used for the initial prototype were particularly expensive because they came with on-board filtering that was useful for prototyping. However, now that the tracking algorithms are implemented, lower-part costs could be purchased for any future prototypes. 
 
 \medskip
 
@@ -1186,9 +1186,15 @@ The tracking volume objective can be met by increasing the field of view of the 
 
 There are two angles to approaching the future of The 3D Interaction Tool: one approach is technical and the other approach is focused on the end-user of the tool.
 
-As shown in Figure \ref{overallerror}, the biggest area for technical improving -- that is improvement of the tracking apparatus -- is decreasing the position estimation error. The first technical proposal is to make the estimation more robust to tool movements by improving the image segmentation process. Modifying the image segmentation algorithm itself could accomplish this. One way to improve the image segmentation would be to map the accelerometer measurements into predicted movements in the image plane to reduce the uncertainty of the tool's position when it moves from side-to-side or up and down. The second way to improve the image segmentation process is to improve the geometry of the problem. Using a camera with a higher resolution or faster framerate could reduce the blurring that leads to uncertainty of position with motion. 
+\medskip
+
+As shown in Figure \ref{fig: overallerror}, the biggest area for technical improvement -- that is improvement of the tracking apparatus -- is decreasing the position estimation error. The first technical proposal is to make the estimation more robust to tool movements by improving the image segmentation process. Modifying the image segmentation algorithm itself could accomplish this. One way to improve the image segmentation would be to map the accelerometer measurements into predicted movements in the image plane to reduce the uncertainty of the tool's position when it moves from side-to-side or up and down. The second way to improve the image segmentation process is to improve the geometry of the problem. Using a camera with a higher resolution or faster frame-rate could reduce the blurring that leads to uncertainty of position with motion. 
+
+\medskip
 
 The second proposal to improving the position estimates is to improve the depth tracking by adding a more recognizable feature to the back of the interaction tool. While color was an acceptable target for the purposes of this report, something like a QR code could be tracked more robustly. This approach may also have the advantage of providing another state measurement to also decrease the uncertainty of the orientation estimation algorithm. 
+
+\medskip
 
 Finally, future work on the 3D Interaction Tool would also include a usability study to assess how the performance parameters affect the end-user. A study that assesses how well a user is able to perform simple object manipulation tasks would go a long way to improving the design of the device.
 
