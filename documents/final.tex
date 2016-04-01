@@ -584,9 +584,13 @@ Notice that the yaw maneuver suffers from the greatest root-mean-squared error (
 
 The error of the TRIAD estimation routine is 2-3x times the targets presented in \ref{fig:performance}. Therefore, we would like to find a way to decrease the variance of the orientation estimation without increasing the latency of the system. To do this we need a real-time estimator. Any optimal real-time estimator for this system should incorporate all the information we know about the system. Note that the TRIAD method used only the accelerometer and magnetometer information from the inertial sensor and neglected the data from the gyroscope. 
 
-Is there a way that we can use the data from the gyroscope to improve the orientation estimation? In fact there is! But it requires that we related the gyroscope measurements to the dynamics of rotation. This is not a simple problem for three reasons. First, rotations are non-linear and therefore the dynamics are non-linear. Second, any 3-dimensional parameterization of the rotations for purposes of writing down a non-linear model contains a singularity and we must use a higher dimensional parameterization of the rotation \cite{stuelpnagel1964}.
+\medskip
 
-Singularities in the three-dimensional representation of rotations are not problematic for small rotations. However, they are problematic for the 3D Interaction Tool because the user of the interaction tool is free to move the device into any orientation. This means that the tool can be held in any orientation, and the changes in the orientation are potentially extremely large. 
+Is there a way that we can use the data from the gyroscope to improve the orientation estimation? In fact there is! But it requires that we related the gyroscope measurements to the dynamics of rotation. This is not a simple problem for three reasons. First, rotations are non-linear and therefore the dynamics are non-linear. Second, any 3-dimensional parameterization of the rotations for purposes of writing down a non-linear model contains a singularity and we must use a higher dimensional parameterization of the rotation \cite{stuelpnagel1964}.  Singularities in the three-dimensional representation of rotations are not problematic for small rotations. However, they are problematic for the 3D Interaction Tool because the user of the interaction tool is free to move the device into any orientation. This means that the tool can be held in any orientation, and the changes in the orientation are potentially extremely large. Thus, singularities are inevitable.  
+
+\medskip
+
+The final challenge with writing down the dynamics of the rotation is that while a higher dimensional representation of the rotation is required to prevent singularities -- in our case we choose a four-dimensional representation -- the angular error occurs in two dimensions. Therefore, linearizing the error in the rotation around any point involves reducing the dimensionality of the state representation of the rotation around that point. All of this and more is discussed in the following sections, but first there are some mathematical preliminaries about the particular representation of orientation chosen here: the quaternion. 
 
 \subsection{Mathematical Representation of Orientation}
 
@@ -598,7 +602,7 @@ Second, the attitude of the interaction tool can be represented as a quaternion.
 
 \[ \overline{q} = \mat{\vec{q} \\ q_4} \] 
 
-with $\vec{q} = \hat{n} \sin{\frac{\theta}{2}}$ and $q_4 = \cos{\frac{\theta}{2}}$. The quaternion must have length 1: $\overline{q}^T \overline{q} = 1$. 
+with $\vec{q} = \hat{n} \sin{\frac{\theta}{2}}$ and $q_4 = \cos{\frac{\theta}{2}}$. The quaternion must have length 1: $\overline{q}^T \overline{q} = 1$. One way of looking at this normalization constraint is that it reduces the degrees of freedom of the quaternion from four to three.  
 
 The attitude matrix and the quaternion representing attitude are related by the following equation, where $A$ is a function of $\overline{q}$ \cite{Shuster1982}: 
 
@@ -719,17 +723,17 @@ The initial state of the orientation is estimated using the TRIAD approach. The 
 
 \medskip
 
-The Kalman filter assumes process noise and measurement noise in the dynamics. The process noise for the dynamic model of rotations assumes that the body is fixed at each time step, so the noise in the dynamics must come from noise on the gyroscope input. The root-mean squared noise density of gyroscope on the the Adafruit BNO055 given in the data sheet as $0.014 \frac{\frac{\degtwo}{s}}{\sqrt{\Hz}}$ \cite{bnO055datasheet}. To find the mean squared noise, this value is squared and multiplied by bandwidth of the signal, taken here to be the sample rate, $47$ Hz. This yields a value of approximately $(0.1)^2 \frac{\degtwo}{s}$. Converting to radians, the mean squared noise of the gyroscope is $2.8\mathrm{e}{e-6} \frac{rad}{s}^2$. Thus, the process noise $Q$ is initialized as 
+The Kalman filter assumes process noise and measurement noise in the dynamics. The process noise for the dynamic model of rotations assumes that the body is fixed at each time step, so the noise in the dynamics must come from noise on the gyroscope input. The root-mean squared noise density of gyroscope on the the Adafruit BNO055 given in the data sheet as $0.014 \frac{\frac{\degtwo}{s}}{\sqrt{\Hz}}$ \cite{bnO055datasheet}. To find the mean squared noise, this value is squared and multiplied by bandwidth of the signal, taken here to be the sample rate, $47$ Hz. This yields a value of approximately $(0.1)^2 \frac{\degtwo}{s}$. Converting to radians, the mean squared noise of the gyroscope is $2.8\mathrm{e}{-6} \frac{rad}{s}^2$. Thus, the process noise $Q$ is initialized as 
 
-$$ Q = \mat{2.8\mathrm{e}{e-6} & 0 & 0 \\ 0 & 2.8\mathrm{e}{e-6} & 0 \\ 0 & 0 & 2.8\mathrm{e}{e-6}} $$
+$$ Q = \mat{2.8\mathrm{e}{-6} & 0 & 0 \\ 0 & 2.8\mathrm{e}{-6} & 0 \\ 0 & 0 & 2.8\mathrm{e}{-6}} $$
 
 \medskip
 
-Similarly, the measurement noise is initialized with noise values for the accelerometer and magnetometer listed in the datasheet \cite{bnO055datasheet}. Again, squarinng the noise densities and multiplying by the bandwidths yields mean squared errors of $1.1\mathrm{e}{e-6} g^2$ and $17 \mu T^2 $ for the accelerometer and the magnetometer, respectively. The six dimensional measurement noise matrix, $R$, is initialized as 
+Similarly, the measurement noise is initialized with noise values for the accelerometer and magnetometer listed in the datasheet \cite{bnO055datasheet}. Again, squarinng the noise densities and multiplying by the bandwidths yields mean squared errors of $1.1\mathrm{e}{-6} g^2$ and $17 \mu T^2 $ for the accelerometer and the magnetometer, respectively. The six dimensional measurement noise matrix, $R$, is initialized as 
 
-$$ R = \mat{1.1\mathrm{e}{e-6} & 0 & 0 & 0 & 0 & 0 \\
-            0 & 1.1\mathrm{e}{e-6} & 0 & 0 & 0 & 0 \\
-            0 & 0 & 1.1\mathrm{e}{e-6} & 0 & 0 & 0 \\
+$$ R = \mat{1.1\mathrm{e}{-6} & 0 & 0 & 0 & 0 & 0 \\
+            0 & 1.1\mathrm{e}{-6} & 0 & 0 & 0 & 0 \\
+            0 & 0 & 1.1\mathrm{e}{-6} & 0 & 0 & 0 \\
             0 & 0 & 0 & 17 & 0 & 0 \\
             0 & 0 & 0 & 0 & 17 & 0 \\
             0 & 0 & 0 & 0 & 0 & 17} $$
@@ -747,7 +751,7 @@ Intuitvely, a larger value for the measurement noise means that the variability 
 		\includegraphics[width=0.6\textwidth]{OrientationRTuning}
 	\end{center}
 	\caption{Tuning the measurement noise parameter of the Kalman filter}
-	\label{fig:computervis}
+	\label{fig:rtuning}
 \end{figure}
 
 Lower values of $R$ lead to a faster step response but more overshoot because the Kalman gain is high. Higher values of $R$ have a slower step response but less overshoot because the Kalman gain is lower. 
