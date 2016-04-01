@@ -545,7 +545,7 @@ $$ A = M_b M_r^{T} $$
 
 \subsubsection{Error Analysis of TRIAD Measurements}
 
-There are three independent maneuvers that are possible with the interaction tool: roll maneuvers, pitch maneuvers, and yaw maneuevers. The error analysis focuses on the pitch maneuver but similar results are obtained for a rotation of the interaction tool in any dimension. Using the TRIAD algorithm, the roll, pitch, and yaw angles are estimated, and these are seen side-by-side with the absolute orientation reference in Figure \ref{fig:pitchmaneuver}. 
+There are three independent maneuvers that are possible with the interaction tool: roll maneuvers, pitch maneuvers, and yaw maneuvers. The error analysis focuses on the pitch maneuver but similar results are obtained for a rotation of the interaction tool in any dimension. Using the TRIAD algorithm, the roll, pitch, and yaw angles are estimated, and these are seen side-by-side with the absolute orientation reference in Figure \ref{fig:pitchmaneuver}. 
 
 \begin{figure}[H]
 	\begin{center}
@@ -594,11 +594,11 @@ The final challenge with writing down the dynamics of the rotation is that while
 
 \subsection{Mathematical Representation of Orientation}
 
-The orientation of the interaction tool relative to the world coordinate frame can be represented in a number of ways. The two representations that will be important here are the attitude matrix and the attitude quaternion. First, the attitude of the orientation tool can be described by the attitude matrix $A$. The attitude matrix typically maps a vector in the reference frame to a vector in the the body frame \cite{Markley2007}. This mapping is given by the relation, 
+The orientation of the interaction tool relative to the world coordinate frame can be represented in a number of ways. The two representations that will be important here are the attitude matrix and the attitude quaternion. First, the attitude of the orientation tool can be described by the attitude matrix $A$. The attitude matrix typically maps a vector in the reference frame to a vector in the body frame \cite{Markley2007}. This mapping is given by the relation, 
 
 \[ \bf{b} = A \bf{r} \]
 
-Second, the attitude of the interaction tool can be represented as a quaternion. A rotation in three-dimensions is equivalent to an axis of rotation and and angle of rotation. If $\hat{n}$ is the axis of a rotation and $\theta$ is the angle of the rotation, then the quaternion $\overline{q}$ represents the attitude: 
+Second, the attitude of the interaction tool can be represented as a quaternion. A rotation in three-dimensions is equivalent to an axis of rotation and an angle of rotation. If $\hat{n}$ is the axis of a rotation and $\theta$ is the angle of the rotation, then the quaternion $\overline{q}$ represents the attitude: 
 
 \[ \overline{q} = \mat{\vec{q} \\ q_4} \] 
 
@@ -661,11 +661,11 @@ The inverse of the quaternion is found by negating the imaginary component of th
 
 \subsubsection{Filter Design}
 
-How does the orientation of the interaction tool change from one time step to another? To discretize the dynamic model of rotations, we must know how the orientation of the tool will change between time steps. The change in orientation of the hand-held tool over time must be dependent on the dynamics of wrist movement. The peak velocity for human wrist movements is on the order of $10^2 \frac{\degtwo}{s}$ for fast and accurate wrist rotations \cite{hoffman1986}. We can assume that users of the interaction tool will pursue accurate movements from one orientation to another and not move the tool wildly. Therefore, the change in the orientation of the tool betweeen time steps for maximum angular velocity movements will be on the order of $2 \degtwo$, given a sample rate of $50$ Hz. This rotation is so small as to be imperceptible to most users \cite{hinckley1997}. Given these assumptions, we can assume that the orientation of the tool is more or less fixed between samples and we can treat changes to the orientation as solely due to small deviations -- essentially noise. 
+How does the orientation of the interaction tool change from one time step to another? To discretize the dynamic model of rotations, we must know how the orientation of the tool will change between time steps. The change in orientation of the hand-held tool over time must be dependent on the dynamics of wrist movement. The peak velocity for human wrist movements is on the order of $10^2 \frac{\degtwo}{s}$ for fast and accurate wrist rotations \cite{hoffman1986}. We can assume that users of the interaction tool will pursue accurate movements from one orientation to another and not move the tool wildly. Therefore, the change in the orientation of the tool between time steps for maximum angular velocity movements will be on the order of $2 \degtwo$, given a sample rate of $50$ Hz. This rotation is so small as to be imperceptible to most users \cite{hinckley1997}. Given these assumptions, we can assume that the orientation of the tool is more or less fixed between samples and we can treat changes to the orientation as solely due to small deviations -- essentially noise. 
 
 \medskip
 
-The small deviations in the angular velociy between samples can be approximated by integrating the angular velocity over the time step. The integrated angular velocity can be treated as a small deviation to the quaternion at time step $k$:  
+The small deviations in the angular velocity between samples can be approximated by integrating the angular velocity over the time step. The integrated angular velocity can be treated as a small deviation to the quaternion at time step $k$:  
 
 $$ \dq = \mat{\frac{1}{2} \gyro \Delta t \\ 1} $$  
 
@@ -719,17 +719,17 @@ where $\vec{g}^{\times}$ is the cross product matrix. This measurement sensitivi
 % Extended Kalman Filter Initialization
 \subsubsection{Filter Initialization}
 
-The initial state of the orientation is estimated using the TRIAD approach. The rotation matrix output of the TRIAD approach is converted to a quaternion to initialize the dynamic model. In order to inialize the covaraince, an initial uncertainty in the orientation of 10 degrees is assumed. 
+The initial state of the orientation is estimated using the TRIAD approach. The rotation matrix output of the TRIAD approach is converted to a quaternion to initialize the dynamic model. In order to initialize the covariance, an initial uncertainty in the orientation of 10 degrees is assumed. 
 
 \medskip
 
-The Kalman filter assumes process noise and measurement noise in the dynamics. The process noise for the dynamic model of rotations assumes that the body is fixed at each time step, so the noise in the dynamics must come from noise on the gyroscope input. The root-mean squared noise density of gyroscope on the the Adafruit BNO055 given in the data sheet as $0.014 \frac{\frac{\degtwo}{s}}{\sqrt{\Hz}}$ \cite{bnO055datasheet}. To find the mean squared noise, this value is squared and multiplied by bandwidth of the signal, taken here to be the sample rate, $47$ Hz. This yields a value of approximately $(0.1)^2 \frac{\degtwo}{s}$. Converting to radians, the mean squared noise of the gyroscope is $2.8\mathrm{e}{-6} \frac{rad}{s}^2$. Thus, the process noise $Q$ is initialized as 
+The Kalman filter assumes process noise and measurement noise in the dynamics. The process noise for the dynamic model of rotations assumes that the body is fixed at each time step, so the noise in the dynamics must come from noise on the gyroscope input. The root-mean squared noise density of gyroscope on the Adafruit BNO055 given in the data sheet as $0.014 \frac{\frac{\degtwo}{s}}{\sqrt{\Hz}}$ \cite{bnO055datasheet}. To find the mean squared noise, this value is squared and multiplied by bandwidth of the signal, taken here to be the sample rate, $47$ Hz. This yields a value of approximately $(0.1)^2 \frac{\degtwo}{s}$. Converting to radians, the mean squared noise of the gyroscope is $2.8\mathrm{e}{-6} \frac{rad}{s}^2$. Thus, the process noise $Q$ is initialized as 
 
 $$ Q = \mat{2.8\mathrm{e}{-6} & 0 & 0 \\ 0 & 2.8\mathrm{e}{-6} & 0 \\ 0 & 0 & 2.8\mathrm{e}{-6}} $$
 
 \medskip
 
-Similarly, the measurement noise is initialized with noise values for the accelerometer and magnetometer listed in the datasheet \cite{bnO055datasheet}. Again, squarinng the noise densities and multiplying by the bandwidths yields mean squared errors of $1.1\mathrm{e}{-6} g^2$ and $17 \mu T^2 $ for the accelerometer and the magnetometer, respectively. The six dimensional measurement noise matrix, $R$, is initialized as 
+Similarly, the measurement noise is initialized with noise values for the accelerometer and magnetometer listed in the datasheet \cite{bnO055datasheet}. Again, squaring the noise densities and multiplying by the bandwidths yields mean squared errors of $1.1\mathrm{e}{-6} g^2$ and $17 \mu T^2 $ for the accelerometer and the magnetometer, respectively. The six dimensional measurement noise matrix, $R$, is initialized as 
 
 $$ R = \mat{1.1\mathrm{e}{-6} & 0 & 0 & 0 & 0 & 0 \\
             0 & 1.1\mathrm{e}{-6} & 0 & 0 & 0 & 0 \\
@@ -744,7 +744,7 @@ The Kalman filter assumes that the measurement noise and process noise are Gauss
 
 \medskip
 
-Intuitvely, a larger value for the measurement noise means that the variability of the measurements is high, so the filter is less responsive to measurements and more responsive to the model. Conversely, if the measurement noise parameter descreases, the Kalman gain increases. The graph in figure \ref{fig:rtuning} shows how the Kalman filter responds to a step input in the roll for different values of $R$, the measurement gain. 
+Intuitively, a larger value for the measurement noise means that the variability of the measurements is high, so the filter is less responsive to measurements and more responsive to the model. Conversely, if the measurement noise parameter decreases, the Kalman gain increases. The graph in figure \ref{fig:rtuning} shows how the Kalman filter responds to a step input in the roll for different values of $R$, the measurement gain. 
 
 \begin{figure}[H]
 	\begin{center}
@@ -763,8 +763,8 @@ The performance of the extended Kalman Filter model for the orientation is summa
 \begin{figure}[H]
     \begin{center}$
         \begin{array}{cc}
-            \includegraphics[width=0.5\textwidth]{KalmanBias} \\
-            \includegraphics[width=0.5\textwidth]{KalmanVariance}
+            \includegraphics[width=0.8\textwidth]{KalmanBias} \\
+            \includegraphics[width=0.8\textwidth]{KalmanVariance}
         \end{array}$
     \end{center}
     \caption{Kalman filter orientation tracking errors}
@@ -776,12 +776,14 @@ The comparison in the precision of these results to the TRIAD estimation algorit
 \begin{figure}[H]
     \begin{center}$
         \begin{array}{cc}
-            \includegraphics[width=0.5\textwidth]{FilterComparison}
+            \includegraphics[width=0.8\textwidth]{FilterComparison}
         \end{array}$
     \end{center}
     \caption{Kalman filter and TRIAD root-mean-squared error comparison}
-    \label{fig:kalmanerrorsummary}
+    \label{fig:filtercomparison1}
 \end{figure}
+
+Note that the angular error target of $5\degtwo$ rmse is achieved in each maneuver direction except for yaw. As the chart shows, the Kalman Filter reduces the mean-squared-error of the orientation estimates by a factor of more than four versus the naive TRIAD estimation method.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Position tracking
@@ -789,17 +791,19 @@ The comparison in the precision of these results to the TRIAD estimation algorit
 
 \section{Position Tracking}
 
+The output of the position tracking filter is the position of the rear of the interaction tool $\pr$. Tracking this position with low variance is important to produce an accurate estimation for the position of the front of the interaction tool.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Naive measurement model
 \subsection{Measurement Model}
 
-The following is a model of a single frame from the camera. In this frame, shown in image Figure \ref{fig:computervis} the red circular object represents the rear of the interaction tool. The spherical objecti of the rear of the interaction tool is called the tracking target. The width of the target along the $x$ dimension of the image is $s_{u}$. 
+The following is a model of a single frame from the camera. In this frame, shown in image Figure \ref{fig:computervis} the red circular object represents the rear of the interaction tool. The spherical object of the rear of the interaction tool is called the tracking target. The width of the target along the $x$ dimension of the image is $s_{u}$. 
 
 \medskip
 
 \begin{figure}[H]
 	\begin{center}
-		\includegraphics[width=0.8\textwidth]{computerVision}
+		\includegraphics[width=0.5\textwidth]{computerVision}
 	\end{center}
 	\caption{Computer vision tracking model}
 	\label{fig:computervis}
@@ -818,25 +822,24 @@ The midpoint of the target in the ideal undistorted image is $\pu = \mat{ x_u & 
            }
 \]
 
-These relationships are found through using a simple pin-hole camera model \cite{Tsai1987}.
-
+These relationships are derived by using a pin-hole camera model as shown in \cite{Tsai1987}. 
 
 \subsubsection{Camera Calibration}
 
-The measurement model requires knowledge of the intrinsic camera parameters, $f_x, f_y, c_x, c_y$, and the radial and tangential distortion factors. There are two steps to translating a point from camera coordinates to image coordinates \cite{Tsai1987}. First, the pin-hole camera model shows how to find the ideal image coordinates of an object, $(\mathbf{x_u}, \mathbf{y_u})$ based on the position of the object in camera coordinates, $\prpr = (x, y, z)$: 
+The measurement model requires knowledge of the intrinsic camera parameters, $f_x, f_y, c_x, c_y$, and the radial and tangential distortion factors. There are two steps to translating a point from camera coordinates to image coordinates \cite{Tsai1987}. First, the pin-hole camera model shows how to find the ideal image coordinates of an object, $(x_u, y_u)$ based on the position of the object in camera coordinates, $\prpr = (x, y, z)$: 
 
-$$ \mathbf{x_u} = f_x \frac{x}{z} $$
-$$ \mathbf{y_u} = f_y \frac{y}{z} $$
+$$ x_u = f_x \frac{x}{z} $$
+$$ y_u = f_y \frac{y}{z} $$
 
-Second, the radial and tangential distortion relations show how the actual image coordinates, $(\mathbf{x_u}, \mathbf{y_u})$, relate to the image coordinates on the actual or distorted image plane, $(\mathbf{x_d}, \mathbf{y_d})$. The radial distortion correction equation is as follows: \\
+Second, the radial and tangential distortion relations show how the actual image coordinates, $(x_u, y_u)$, relate to the image coordinates on the actual or distorted image plane, $(x_d, y_d)$. The radial distortion correction equation is as follows: \\
 
-$$ \mathbf{x_u} = x_d (1 + k_1 r^2 + k_2 r^4 + k_3 r^6) $$
-$$ \mathbf{y_u} = y_d (1 + k_1 r^2 + k_2 r^4 + k_3 r^6) $$
+$$ x_u = x_d (1 + k_1 r^2 + k_2 r^4 + k_3 r^6) $$
+$$ y_u = y_d (1 + k_1 r^2 + k_2 r^4 + k_3 r^6) $$
 
 and the tangential distortion equation is given by, 
 
-$$ \mathbf{x_u} = x_d + (2 p_1 x y + p_2 (r^2 + 2x^2))$$
-$$ \mathbf{y_u} = y_d + (p_1 (r^2 + 2y^2) + 2p_2 x y)$$
+$$ x_u = x_d + (2 p_1 x y + p_2 (r^2 + 2x^2))$$
+$$ y_u = y_d + (p_1 (r^2 + 2y^2) + 2p_2 x y)$$
 
 Thus, the five distortion parameters are summarized in a vector $D$: 
 
@@ -859,9 +862,9 @@ The calibration parameters are discovered by using an open source implementation
 
 \subsubsection{Object Tracking}
 
-The signal processing layer contains an object tracker to find the rear of the interaction tool in each frame. Since a robust estimate of the object size in each image is required, its edges must be estimated as exactly as possible. One simple way to estimate the edges of the spherical tracking target is to segment the tracking target from the background by using color. The color of the object is used determine which pixels belong to it and which to not. Additionally, the color-based object tracking must happen in real time. To meet the demands of real-time, color-based object tracking, the CamShift algorithm was chosen \cite{bradski1998}.
+The signal processing layer contains an object tracker to find the rear of the interaction tool in each frame. Since a robust estimate of the object size in each image is required, its edges must be estimated as exactly as possible. One simple way to estimate the edges of the spherical tracking target is to segment the tracking target from the background by using color. The color of the object is used determine which pixels belong to it and which do not. Additionally, the color-based object tracking must happen in real time. To meet the demands of real-time, color-based object tracking, the CamShift algorithm was chosen \cite{bradski1998}.
 
-\subsubsection{Tool Maneuvers}
+\subsubsection{Measurements of Tool Maneuvers}
 
 The possible maneuvers of the interaction tool are classified into two categories: maneuvers in the image plane and those in the depth dimension. For a user of the 3D Interaction Tool, side-to-side or up-and-down movements of the interaction tool map to motions in the image plane of the tracking camera, while movements of the tool towards and away from their body map to motions in the depth dimension. More precisely, the maneuvers in the image plane are movements of the interaction tool that occur perpendicular to the viewing angle of the camera. 
 
@@ -896,11 +899,13 @@ The second set of maneuvers are those in the depth dimension. Figure \ref{fig:de
     \label{fig:depth}
 \end{figure}
 
-The natural conclusion from the traces in \ref{fig:depth} is that the depth tracking accuracy and precision depend on how far away the interaction tool is from the tracking camera.
+The natural conclusion from the traces in \ref{fig:depth} is that the depth tracking variance depend on how far away the interaction tool is from the tracking camera.
 
-\subsubsection{Error Analysis of Motion in the Image Plane}
+\subsection{Error Analysis}
 
-The accuracy and precision of the tracking system depends on the direction of the tool maneuvers. This is evident from analyzing the covariance of the error in the $y$ and $z$ directions for vertical and horizontal maneuvers. Figure \ref{fig:yzerror} shows the error ellipse associated with motion in the image plane. On the left is the error ellispse associated with vertical motion and on the right is the error associated with horizontal motion. 
+\subsubsection{Motion in the Image Plane}
+
+The precision of the tracking system depends on the direction of the tool maneuvers. This is evident from analyzing the covariance of the error in the $y$ and $z$ directions for vertical and horizontal maneuvers. Figure \ref{fig:yzerror} shows the error ellipse associated with motion in the image plane. On the left is the error ellispse associated with vertical motion and on the right is the error associated with horizontal motion. 
 
 \begin{figure}[H]
     \begin{center}$
@@ -939,6 +944,22 @@ The distribution of errors is larger for depth-tracking than tracking in the ima
 
 While the bias of the tracking errors tends to zero, the variance is much larger than for the depth-tracking in the image plane.
 
+\subsubsection{Summary of measurement errors}
+
+The naive tracking model above has errors for the three maneuvers as summarized by the tables below in Figure \ref{fig:naiveposition}. 
+
+\begin{figure}[H]
+    \begin{center}$
+        \begin{array}{cc}
+            \includegraphics[width=0.7\textwidth]{NaivePositionBias} \\
+            \includegraphics[width=0.7\textwidth]{NaivePositionError}
+        \end{array}$
+    \end{center}
+    \caption{Bias and variance for position measurements}
+    \label{fig:naiveposition}
+\end{figure}
+
+Note from the tables that the direction that is not the depth dimension or the dimension of motion has very small estimation error relative to the other two, which is exactly what we saw in the graphs presented above. 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -946,11 +967,26 @@ While the bias of the tracking errors tends to zero, the variance is much larger
 
 \subsection{Dynamic Measurement Model}
 
-Since the user's movement of the interaction tool is voluntary, no assumptions can be made about its overall trajectory. However, human-motion objeys minimum-jerk constraints \cite{flash1985}. Since the jerk of the tool's motion is small, it can be modelled as a white-noise process. The dynamical model for the tool's motion along the $x$ axis is estimated by the discrete time state-space model
+Since the user's movement of the interaction tool is voluntary, no assumptions can be made about its overall trajectory. However, human-motion obeys minimum-jerk constraints \cite{flash1985}. Since the jerk of the tool's motion is small, it can be modeled as a white-noise process. The dynamical model for the tool's motion along the $x$ axis is estimated by the discrete time state-space model
 
-$$ \vec{x}_{k+1} = \mat{1 & \Delta t \\ 0 & 1} \mat{x \\ \xd} + \mat{0 \\ \Delta t} \xdd  + \mat{0 \\ 1} w_k $$
+$$ \vec{x}_{k+1} = \mat{1 & \Delta t \\ 0 & 1} \mat{x \\ \xd} + \mat{(\Delta t)^2/2 \\ \Delta t} a_x  + \mat{0 \\ 1} w_k $$
 
-where $w_k$ is the jerk. Additionally, the motion of the tool is assumed to be coordinate uncoupled, since the user is free to move the tool in any direction. Therefore this same model can be extended to motion along the $y$ and $z$ axes as well.
+where $w_k$ is the jerk and $a_x$ is the acceleration of the interaction tool in the x-dimension. Additionally, the motion of the tool is assumed to be coordinate uncoupled, since the user is free to move the tool in any direction. Therefore this same model can be extended to motion along the $y$ and $z$ axes as well.
+
+\medskip
+
+Using this dynamic model for integrating the position estimates from the camera and the acceleration measurements from the accelerometer, slight improvements in the position estimation are obtained. These are summarized in the tables of Figure \ref{fig:kalmanposition}: 
+
+\begin{figure}[H]
+    \begin{center}$
+        \begin{array}{cc}
+            \includegraphics[width=0.7\textwidth]{KalmanPositionError} \\
+            \includegraphics[width=0.7\textwidth]{KalmanPositionVariance}
+        \end{array}$
+    \end{center}
+    \caption{Bias and variance for filtered position estimates}
+    \label{fig:kalmanposition}
+\end{figure}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
